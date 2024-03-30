@@ -1,4 +1,4 @@
-I can definitely enhance the README to reflect participation in a Google AI Hackathon! Here's the updated version:
+
 
 ## Hermoine (H-1123): AI Assessment Chatbot for Tutors (Google AI Hackathon Project)
 
