@@ -7,7 +7,7 @@
 **Features:**
 
 * **Topic-Specific Assessments:** Create assessments tailored to any subject or skill.
-* **Multiple Question Types:** Include various question formats like multiple choice, open ended, and code snippets.
+* **Multiple Question Types:** Include various question formats like multiple choice.
 * **Immediate Feedback:** Hermoine provides students with instant feedback on their answers.
 * **Personalized Learning:** The chatbot can adjust the difficulty level based on the student's performance.
 * **Data-Driven Insights:** Tutors can gain insights into student strengths and weaknesses to personalize future lessons.
@@ -36,11 +36,7 @@ This project was developed specifically for the Google AI Hackathon, focusing on
    - Make sure you have the latest Flutter version installed ([https://docs.flutter.dev/get-started/install](https://docs.flutter.dev/get-started/install)).
    - Run `flutter pub get` to install dependencies.
 
-3. **Configuration:**
-
-   - Update the `lib/config.dart` file with your preferred configurations (e.g., question sets, difficulty levels).
-
-4. **Run the App:**
+3. **Run the App:**
 
    - Run `flutter run` to launch the app on a connected device or simulator.
 
