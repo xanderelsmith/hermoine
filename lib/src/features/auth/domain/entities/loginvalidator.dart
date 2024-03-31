@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 
 class LoginValidator {
   static bool validateForm(
-      emailController, username, passwordController, context) {
+    BuildContext context, {
+    required bool isLogin,
+    emailController,
+    username,
+    passwordController,
+  }) {
     bool isValid = true;
 
     // Email Validation
-    if (emailController.text.isEmpty) {
+    if (emailController != null && isLogin == false) {
       isValid = false;
       showEmptyFieldErrorSnackBar(context);
     }
@@ -38,12 +43,12 @@ class LoginValidator {
       ),
     );
   }
+}
 
-  static showSnackBar(BuildContext context, {required String message}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+showSnackBar(BuildContext context, {required String message}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
 }
