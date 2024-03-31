@@ -21,7 +21,7 @@ class StyledTextField extends StatelessWidget {
           controller: textEditingController,
           decoration: InputDecoration(
               fillColor: const Color(0xffC5CAE9),
-              hintText: hint,
+              labelText: hint,
               border: const OutlineInputBorder()),
         ),
       ),
