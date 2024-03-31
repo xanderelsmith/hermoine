@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:hermione/main.dart';
 import 'package:hermione/src/features/auth/presentation/pages/login.dart';
 
 void main() {

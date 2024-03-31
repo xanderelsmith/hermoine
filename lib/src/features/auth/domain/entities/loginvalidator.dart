@@ -38,12 +38,12 @@ class LoginValidator {
       ),
     );
   }
+}
 
-  static showSnackBar(BuildContext context, {required String message}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+showSnackBar(BuildContext context, {required String message}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
 }

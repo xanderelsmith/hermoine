@@ -11,31 +11,6 @@ import '../global/userdetail.dart';
 class ApiService {
   ApiService();
 
-  static Future<UserDetails> getUserDetails() async {
-    final currentUser = await ParseUser.currentUser() as ParseUser?;
-    log(currentUser!.toJson().toString());
-    String institutionId = currentUser!['institution'] != null
-        ? currentUser['institution']['objectId']
-        : 'doesnotexist';
-    log(institutionId);
-    ParseResponse? institutionDetails;
-    if (institutionId != 'doesnotexist') {
-      final queryUserInstitutionData =
-          QueryBuilder<ParseObject>(ParseObject('Institutions'))
-            ..whereEqualTo('objectId', institutionId);
-      institutionDetails = await queryUserInstitutionData.query();
-
-      log(institutionDetails!.result.toString());
-    }
-
-    return UserDetails(
-        institutionDetails:
-            institutionId != 'doesnotexist' && institutionDetails != null
-                ? institutionDetails.result[0]
-                : null,
-        user: currentUser);
-  }
-
   static Future<ParseUser> getUser() async {
     final currentUser = await ParseUser.currentUser() as ParseUser?;
     return currentUser!;
@@ -102,7 +77,7 @@ class ApiService {
     required String password,
     required String emailadress,
   }) async {
-    final user =
+    ParseUser user =
         ParseUser(username.trim(), password.trim(), emailadress.trim());
 
     ParseResponse response = await user.signUp();

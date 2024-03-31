@@ -1,13 +1,13 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hermione/src/core/services/api_services.dart';
+import 'package:hermione/src/core/global/userdetail.dart';
 import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/auth/presentation/widgets/styled_textfield.dart';
-import 'package:hermione/src/features/home/presentation/pages/homepage.dart';
 
+import '../../../../core/constants/colors.dart';
+import '../../../../core/services/api_services.dart';
+import '../../../home/presentation/pages/homepage.dart';
 import '../../domain/entities/loginvalidator.dart';
 
 class SignUp extends StatefulWidget {
@@ -18,8 +18,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-  late Animation<double> _animation;
+  AnimationController? controller;
+  Animation<double>? _animation;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -34,7 +34,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
           ..addListener(() {
             setState(() {});
           });
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(controller)
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(controller!)
       ..addListener(() {});
 
     super.initState();
@@ -56,7 +56,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                 flex: 3,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: const Color(0xffC5CAE9).withOpacity(0.2),
+                      color: AppColor.transparentContainer.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10)),
                   alignment: Alignment.center,
                   height: getScreenSize(context).height / 1.8,
@@ -95,7 +95,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: LinearProgressIndicator(
-                                value: _animation.value,
+                                value: _animation!.value,
                               ),
                             ),
                             const Text('Please wait...')
@@ -120,17 +120,37 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                                       setState(() {
                                         shouldLogin = true;
                                       });
-                                      controller.forward();
+                                      controller!.forward();
+                                      if (_animation!.value >= 0.7) {
+                                        controller!.stop();
+                                      }
 
-                                      // ApiService.doUsersignUp(
-                                      //         username: usernameController.text,
-                                      //         password: passwordController.text,
-                                      //         emailadress: emailController.text)
-                                      //     .then((value) => Navigator.push(
-                                      //         context,
-                                      //         MaterialPageRoute(
-                                      //             builder: (context) =>
-                                      //                 const HomePage())));
+                                      ApiService.doUsersignUp(
+                                              username: usernameController.text,
+                                              password: passwordController.text,
+                                              emailadress: emailController.text)
+                                          .then((value) {
+                                        controller!.forward();
+                                        return Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                        userDetails:
+                                                            UserDetails(
+                                                      user: value
+                                                          .result['username'],
+                                                      emailaddress:
+                                                          value.result['email'],
+                                                    ))));
+                                      }).onError((error, stackTrace) {
+                                        log(error.toString());
+                                        setState(() {
+                                          shouldLogin = false;
+                                        });
+                                        return showSnackBar(context,
+                                            message:
+                                                'Check internet connection and try again');
+                                      });
                                     }
                                   },
                                   child: const Text('Register')),

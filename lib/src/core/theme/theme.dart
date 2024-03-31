@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors.dart';
+
 // 1. Define a color scheme
 ColorScheme lightColorScheme = ColorScheme.fromSeed(
     seedColor: const Color(0xff007bff),
-    primaryContainer: const Color(0xffC5CAE9), // Your primary color
+    primaryContainer:
+        AppColor.transparentContainer.withOpacity(0.2), // Your primary color
     brightness: Brightness.light,
     primary: const Color(
       0xff192FB1,
@@ -17,6 +20,7 @@ ColorScheme darkColorScheme = ColorScheme.fromSeed(
 // 2. Create a ThemeData instance
 ThemeData lightTheme = ThemeData(
   colorScheme: lightColorScheme,
+  cardColor: AppColor.transparentContainer.withOpacity(0.2),
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
           fixedSize: const Size(400, 30),
