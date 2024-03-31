@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hermione/src/features/assessment/data/sources/assessmentdatasources.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/assessmentdetailscreen.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/pdfquizifyscreen.dart';
 import 'package:hermione/src/features/auth/domain/entities/loginvalidator.dart';
 import 'package:hermione/src/features/auth/presentation/widgets/styled_textfield.dart';
 
@@ -122,11 +126,9 @@ class CreateQuizScreen extends StatelessWidget {
                   child: IconButton(
                       onPressed: () async {
                         File newfile;
-
-                        FilePickerResult? result = await FilePicker.platform
-                            .pickFiles(
-                                type: FileType.custom,
-                                allowedExtensions: [
+                        await FilePicker.platform.pickFiles(
+                            type: FileType.custom,
+                            allowedExtensions: [
                               'pdf',
                             ]).then((value) {
                           if (value != null) {

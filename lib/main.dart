@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:hermione/src/core/keys/backendkeys.dart';
 import 'package:hermione/src/core/routes/routes.dart';
 import 'package:hermione/src/core/services/api_services.dart';
 import 'package:hermione/src/core/theme/theme.dart';
+import 'package:hermione/src/features/assessment/domain/entities/geminiapihelper.dart';
 import 'package:hermione/src/features/auth/presentation/pages/login.dart';
 import 'package:hermione/src/features/home/presentation/pages/homepage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,6 +14,7 @@ import 'src/features/auth/presentation/pages/signup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Gemini.init(apiKey: GeminiSparkConfig.apiKey);
 
   await Parse()
       .initialize(
