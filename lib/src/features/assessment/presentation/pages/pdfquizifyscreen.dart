@@ -89,19 +89,6 @@ class _PdfQuizScreenState extends ConsumerState<PdfQuizScreen> {
                                   .then((value) {
                                 log('result $value.output');
                               });
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => SectionChat(
-                              //               extractedText: extractedText
-                              //                   .replaceAll(RegExp(r'\s+'), ' ')
-                              //                   .trim(),
-                              //             )));
-                              // var extractedProcessedData =
-                              //     QuestionExtractor(text: extractedText);
-                              // var obtaineddata = extractedProcessedData
-                              //     .extractQuestionsFullData();
-                              // log(obtaineddata.toString());
                             },
                             child: const Text('Quizify')),
                       ),
