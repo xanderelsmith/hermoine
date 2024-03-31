@@ -24,20 +24,19 @@ class ApiService {
   }
 
   ///checks if user has logged in
-  static Future<bool> hasUserLoggedIn() async {
+  static Future<Map> hasUserLoggedIn() async {
     final currentUser = await ParseUser.currentUser() as ParseUser?;
     if (currentUser == null) {
-      return false;
+      return {
+        'currentUser': null,
+        'isLoggedIn': false,
+      };
     }
-    return true;
-    // final ParseResponse? parseResponse =
-    //     await ParseUser.getCurrentUserFromServer(currentUser.sessionToken!);
 
-    // if (parseResponse?.success == null || !parseResponse!.success) {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
+    return {
+      'currentUser': currentUser,
+      'isLoggedIn': true,
+    };
   }
 
   static Future<ParseResponse> doEmailVerification(

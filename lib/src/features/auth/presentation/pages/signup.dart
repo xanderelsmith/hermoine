@@ -12,7 +12,7 @@ import '../../domain/entities/loginvalidator.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
-
+  static String id = '/signup';
   @override
   State<SignUp> createState() => _SignUpState();
 }
@@ -70,14 +70,14 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                         child: Text('A'),
                       ),
                       StyledTextField(
-                          hint: 'EmailAddress',
-                          textEditingController: emailController),
+                          innerHint: 'EmailAddress',
+                          controller: emailController),
                       StyledTextField(
-                          hint: 'Username (Nickname)',
-                          textEditingController: usernameController),
+                          innerHint: 'Username (Nickname)',
+                          controller: usernameController),
                       StyledTextField(
-                          hint: 'Password',
-                          textEditingController: passwordController),
+                          innerHint: 'Password',
+                          controller: passwordController),
                     ],
                   ),
                 ),
@@ -111,10 +111,12 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                               child: ElevatedButton(
                                   onPressed: () {
                                     bool canLogin = LoginValidator.validateForm(
-                                        emailController,
-                                        usernameController,
-                                        passwordController,
-                                        context);
+                                      context,
+                                      emailController: emailController,
+                                      isLogin: false,
+                                      username: usernameController,
+                                      passwordController: passwordController,
+                                    );
                                     print(canLogin);
                                     if (canLogin) {
                                       setState(() {
@@ -139,8 +141,6 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
                                                             UserDetails(
                                                       user: value
                                                           .result['username'],
-                                                      emailaddress:
-                                                          value.result['email'],
                                                     ))));
                                       }).onError((error, stackTrace) {
                                         log(error.toString());

@@ -20,6 +20,10 @@ ColorScheme darkColorScheme = ColorScheme.fromSeed(
 // 2. Create a ThemeData instance
 ThemeData lightTheme = ThemeData(
   colorScheme: lightColorScheme,
+  appBarTheme: const AppBarTheme(
+      backgroundColor: Color(
+    0xff3F51B5,
+  )),
   cardColor: AppColor.transparentContainer.withOpacity(0.2),
   elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
