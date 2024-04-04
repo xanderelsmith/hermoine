@@ -10,7 +10,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../domain/entities/geminiapihelper.dart';
 
 class PdfQuizScreen extends ConsumerStatefulWidget {
-  const PdfQuizScreen({Key? key, required this.pdf}) : super(key: key);
+  const PdfQuizScreen({super.key, required this.pdf});
   final File pdf;
   @override
   ConsumerState<PdfQuizScreen> createState() => _PdfQuizScreenState();
@@ -51,51 +51,8 @@ class _PdfQuizScreenState extends ConsumerState<PdfQuizScreen> {
               title: Text('No input text'),
               content: Text('There is no specified text')));
     } else {
-      showDialog(
-          context: context,
-          builder: (context) => Dialog(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'Extracted text',
-                        ),
-                      ),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: Text(extractedText
-                                .replaceAll(RegExp(r'\s+'), ' ')
-                                .trim())),
-                      )),
-                      Center(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: Size(screensize.width / 1.5, 30)),
-                            onPressed: () async {
-                              final gemini = Gemini.instance;
-                              String quizdata = '';
-                              log('generating');
-                              gemini
-                                  .text(GeminiSparkConfig.prompt(extractedText
-                                      .replaceAll(RegExp(r'\s+'), ' ')
-                                      .trim()))
-                                  .then((value) {
-                                log('result $value.output');
-                              });
-                            },
-                            child: const Text('Quizify')),
-                      ),
-                    ],
-                  ),
-                ),
-              ));
+      Navigator.pop(
+          context, extractedText.replaceAll(RegExp(r'\s+'), ' ').trim());
     }
   }
 
