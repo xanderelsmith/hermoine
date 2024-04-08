@@ -159,6 +159,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   CustomTextFormField(
+                                    controller: usernameController,
+                                    hintText: "Username",
+                                    textInputType: TextInputType.emailAddress,
+                                  ),
+                                  CustomTextFormField(
                                     controller: emailController,
                                     hintText: "Email",
                                     textInputType: TextInputType.emailAddress,
@@ -175,6 +180,28 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                       SizedBox(height: 16.v),
                                       CustomTextFormField(
                                         controller: passwordController,
+                                        hintText: "Show",
+                                        textInputAction: TextInputAction.done,
+                                        textInputType:
+                                            TextInputType.visiblePassword,
+                                        obscureText: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.h),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 37.v),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Confirm Password",
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                      SizedBox(height: 16.v),
+                                      CustomTextFormField(
+                                        controller: confirmPasswordController,
                                         hintText: "Show",
                                         textInputAction: TextInputAction.done,
                                         textInputType:
