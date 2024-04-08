@@ -7,6 +7,7 @@ import '../../../../core/constants/image_constant.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../home/presentation/pages/homepage.dart';
 
 class OnboardingFourScreen extends StatelessWidget {
   const OnboardingFourScreen({super.key});
@@ -47,13 +48,16 @@ class OnboardingFourScreen extends StatelessWidget {
               SizedBox(height: 40.v),
               CustomElevatedButton(
                 onPressed: () {
-                  Get.to(() => CreateAccountScreen());
+                  Get.to(() => HomePage());
                 },
                 text: "Student",
                 buttonTextStyle: CustomTextStyles.titleMediumOnPrimary,
               ),
               SizedBox(height: 13.v),
               CustomOutlinedButton(
+                onPressed: () {
+                  Get.to(() => const CreateAccountScreen());
+                },
                 text: "Teacher",
                 buttonTextStyle: theme.textTheme.titleMedium!,
               )

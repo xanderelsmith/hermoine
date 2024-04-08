@@ -13,8 +13,24 @@ mixin Font implements FontWeight {
 //
 class AppTextStyle extends TextStyle {
   static TextStyle get titlename => TextStyle(
-        fontWeight: Font.b,
+        fontWeight: Font.sb,
+        color: Colors.white,
+        fontSize: 12,
+      );
+  static TextStyle get mediumTitlename => TextStyle(
+        fontWeight: Font.sb,
+        color: Colors.white,
+        fontSize: 15,
+      );
+  static TextStyle get largeTitlename => TextStyle(
+        fontWeight: Font.sb,
+        color: Colors.white,
         fontSize: 30,
+      );
+  static TextStyle get tinyTitlename => TextStyle(
+        fontWeight: Font.l,
+        color: Colors.white,
+        fontSize: 10,
       );
   static TextStyle get header => const TextStyle();
 }

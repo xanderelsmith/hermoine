@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/auth/presentation/pages/onboarding_one_screen.dart';
 
-import 'homepage_screen.dart';
+import '../../../home/presentation/pages/homepage.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -14,7 +14,7 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return HomepageScreen();
+              return HomePage();
             } else {
               return const OnboardingOneScreen();
             }
