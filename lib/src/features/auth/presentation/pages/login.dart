@@ -4,7 +4,7 @@ import 'package:hermione/src/features/auth/presentation/widgets/styled_textfield
 
 class Login extends StatelessWidget {
   const Login({super.key});
-
+  static String id = 'login';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,11 +23,8 @@ class Login extends StatelessWidget {
                 radius: 40,
                 child: Text('A'),
               ),
-              StyledTextField(
-                  hint: 'Username',
-                  textEditingController: TextEditingController()),
-              StyledTextField(
-                  hint: 'hint', textEditingController: TextEditingController()),
+              StyledTextField(controller: TextEditingController()),
+              StyledTextField(controller: TextEditingController()),
             ],
           ),
         ),
