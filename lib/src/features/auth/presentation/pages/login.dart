@@ -11,8 +11,7 @@ class Login extends StatelessWidget {
       body: Center(
         child: Container(
           decoration: BoxDecoration(
-              color: const Color(0xffC5CAE9).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10)),
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
           alignment: Alignment.center,
           height: getScreenSize(context).height / 2,
           margin: const EdgeInsets.all(10),
