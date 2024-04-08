@@ -20,11 +20,13 @@ class HomePage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Course Category'),
-            Container(
+            SizedBox(
               height: 100,
               child: ListView.builder(
+                  itemCount: 5,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) => const SizedBox(
                         height: 100,
