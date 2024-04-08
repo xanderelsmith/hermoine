@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/size_utils.dart';
@@ -5,19 +6,47 @@ import '../../../../core/theme/app_decoration.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import 'helper_function.dart';
 
 // ignore_for_file: must_be_immutable
-class SigninScreen extends StatelessWidget {
-  SigninScreen({Key? key})
+class SigninScreen extends StatefulWidget {
+  final void Function()? onTap;
+
+  const SigninScreen({Key? key, this.onTap})
       : super(
           key: key,
         );
 
+  @override
+  State<SigninScreen> createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void login() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      if (context.mounted) Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      displayMessageToUser(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +150,7 @@ class SigninScreen extends StatelessWidget {
                                 SizedBox(height: 70.v),
                                 CustomElevatedButton(
                                   text: "Sign in",
+                                  onPressed: login,
                                   buttonTextStyle:
                                       CustomTextStyles.titleMediumOnPrimary,
                                 ),

@@ -1,19 +1,76 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/size_utils.dart';
 import '../../../../core/theme/app_decoration.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/widgets.dart'; // ignore_for_file: must_be_immutable
+import '../../../../core/widgets/widgets.dart';
+import 'helper_function.dart'; // ignore_for_file: must_be_immutable
 
-class CreateAccountScreen extends StatelessWidget {
-  CreateAccountScreen({super.key});
+class CreateAccountScreen extends StatefulWidget {
+  final void Function()? onTap;
 
+  const CreateAccountScreen({super.key, this.onTap});
+
+  @override
+  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
+}
+
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
+  TextEditingController usernameController = TextEditingController();
+
+  TextEditingController confirmPasswordController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void signup() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    if (passwordController.text != confirmPasswordController.text) {
+      Navigator.pop(context);
+
+      displayMessageToUser("Password don't match!", context);
+    } else {
+      try {
+        UserCredential? userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+
+        createUserDocument(userCredential);
+
+        if (context.mounted) Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
+
+        displayMessageToUser(e.code, context);
+      }
+    }
+  }
+
+  Future<void> createUserDocument(UserCredential? userCredential) async {
+    if (userCredential != null && userCredential.user != null) {
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+        'email': userCredential.user!.email,
+        'username': usernameController.text,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +187,7 @@ class CreateAccountScreen extends StatelessWidget {
                                   ),
                                   SizedBox(height: 130.v),
                                   CustomElevatedButton(
+                                    onPressed: signup,
                                     text: "Create account",
                                     buttonTextStyle:
                                         CustomTextStyles.titleMediumOnPrimary,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "21244888541",
+    "project_id": "hermoine-e9367",
+    "storage_bucket": "hermoine-e9367.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21244888541:android:baa7ac2981dff53e92e234",
+        "android_client_info": {
+          "package_name": "com.example.hermione"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB40sg6IK1lKmIxfVAETqbGm0SGBQlE-08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

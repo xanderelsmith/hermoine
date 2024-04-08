@@ -30,12 +30,19 @@ environment:
 dependencies:
   cupertino_icons: ^1.0.6
   cached_network_image: ^3.3.0
+  firebase_core: ^2.22.0
+  firebase_auth: ^4.14.0
+  cloud_firestore: ^4.13.1
   flutter_svg: ^2.0.9
   intl: ^0.18.0
   flutter:
     sdk: flutter
   parse_server_sdk_flutter: ^7.0.1
   get: ^4.6.6
+  flutter_gemini: ^2.0.3
+  hooks_riverpod: ^2.5.1
+  syncfusion_flutter_pdfviewer: ^20.4.54
+  file_picker: ^8.0.0+1
 
 dev_dependencies:
 
