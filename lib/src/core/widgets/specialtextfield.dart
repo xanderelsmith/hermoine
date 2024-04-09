@@ -56,8 +56,8 @@ class SpecialTextfield extends StatelessWidget {
         suffixIcon: suffixwidget,
         prefixIcon: prefixwidget,
         border: OutlineInputBorder(
-            borderRadius: borderRadius ??
-                const BorderRadius.all(const Radius.circular(4.0)),
+            borderRadius:
+                borderRadius ?? const BorderRadius.all(Radius.circular(4.0)),
             borderSide: const BorderSide(color: Colors.black)),
       ),
     );

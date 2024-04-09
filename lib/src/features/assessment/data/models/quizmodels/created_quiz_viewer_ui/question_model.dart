@@ -13,11 +13,11 @@ abstract class Question extends ConsumerWidget {
   final dynamic correctanswer;
   const Question({
     this.correctanswer,
-    Key? key,
+    super.key,
     this.quizType,
     this.hintimages,
     this.question,
-  }) : super(key: key);
+  });
 
   ///returns a build ui for the quiz
   @override
