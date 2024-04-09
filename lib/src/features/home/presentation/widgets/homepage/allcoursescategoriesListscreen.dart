@@ -53,7 +53,7 @@ class AllCourseCategoriesListScreen extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(
+                            padding: const EdgeInsets.all(
                               20.0,
                             ),
                             child: Text(
