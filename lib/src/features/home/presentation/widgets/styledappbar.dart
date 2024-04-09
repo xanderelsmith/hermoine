@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
-import '../../../../core/global/userdetail.dart';
+import '../../../auth/data/models/user.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.userDetails});
@@ -33,11 +33,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         Text(
                           'Hello',
-                          style: AppTextStyle.titlename,
+                          style: AppTextStyle.titlename
+                              .copyWith(color: Colors.white),
                         ),
                         Text(
-                          'Victor Adebayo',
-                          style: AppTextStyle.mediumTitlename,
+                          userDetails!.email! ?? 'no name',
+                          style: AppTextStyle.mediumTitlename
+                              .copyWith(color: Colors.white),
                         ),
                       ],
                     ),
@@ -51,7 +53,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             Text(
               'What subject would you like to improve on today?',
-              style: AppTextStyle.tinyTitlename,
+              style: AppTextStyle.tinyTitlename.copyWith(color: Colors.white),
             )
           ],
         ),

@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:hermione/src/features/auth/presentation/pages/create_account_screen.dart';
+import 'package:hermione/src/features/home/presentation/pages/homepage.dart';
 
 import '../../../../core/constants/size_utils.dart';
 import '../../../../core/theme/app_decoration.dart';
@@ -12,10 +16,7 @@ import 'helper_function.dart';
 class SigninScreen extends StatefulWidget {
   final void Function()? onTap;
 
-  const SigninScreen({Key? key, this.onTap})
-      : super(
-          key: key,
-        );
+  const SigninScreen({super.key, this.onTap});
 
   @override
   State<SigninScreen> createState() => _SigninScreenState();
@@ -27,26 +28,6 @@ class _SigninScreenState extends State<SigninScreen> {
   TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  void login() async {
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-
-      if (context.mounted) Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      displayMessageToUser(e.code, context);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,13 +131,22 @@ class _SigninScreenState extends State<SigninScreen> {
                                 SizedBox(height: 70.v),
                                 CustomElevatedButton(
                                   text: "Sign in",
-                                  onPressed: login,
+                                  onPressed: () => login(context,
+                                      emailController, passwordController),
                                   buttonTextStyle:
                                       CustomTextStyles.titleMediumOnPrimary,
                                 ),
                                 SizedBox(height: 12.v),
                                 CustomOutlinedButton(
                                   text: "Create account",
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const CreateAccountScreen())),
+                                    );
+                                  },
                                   buttonTextStyle: theme.textTheme.titleMedium!,
                                 )
                               ],
@@ -195,5 +185,36 @@ class _SigninScreenState extends State<SigninScreen> {
         )
       ],
     );
+  }
+}
+
+void login(context, emailController, passwordController) async {
+  showDialog(
+      context: context,
+      builder: (context) => const AlertDialog(
+            content: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ));
+  try {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    )
+        .then((value) async {
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                      userDetails: UserDetails.fromFirebaseUser(
+                    value.user!,
+                  ))));
+    });
+
+    if (context.mounted) Navigator.pop(context);
+  } on FirebaseAuthException catch (e) {
+    Navigator.pop(context);
+    displayMessageToUser(e.code, context);
   }
 }
