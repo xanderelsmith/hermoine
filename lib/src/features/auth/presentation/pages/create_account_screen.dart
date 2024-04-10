@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hermione/src/features/auth/presentation/pages/homepage_screen.dart';
 
 import '../../../../core/constants/size_utils.dart';
 import '../../../../core/theme/app_decoration.dart';
@@ -50,7 +52,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         );
 
         createUserDocument(userCredential);
-
+        Get.to(() => HomepageScreen());
         if (context.mounted) Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
         Navigator.pop(context);

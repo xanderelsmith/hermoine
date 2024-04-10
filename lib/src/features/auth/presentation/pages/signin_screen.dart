@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../core/constants/size_utils.dart';
 import '../../../../core/theme/app_decoration.dart';
@@ -7,6 +8,7 @@ import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'helper_function.dart';
+import 'homepage_screen.dart';
 
 // ignore_for_file: must_be_immutable
 class SigninScreen extends StatefulWidget {
@@ -40,6 +42,7 @@ class _SigninScreenState extends State<SigninScreen> {
         email: emailController.text,
         password: passwordController.text,
       );
+      Get.to(() => HomepageScreen());
 
       if (context.mounted) Navigator.pop(context);
     } on FirebaseAuthException catch (e) {

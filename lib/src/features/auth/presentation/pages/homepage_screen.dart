@@ -348,27 +348,29 @@ class HomepageScreen extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.only(left: 25.h),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CustomImageView(
-                              imagePath: ImageConstant.imgFrame65,
-                              height: 144.v,
-                              width: 231.h,
-                              radius: BorderRadius.vertical(
-                                top: Radius.circular(15.h),
+                        child: SingleChildScrollView(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              CustomImageView(
+                                imagePath: ImageConstant.imgFrame65,
+                                height: 144.v,
+                                width: 231.h,
+                                radius: BorderRadius.vertical(
+                                  top: Radius.circular(15.h),
+                                ),
                               ),
-                            ),
-                            CustomImageView(
-                              imagePath: ImageConstant.imgFrame65144x231,
-                              height: 144.v,
-                              width: 231.h,
-                              radius: BorderRadius.vertical(
-                                top: Radius.circular(15.h),
-                              ),
-                              margin: EdgeInsets.only(left: 24.h),
-                            )
-                          ],
+                              CustomImageView(
+                                imagePath: ImageConstant.imgFrame65144x231,
+                                height: 144.v,
+                                width: 231.h,
+                                radius: BorderRadius.vertical(
+                                  top: Radius.circular(15.h),
+                                ),
+                                margin: EdgeInsets.only(left: 24.h),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
