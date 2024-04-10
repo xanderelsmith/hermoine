@@ -66,7 +66,7 @@ class DragAndDrop extends Question {
                                       color: allOptionsList.contains(
                                                   questionList[index]) ==
                                               true
-                                          ? AppColor.deepColor
+                                          ? AppColor.primaryColor
                                           : null),
                                 ),
                               )),
@@ -82,7 +82,7 @@ class DragAndDrop extends Question {
                 allOptionsList.length,
                 (index) => Card(
                     color: questionList.contains(allOptionsList[index]) == true
-                        ? AppColor.deepColor
+                        ? AppColor.primaryColor
                         : null,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

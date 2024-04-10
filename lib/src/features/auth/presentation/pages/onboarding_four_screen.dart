@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/auth/presentation/pages/create_account_screen.dart';
+import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart';
 
 import '../../../../core/constants/image_constant.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../home/presentation/pages/homepage.dart';
 
 class OnboardingFourScreen extends StatelessWidget {
   const OnboardingFourScreen({super.key});
@@ -47,13 +49,19 @@ class OnboardingFourScreen extends StatelessWidget {
               SizedBox(height: 40.v),
               CustomElevatedButton(
                 onPressed: () {
-                  Get.to(() => CreateAccountScreen());
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const SigninScreen())));
                 },
                 text: "Student",
                 buttonTextStyle: CustomTextStyles.titleMediumOnPrimary,
               ),
               SizedBox(height: 13.v),
               CustomOutlinedButton(
+                onPressed: () {
+                  Get.to(() => const CreateAccountScreen());
+                },
                 text: "Teacher",
                 buttonTextStyle: theme.textTheme.titleMedium!,
               )

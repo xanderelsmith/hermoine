@@ -88,3 +88,5 @@ class SizeUtils {
     deviceType = DeviceType.mobile;
   }
 }
+
+Size getScreenSize(context) => MediaQuery.of(context).size;
