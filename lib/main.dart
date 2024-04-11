@@ -4,14 +4,24 @@ import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/core/theme/theme.dart';
 import 'package:hermione/src/features/auth/presentation/pages/auth.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import 'firebase_options.dart';
+import 'src/core/keys/backendkeys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Parse().initialize(
+      appName: 'Hermoine',
+      appVersion: '1.0',
+      ApiPrivateKeys.kappId,
+      ApiPrivateKeys.keyParseServerUrl,
+      clientKey: ApiPrivateKeys.kclientKey,
+      debug: true,
+      autoSendSessionId: true);
   runApp(const MyApp());
 }
 

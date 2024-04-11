@@ -46,9 +46,8 @@ class _SigninScreenState extends State<SigninScreen> {
       UserDetails userDetails =
           UserDetails.fromFirebaseUser(userCredential.user!);
 
-      Get.to(() => HomePage(userDetails: userDetails));
-
       if (context.mounted) Navigator.pop(context);
+      Get.to(() => HomePage(userDetails: userDetails));
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       displayMessageToUser(e.code, context);
