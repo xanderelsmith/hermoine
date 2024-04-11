@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/assessment/domain/repositories/createdquizrepo.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/quizintroscreen.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/constants/constants.dart';
+import '../../../../../core/constants/size_utils.dart';
+import '../../../../../core/widgets/specialtextfield.dart';
 import '../../../../assessment/data/sources/fetchcourses.dart';
 import '../../../../assessment/data/sources/fetchquizes.dart';
 import '../../../../assessment/domain/repositories/retievedquizdata.dart';
@@ -21,18 +24,25 @@ class Courses extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Courses ',
-                  style: AppTextStyle.titlename,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AllCoursesScreen()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Courses ',
+                      style: AppTextStyle.titlename,
+                    ),
+                    const Text('See more'),
+                  ],
                 ),
-                Text('See more'),
-              ],
-            ),
-          ),
+              )),
           Container(
             height: 50,
             child: FutureBuilder<List<ParseObject>?>(
