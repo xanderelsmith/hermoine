@@ -10,7 +10,7 @@ class OnboardingOneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Get.to(() => const OnboardingTwoScreen());
     });
     return SafeArea(

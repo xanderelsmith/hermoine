@@ -1,13 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:hermione/src/core/constants/colors.dart';
 
 import 'package:hermione/src/core/constants/size_utils.dart';
+
 import 'package:hermione/src/features/auth/data/models/user.dart';
-import 'package:hermione/src/features/home/presentation/widgets/styledappbar.dart';
 
 import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
+import '../widgets/styledappbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({

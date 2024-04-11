@@ -1,15 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:get/get.dart';
 import 'package:hermione/src/features/auth/presentation/pages/create_account_screen.dart';
-import 'package:hermione/src/features/home/presentation/pages/homepage.dart';
 
 import '../../../../core/constants/size_utils.dart';
 import '../../../../core/theme/app_decoration.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../home/presentation/pages/homepage.dart';
+import '../../data/models/user.dart';
 import 'helper_function.dart';
 
 // ignore_for_file: must_be_immutable
@@ -28,6 +29,30 @@ class _SigninScreenState extends State<SigninScreen> {
   TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void login() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      UserDetails userDetails =
+          UserDetails.fromFirebaseUser(userCredential.user!);
+
+      if (context.mounted) Navigator.pop(context);
+      Get.to(() => HomePage(userDetails: userDetails));
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      displayMessageToUser(e.code, context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,42 +138,84 @@ class _SigninScreenState extends State<SigninScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(height: 13.v),
-                                CustomTextFormField(
-                                  controller: emailController,
-                                  hintText: "Email",
-                                  textInputType: TextInputType.emailAddress,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Email",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    SizedBox(height: 16.v),
+                                    CustomTextFormField(
+                                      controller: emailController,
+                                      textInputAction: TextInputAction.done,
+                                      obscureText: false,
+                                      textInputType:
+                                          TextInputType.visiblePassword,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 4.h),
+                                    )
+                                  ],
                                 ),
                                 SizedBox(height: 37.v),
-                                _buildColumnpassword(context),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Password",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    SizedBox(height: 16.v),
+                                    CustomTextFormField(
+                                      controller: passwordController,
+                                      textInputAction: TextInputAction.done,
+                                      textInputType:
+                                          TextInputType.visiblePassword,
+                                      obscureText: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 4.h),
+                                    )
+                                  ],
+                                ),
                                 SizedBox(height: 42.v),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 5.h),
+                                  padding: EdgeInsets.only(left: 205.h),
                                   child: Text(
                                     "Forgot Password?",
                                     style: CustomTextStyles.bodyMediumPrimary,
                                   ),
                                 ),
-                                SizedBox(height: 70.v),
+                                SizedBox(height: 65.v),
                                 CustomElevatedButton(
                                   text: "Sign in",
-                                  onPressed: () => login(context,
-                                      emailController, passwordController),
+                                  onPressed: login,
                                   buttonTextStyle:
                                       CustomTextStyles.titleMediumOnPrimary,
                                 ),
-                                SizedBox(height: 12.v),
-                                CustomOutlinedButton(
-                                  text: "Create account",
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              const CreateAccountScreen())),
-                                    );
-                                  },
-                                  buttonTextStyle: theme.textTheme.titleMedium!,
-                                )
+                                SizedBox(height: 32.v),
+                                Center(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Don't have an account?",
+                                          style: theme.textTheme.labelLarge,
+                                        ),
+                                        TextSpan(
+                                          text: " Create account",
+                                          style: CustomTextStyles
+                                              .labelLargePrimary,
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(
+                                                  const CreateAccountScreen()); // Navigate to the sign-in screen
+                                            },
+                                        )
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
                               ],
                             ),
                           )
@@ -163,58 +230,5 @@ class _SigninScreenState extends State<SigninScreen> {
         ),
       ),
     );
-  }
-
-  /// Section Widget
-  Widget _buildColumnpassword(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Password",
-          style: theme.textTheme.bodyMedium,
-        ),
-        SizedBox(height: 16.v),
-        CustomTextFormField(
-          controller: passwordController,
-          hintText: "Show",
-          textInputAction: TextInputAction.done,
-          textInputType: TextInputType.visiblePassword,
-          obscureText: true,
-          contentPadding: EdgeInsets.symmetric(horizontal: 4.h),
-        )
-      ],
-    );
-  }
-}
-
-void login(context, emailController, passwordController) async {
-  showDialog(
-      context: context,
-      builder: (context) => const AlertDialog(
-            content: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ));
-  try {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    )
-        .then((value) async {
-      return Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                      userDetails: UserDetails.fromFirebaseUser(
-                    value.user!,
-                  ))));
-    });
-
-    if (context.mounted) Navigator.pop(context);
-  } on FirebaseAuthException catch (e) {
-    Navigator.pop(context);
-    displayMessageToUser(e.code, context);
   }
 }
