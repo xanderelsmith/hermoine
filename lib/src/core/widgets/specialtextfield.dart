@@ -24,6 +24,7 @@ class SpecialTextfield extends StatelessWidget {
     this.enableSuggestion,
     this.innerHint,
     this.borderRadius,
+    this.contentPadding,
   }) : super(key: key);
   final bool? ishidden;
   final BorderRadius? borderRadius;
@@ -31,6 +32,7 @@ class SpecialTextfield extends StatelessWidget {
   final TextEditingController? controller;
   final int? maxlines;
   final bool? isMultiline;
+  final EdgeInsetsGeometry? contentPadding;
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -48,7 +50,8 @@ class SpecialTextfield extends StatelessWidget {
       enableSuggestions: enableSuggestion ?? false,
       decoration: InputDecoration(
         labelText: textfieldname,
-        contentPadding: EdgeInsets.zero,
+        contentPadding:
+            contentPadding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 0),
         fillColor: Theme.of(context).canvasColor.withOpacity(0.8),
         hintStyle: const TextStyle(fontWeight: FontWeight.w300),
         hintText: innerHint,

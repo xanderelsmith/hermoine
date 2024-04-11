@@ -23,6 +23,7 @@ class AuthPage extends StatelessWidget {
             return const OnboardingOneScreen(); // Display a message when no data is available.
           } else {
             log(snapshot.hasData.toString());
+
             UserDetails userDetails =
                 UserDetails.fromFirebaseUser(snapshot.data!);
 
