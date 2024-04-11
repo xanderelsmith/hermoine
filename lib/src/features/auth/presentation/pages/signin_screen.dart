@@ -180,9 +180,12 @@ class _SigninScreenState extends State<SigninScreen> {
                                 SizedBox(height: 42.v),
                                 Padding(
                                   padding: EdgeInsets.only(left: 205.h),
-                                  child: Text(
-                                    "Forgot Password?",
-                                    style: CustomTextStyles.bodyMediumPrimary,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Text(
+                                      "Forgot Password?",
+                                      style: CustomTextStyles.bodyMediumPrimary,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 65.v),

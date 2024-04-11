@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               .copyWith(color: Colors.white),
                         ),
                         Text(
-                          userDetails!.email! ?? 'no name',
+                          userDetails!.email ?? 'no name',
                           style: AppTextStyle.mediumTitlename
                               .copyWith(color: Colors.white),
                         ),

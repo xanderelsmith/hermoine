@@ -8,7 +8,6 @@ import '../../../../core/constants/image_constant.dart';
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../home/presentation/pages/homepage.dart';
 
 class OnboardingFourScreen extends StatelessWidget {
   const OnboardingFourScreen({super.key});

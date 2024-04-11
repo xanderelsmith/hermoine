@@ -43,6 +43,7 @@ dependencies:
   hooks_riverpod: ^2.5.1
   syncfusion_flutter_pdfviewer: ^20.4.54
   file_picker: ^8.0.0+1
+  image_picker: ^1.0.7
 
 dev_dependencies:
 
