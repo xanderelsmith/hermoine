@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:hermione/src/core/constants/colors.dart';
+
 import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:hermione/src/features/home/presentation/widgets/styledappbar.dart';
 
 import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
-import '../widgets/styledappbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -22,6 +24,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Container(
+          height: 50,
+          color: AppColor.primaryColor,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(BottomNavItem.values.length,
+                  (index) => Image.asset(BottomNavItem.values[index].data)),
+            ),
+          )),
       appBar: CustomAppBar(userDetails: widget.userDetails),
       body: const Padding(
         padding: EdgeInsets.all(8.0),
@@ -38,12 +50,12 @@ double _fabPosition = 0.0;
 
 // Models
 enum BottomNavItem {
-  home(Icons.home, 'Home'),
-  courses(Icons.book, 'Courses'),
-  ranking(Icons.star, 'Ranking'),
-  profile(Icons.person, 'Profile');
+  home('assets/icons/home.png', 'Home'),
+  courses('assets/icons/course.png', 'Courses'),
+  ranking('assets/icons/ranking.png', 'Ranking'),
+  profile('assets/icons/profile.png', 'Profile');
 
   final String name;
-  final IconData data;
+  final String data;
   const BottomNavItem(this.data, this.name);
 }
