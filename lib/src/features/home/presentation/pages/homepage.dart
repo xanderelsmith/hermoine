@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:hermione/src/core/constants/colors.dart';
 
@@ -24,6 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  BottomNavItem page = BottomNavItem.home;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +35,45 @@ class _HomePageState extends State<HomePage> {
           child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(BottomNavItem.values.length,
-                  (index) => Image.asset(BottomNavItem.values[index].data)),
+              children: List.generate(
+                  BottomNavItem.values.length,
+                  (index) => InkWell(
+                      onTap: () {
+                        setState(() {
+                          page = BottomNavItem.values[index];
+                        });
+                      },
+                      child: Image.asset(BottomNavItem.values[index].data))),
             ),
           )),
-      appBar: CustomAppBar(userDetails: widget.userDetails),
-      body: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: [HomePageCourseCategory(), Courses()],
-        ),
-      ),
+      body: homePageBuilder(page, widget.userDetails),
+    );
+  }
+}
+
+class HomeDashboardScreen extends StatelessWidget {
+  const HomeDashboardScreen({
+    super.key,
+    required this.userDetails,
+  });
+  final UserDetails userDetails;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CustomAppBar(userDetails: userDetails),
+        const Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                HomePageCourseCategory(),
+                Courses(),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }
@@ -61,4 +91,16 @@ enum BottomNavItem {
   final String name;
   final String data;
   const BottomNavItem(this.data, this.name);
+}
+
+Widget homePageBuilder(page, userDetails) {
+  return page == BottomNavItem.home
+      ? HomeDashboardScreen(
+          userDetails: userDetails!,
+        )
+      : page == BottomNavItem.courses
+          ? const Scaffold()
+          : page == BottomNavItem.home
+              ? const Scaffold()
+              : const Scaffold();
 }
