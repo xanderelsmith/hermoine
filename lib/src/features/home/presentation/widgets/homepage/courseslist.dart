@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/assessment/domain/repositories/createdquizrepo.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/quizintroscreen.dart';
@@ -109,6 +111,7 @@ class QuizContainer extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         ref.watch(quizListProvider).inputData(parseObject);
+        log('hi');
         Navigator.push(
             context,
             MaterialPageRoute(

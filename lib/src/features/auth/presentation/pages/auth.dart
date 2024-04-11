@@ -12,7 +12,6 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
@@ -32,6 +31,5 @@ class AuthPage extends StatelessWidget {
             );
           }
         });
-
   }
 }
