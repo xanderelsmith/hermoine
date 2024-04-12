@@ -1,13 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
+import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/colors.dart';
-
-import 'package:hermione/src/core/constants/size_utils.dart';
-
 import 'package:hermione/src/features/auth/data/models/user.dart';
 
+import '../../../auth/presentation/pages/profile.dart';
+import '../../../auth/presentation/pages/signin_screen.dart';
 import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
 import '../widgets/styledappbar.dart';
@@ -22,6 +21,39 @@ class HomePage extends StatefulWidget {
 
   @override
   State<HomePage> createState() => _HomePageState();
+}
+
+// void logout() {
+//   FirebaseAuth.instance.signOut();
+// }
+void logout() async {
+  bool confirmLogout = await Get.defaultDialog(
+    title: 'Confirm Logout',
+    middleText: 'Are you sure you want to logout?',
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: true); // Return true when confirmed
+        },
+        child: const Text(
+          'Yes',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: false); // Return false when cancelled
+        },
+        child: const Text('No', style: TextStyle(color: Colors.black)),
+      ),
+    ],
+  );
+
+  if (confirmLogout ?? false) {
+    await FirebaseAuth.instance.signOut();
+    // Navigate to the login screen
+    Get.offAll(const SigninScreen());
+  }
 }
 
 class _HomePageState extends State<HomePage> {
@@ -59,49 +91,68 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Drawer(
+    return Drawer(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(),
-              Text('name'),
-              Text('email'),
-            ],
+          const Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(),
+                Text('name'),
+                Text('email'),
+              ],
+            ),
           ),
           Column(
             children: [
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
+              InkWell(
+                child: ListTile(
+                  onTap: () {
+                    Get.to(() => ProfileScreen());
+                  },
+                  leading: const Icon(Icons.person, color: Color(0xFF065774)),
+                  title: const Text('Profile'),
+                ),
               ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
+              const ListTile(
+                leading: Icon(
+                  Icons.lock,
+                  color: Color(0xFF065774),
+                ),
+                title: Text('Security'),
               ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
+              const ListTile(
+                leading: Icon(Icons.info, color: Color(0xFF065774)),
+                title: Text('About '),
               ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
+              const ListTile(
+                leading: Icon(Icons.help, color: Color(0xFF065774)),
+                title: Text('Help & Support'),
               ),
             ],
           ),
-          Column(
-            children: [
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
-              ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 25),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.logout_outlined,
+                      color: Color(0xFF065774)),
+                  title: InkWell(
+                      onTap: () {
+                        logout();
+                      },
+                      child: const Text('Log out')),
+                ),
+                const ListTile(
+                  leading: Icon(Icons.delete, color: Color(0xFF065774)),
+                  title: Text('Delete account'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
