@@ -2,12 +2,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/quiz/resultscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/data/sources/enums/quiztype_enum.dart';
+import 'package:hermione/src/features/assessment/domain/entities/quiz_status.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/multichoicescreen.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/resultscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/shortanswerquizscreen.dart';
 
 import '../../../../../core/constants/colors.dart';
@@ -28,6 +30,7 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
   final pageController = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     final quizlist = ref.watch(quizListProvider).getQuizes;
@@ -36,90 +39,149 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
     List<Question> quizes = ref.watch(quizListProvider).getQuizes;
     log(quizes.length.toString());
 
-    return Scaffold(
-        bottomSheet: Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-          ),
-          width: screensize.width,
-          padding: const EdgeInsets.only(left: 30.0, top: 10),
-          child: quizdatacontroller.answered
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: screensize.width - 30,
-                      child: Text(
-                        'Answer: ${quizlist[pageController.page!.toInt()].correctanswer}',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            overflow: TextOverflow.ellipsis),
-                        maxLines: 2,
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-        ),
-        bottomNavigationBar: Builder(
-          builder: (context) {
-            return quizdatacontroller.answered
-                ? Container(
-                    height: 100,
-                    color: pageController.page!.toInt() + 1 < quizlist.length
-                        ? null
-                        : Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CustomButton(
-                          title:
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (bool ispop) {
+        ref.watch(quizcontrollerProvider.notifier).clearQuizState();
+        pageController.dispose();
+      },
+      child: Scaffold(
+          // bottomSheet: quizlist[0].runtimeType == MultiChoice
+          //     ? null
+          //     : BottomSheet(
+          //         screensize: screensize,
+          //         quizdatacontroller: quizdatacontroller,
+          //         quizlist: quizlist,
+          //         pageController: pageController),
+          bottomSheet: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BottomSheet(
+                  answercolor: Colors.green,
+                  screensize: screensize,
+                  quizdatacontroller: quizdatacontroller,
+                  quizlist: quizlist,
+                  pageController: pageController),
+              Builder(
+                builder: (context) {
+                  return quizdatacontroller.answered
+                      ? Container(
+                          height: 100,
+                          color:
                               pageController.page!.toInt() + 1 < quizlist.length
-                                  ? 'Next Question'
-                                  : 'See Results',
-                          onTap: () async {
-                            if (pageController.page!.toInt() + 1 <
-                                quizlist.length) {
-                              ref
-                                  .watch(quizcontrollerProvider.notifier)
-                                  .nextQuestion(
-                                      quizlist, pageController.page!.toInt());
+                                  ? null
+                                  : Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomButton(
+                                color: ref
+                                            .watch(
+                                                quizcontrollerProvider.notifier)
+                                            .quizstate
+                                            .status ==
+                                        QuizStatus.correct
+                                    ? Colors.green
+                                    : Colors.red,
+                                title: pageController.page!.toInt() + 1 <
+                                        quizlist.length
+                                    ? 'Next Question'
+                                    : 'See Results',
+                                onTap: () async {
+                                  if (pageController.page!.toInt() + 1 <
+                                      quizlist.length) {
+                                    ref
+                                        .watch(quizcontrollerProvider.notifier)
+                                        .nextQuestion(quizlist,
+                                            pageController.page!.toInt());
 
-                              if (pageController.page!.toInt() + 1 <
-                                  quizlist.length) {
-                                pageController.nextPage(
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.linear,
-                                );
-                              }
+                                    if (pageController.page!.toInt() + 1 <
+                                        quizlist.length) {
+                                      pageController.nextPage(
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                        curve: Curves.linear,
+                                      );
+                                    }
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                const QuizResultScreen())));
+                                  }
+                                }),
+                          ),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+            ],
+          ),
+          appBar: AppBar(
+              title: LinearProgressIndicator(
+            value: 0.1,
+            backgroundColor: Colors.blue,
+            minHeight: 20,
+            color: const Color(0xff88FF59),
+            borderRadius: BorderRadius.circular(10),
+          )),
+          body: PageView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: quizes.length,
+              controller: pageController,
+              itemBuilder: (context, index) {
+                return questionScreenBuilder(quizes, index, screensize);
+              })),
+    );
+  }
+}
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) =>
-                                          const QuizResultScreen())));
-                            }
-                          }),
-                    ),
-                  )
-                : const SizedBox.shrink();
-          },
-        ),
-        appBar: AppBar(
-            title: LinearProgressIndicator(
-          value: 0.1,
-          backgroundColor: Colors.blue,
-          minHeight: 20,
-          color: const Color(0xff88FF59),
-          borderRadius: BorderRadius.circular(10),
-        )),
-        body: PageView.builder(
-            itemCount: quizes.length,
-            controller: pageController,
-            itemBuilder: (context, index) {
-              return questionScreenBuilder(quizes, index, screensize);
-            }));
+class BottomSheet extends StatelessWidget {
+  final Color? answercolor;
+
+  const BottomSheet({
+    super.key,
+    required this.answercolor,
+    required this.screensize,
+    required this.quizdatacontroller,
+    required this.quizlist,
+    required this.pageController,
+  });
+
+  final Size screensize;
+  final QuizState quizdatacontroller;
+  final List<Question> quizlist;
+  final PageController pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+      ),
+      width: screensize.width,
+      padding: const EdgeInsets.only(left: 30.0, top: 10),
+      child: quizdatacontroller.answered
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: screensize.width - 30,
+                  child: Text(
+                    'Answer: ${quizlist[pageController.page!.toInt()].correctanswer}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: answercolor,
+                        overflow: TextOverflow.ellipsis),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            )
+          : const SizedBox.shrink(),
+    );
   }
 }
 
@@ -149,12 +211,13 @@ final List<BoxShadow> boxShadow = [
 class CustomButton extends StatelessWidget {
   final String title;
   final Function onTap;
-
+  final Color? color;
   const CustomButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +230,7 @@ class CustomButton extends StatelessWidget {
         height: 50.0,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColor.primaryColor,
+          color: color ?? AppColor.primaryColor,
           boxShadow: boxShadow,
           borderRadius: BorderRadius.circular(25.0),
         ),

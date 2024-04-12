@@ -52,7 +52,8 @@ class QuizController extends StateNotifier<QuizState> {
         );
       }
     } else {
-      if (currentquestion.correctanswer == answer ||
+      if (currentquestion.correctanswer.toString().toLowerCase() ==
+              answer.toString().toLowerCase() ||
           (currentquestion as ShortAnswer)
               .otherCorrectAnswers!
               .contains(answer)) {

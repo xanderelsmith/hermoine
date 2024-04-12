@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +18,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  try {
+    await FirebaseAuth.instance.currentUser!.reload();
+  } on Exception catch (e) {
+    log(e.toString());
+  }
   await Parse().initialize(
       appName: 'Hermoine',
       appVersion: '1.0',

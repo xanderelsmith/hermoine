@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/widgets/specialtextfield.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/multichoicescreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,6 +18,7 @@ class ShortAnswerQuizScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var scrollController = useScrollController();
+    final quizdatacontroller = ref.watch(quizcontrollerProvider);
     var focusnode = useFocusNode();
     TextEditingController answercontroller = TextEditingController();
     Size screensize = MediaQuery.of(context).size;
@@ -56,7 +58,22 @@ class ShortAnswerQuizScreen extends HookConsumerWidget {
                           controller: answercontroller,
                         )),
                   ),
-                  const SizedBox.shrink()
+                  !quizdatacontroller.answered
+                      ? CustomButton(
+                          onTap: () {
+                            ref
+                                .read(quizcontrollerProvider.notifier)
+                                .submitAnswer(
+                                    ShortAnswer(
+                                        otherCorrectAnswers:
+                                            questionData.otherCorrectAnswers,
+                                        indexS: questionData.indexS,
+                                        answer: questionData.correctanswer,
+                                        questions: questionData.questions),
+                                    answercontroller.text.toLowerCase());
+                          },
+                          title: 'Check')
+                      : const SizedBox.shrink()
                 ])));
   }
 }
