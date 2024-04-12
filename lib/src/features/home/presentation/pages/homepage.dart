@@ -71,7 +71,7 @@ void deleteUserAccount() async {
           Get.back(result: true); // Return true when confirmed
         },
         child: const Text(
-          'Yes',
+          'Delete',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -79,7 +79,8 @@ void deleteUserAccount() async {
         onPressed: () {
           Get.back(result: false); // Return false when cancelled
         },
-        child: const Text('No', style: TextStyle(color: Colors.black)),
+        child:
+            const Text('Keep Account', style: TextStyle(color: Colors.black)),
       ),
     ],
   );

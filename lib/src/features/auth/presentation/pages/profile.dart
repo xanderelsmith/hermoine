@@ -53,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
             Get.back(result: true); // Return true when confirmed
           },
           child: const Text(
-            'Yes',
+            'Delete',
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -61,7 +61,8 @@ class ProfileScreen extends StatelessWidget {
           onPressed: () {
             Get.back(result: false); // Return false when cancelled
           },
-          child: const Text('No', style: TextStyle(color: Colors.black)),
+          child:
+              const Text('Keep Account', style: TextStyle(color: Colors.black)),
         ),
       ],
     );
