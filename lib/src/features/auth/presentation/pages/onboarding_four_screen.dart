@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/auth/presentation/pages/create_account_screen.dart';
-import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart';
 
 import '../../../../core/constants/image_constant.dart';
 import '../../../../core/theme/custom_text_style.dart';
@@ -51,7 +50,7 @@ class OnboardingFourScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const SigninScreen())));
+                          builder: ((context) => const CreateAccountScreen())));
                 },
                 text: "Student",
                 buttonTextStyle: CustomTextStyles.titleMediumOnPrimary,
