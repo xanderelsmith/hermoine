@@ -29,6 +29,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [CircleAvatar()],
+        ),
+      ),
       bottomNavigationBar: Container(
           height: 50,
           color: AppColor.primaryColor,
@@ -79,7 +84,6 @@ class HomeDashboardScreen extends StatelessWidget {
 }
 
 int _selectedIndex = 0;
-double _fabPosition = 0.0;
 
 // Models
 enum BottomNavItem {
@@ -100,7 +104,23 @@ Widget homePageBuilder(page, userDetails) {
         )
       : page == BottomNavItem.courses
           ? const Scaffold()
-          : page == BottomNavItem.home
-              ? const Scaffold()
+          : page == BottomNavItem.ranking
+              ? const LeaderBoardRankingScreen()
               : const Scaffold();
+}
+
+class LeaderBoardRankingScreen extends StatelessWidget {
+  const LeaderBoardRankingScreen({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Leaderboard'),
+        centerTitle: true,
+      ),
+    );
+  }
 }

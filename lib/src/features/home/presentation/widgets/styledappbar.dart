@@ -19,9 +19,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 150, 158, 160),
-                  child: Icon(Icons.person),
+                // Wrap the CircleAvatar with a GestureDetector
+                GestureDetector(
+                  onTap: () {
+                    // Open the drawer on tap (assuming you have a drawer widget)
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 150, 158, 160),
+                    child: Icon(Icons.person),
+                  ),
                 ),
                 Expanded(
                   child: Padding(
