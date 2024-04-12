@@ -1,11 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:hermione/src/core/constants/colors.dart';
-
-import 'package:hermione/src/core/constants/size_utils.dart';
-
 import 'package:hermione/src/features/auth/data/models/user.dart';
 
 import '../widgets/homepage/coursecategory.dart';
@@ -29,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
+      drawer: const Drawer(
         child: Column(
           children: [CircleAvatar()],
         ),
