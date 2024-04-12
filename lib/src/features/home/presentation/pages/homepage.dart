@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
 
 import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
+import '../widgets/customdrawer.dart';
 import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
 import '../widgets/styledappbar.dart';
@@ -84,82 +87,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(),
-                Text('name'),
-                Text('email'),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              InkWell(
-                child: ListTile(
-                  onTap: () {
-                    Get.to(() => ProfileScreen());
-                  },
-                  leading: const Icon(Icons.person, color: Color(0xFF065774)),
-                  title: const Text('Profile'),
-                ),
-              ),
-              const ListTile(
-                leading: Icon(
-                  Icons.lock,
-                  color: Color(0xFF065774),
-                ),
-                title: Text('Security'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.info, color: Color(0xFF065774)),
-                title: Text('About '),
-              ),
-              const ListTile(
-                leading: Icon(Icons.help, color: Color(0xFF065774)),
-                title: Text('Help & Support'),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 25),
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.logout_outlined,
-                      color: Color(0xFF065774)),
-                  title: InkWell(
-                      onTap: () {
-                        logout();
-                      },
-                      child: const Text('Log out')),
-                ),
-                const ListTile(
-                  leading: Icon(Icons.delete, color: Color(0xFF065774)),
-                  title: Text('Delete account'),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class HomeDashboardScreen extends StatelessWidget {
   const HomeDashboardScreen({
     super.key,
@@ -207,7 +134,7 @@ Widget homePageBuilder(page, userDetails) {
           userDetails: userDetails!,
         )
       : page == BottomNavItem.courses
-          ? const Scaffold()
+          ? const AllCoursesScreen()
           : page == BottomNavItem.ranking
               ? const LeaderBoardRankingScreen()
               : const Scaffold();

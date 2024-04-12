@@ -185,9 +185,16 @@ class HIntWidget extends StatelessWidget {
   }
 }
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  var textEditingController = TextEditingController();
+  var scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -205,7 +212,7 @@ class ChatScreen extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            reverse: true, // Show newest messages at the bottom
+            controller: scrollController,
             itemCount: messages.length,
             itemBuilder: (context, index) => messageBubble(messages[index]),
           ),
@@ -216,6 +223,7 @@ class ChatScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
+                  controller: textEditingController,
                   decoration: InputDecoration(
                     hintText: 'Type your message',
                     border: OutlineInputBorder(
@@ -227,7 +235,11 @@ class ChatScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.send),
                 onPressed: () {
-                  // Implement message sending logic here
+                  setState(() {
+                    messages.add(Message(textEditingController.text, true));
+                    scrollController
+                        .jumpTo(scrollController.position.maxScrollExtent);
+                  });
                 },
               ),
             ],
@@ -278,13 +290,13 @@ class AnswerCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const AnswerCard({
-    Key? key,
+    super.key,
     required this.answer,
     required this.isSelected,
     required this.isCorrect,
     required this.isDisplayingAnswer,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -20,9 +20,9 @@ import '../../../domain/repositories/retievedquizdata.dart';
 
 class QuizMainScreen extends ConsumerStatefulWidget {
   const QuizMainScreen({
-    Key? key,
+    super.key,
     required this.topic,
-  }) : super(key: key);
+  });
   final String topic;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuizMainScreenState();
