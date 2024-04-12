@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/resultscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
@@ -96,11 +97,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: ((context) => const Scaffold()
-                                          // QuizResultScreen(
-                                          //     quizDetails:
-                                          //         quizDetails!)
-                                          )));
+                                      builder: ((context) =>
+                                          const QuizResultScreen())));
                             }
                           }),
                     ),
