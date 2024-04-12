@@ -74,6 +74,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           .set({
         'email': userCredential.user!.email,
         'username': usernameController.text,
+        'bio': 'Empty bio..',
+        'age': 'Empty age..',
+        'gender': 'Empty gender..',
+        'profileImageUrl': 'Empty profileImage..',
+        'name': 'Empty name..'
       });
     }
   }
