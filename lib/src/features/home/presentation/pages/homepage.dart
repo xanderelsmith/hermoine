@@ -29,11 +29,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [CircleAvatar()],
-        ),
-      ),
+      drawer: const CustomDrawer(),
       bottomNavigationBar: Container(
           height: 50,
           color: AppColor.primaryColor,
@@ -52,6 +48,63 @@ class _HomePageState extends State<HomePage> {
             ),
           )),
       body: homePageBuilder(page, widget.userDetails),
+    );
+  }
+}
+
+class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Drawer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(),
+              Text('name'),
+              Text('email'),
+            ],
+          ),
+          Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
