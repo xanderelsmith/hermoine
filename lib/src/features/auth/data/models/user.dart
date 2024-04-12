@@ -51,6 +51,7 @@ class UserDetails {
         name: json['name'] as String?,
         gender: json['gender'] as String?,
         age: json['age'] as String?,
+        bio: json['gender'] as String?,
         profileImageUrl: json['profileImageUrl'] as String?,
       );
   // Method to convert the User object to a Map (e.g., for serialization)

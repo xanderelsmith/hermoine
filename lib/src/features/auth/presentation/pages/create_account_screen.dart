@@ -76,8 +76,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'username': usernameController.text,
         'bio': 'Empty bio..',
         'age': 'Empty age..',
-        'gender': 'Empty gender..',
-        'profileImageUrl': 'Empty profileImage..',
+        'gender': 'unknown..',
+        'birthday': 'No date selected..',
+        'profileImageUrl': 'No profileImage selected..',
         'name': 'Empty name..'
       });
     }
