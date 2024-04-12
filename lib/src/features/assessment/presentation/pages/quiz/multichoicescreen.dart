@@ -62,31 +62,34 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        answer.length,
-                        (index) => AnswerCard(
-                            answer: answer[index],
-                            isSelected: answer[index] ==
-                                quizdatacontroller.selectedAnswer,
-                            isCorrect: answer[index] == quizdata.correctanswer,
-                            isDisplayingAnswer: quizdatacontroller.answered,
-                            onTap: () {
-                              ref
-                                  .watch(quizcontrollerProvider.notifier)
-                                  .submitAnswer(
-                                      MultiChoice(
-                                          indexM: quizdata.indexM,
-                                          answer: quizdata.answer,
-                                          images: quizdata.images,
-                                          incorrectanswers:
-                                              quizdata.incorrectanswers,
-                                          question_: quizdata.question_),
-                                      answer[index]);
-                            }),
-                      ).toList(),
+                    child: SizedBox(
+                      height: getScreenSize(context).height / 2,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: List.generate(
+                          answer.length,
+                          (index) => AnswerCard(
+                              answer: answer[index],
+                              isSelected: answer[index] ==
+                                  quizdatacontroller.selectedAnswer,
+                              isCorrect:
+                                  answer[index] == quizdata.correctanswer,
+                              isDisplayingAnswer: quizdatacontroller.answered,
+                              onTap: () {
+                                ref
+                                    .watch(quizcontrollerProvider.notifier)
+                                    .submitAnswer(
+                                        MultiChoice(
+                                            indexM: quizdata.indexM,
+                                            answer: quizdata.answer,
+                                            images: quizdata.images,
+                                            incorrectanswers:
+                                                quizdata.incorrectanswers,
+                                            question_: quizdata.question_),
+                                        answer[index]);
+                              }),
+                        ).toList(),
+                      ),
                     ),
                   ),
                 ]),
@@ -189,9 +192,16 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'Chat',
-          style: AppTextStyle.mediumTitlename,
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: 200,
+            child: Divider(
+              height: 10,
+              thickness: 10,
+              endIndent: 10,
+            ),
+          ),
         ),
         Expanded(
           child: ListView.builder(
