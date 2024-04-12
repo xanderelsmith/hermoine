@@ -6,6 +6,7 @@ import 'package:hermione/src/features/auth/presentation/pages/edit_profile.dart'
 import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart';
 
 import '../../../../core/widgets/widgets.dart';
+import 'forget_password.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -172,10 +173,15 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.black,
                         width: double.maxFinite,
                       ),
-                      const ListTile(
-                        leading: Icon(Icons.lock, color: Color(0xFF065774)),
-                        title: Text('Change Password'),
-                        trailing: Icon(Icons.arrow_forward_ios),
+                      InkWell(
+                        onTap: (){
+                          Get.to(()=>ForgetPasswordScreen());
+                        },
+                        child: const ListTile(
+                          leading: Icon(Icons.lock, color: Color(0xFF065774)),
+                          title: Text('Change Password'),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
                       ),
                       Container(
                         height: 0.3,
