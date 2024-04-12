@@ -29,10 +29,21 @@ class UserDetails {
         age: "no age",
         gender: "no gender",
         bio: "no bio",
-        profileImageUrl: user.displayName ?? " ",
+        profileImageUrl: " ",
+      );
+  // Factory constructor for creating a User object from a Map (e.g., JSON data)
+  factory UserDetails.fromFirebaseData(Map<String, dynamic> userData) =>
+      UserDetails(
+        id: userData['id'],
+        username: userData['username'] ?? "no name",
+        email: userData['email'] ?? "no email",
+        name: userData['name'] ?? "no name",
+        age: userData['age'] ?? "no age",
+        gender: userData['gender'] ?? "no gender",
+        bio: userData['bio'] ?? "no bio",
+        profileImageUrl: userData['profileImageUrl'] ?? " ",
       );
 
-  // Factory constructor for creating a User object from a Map (e.g., JSON data)
   factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
         id: json['id'] as String,
         username: json['username'] as String,
@@ -42,7 +53,6 @@ class UserDetails {
         age: json['age'] as String?,
         profileImageUrl: json['profileImageUrl'] as String?,
       );
-
   // Method to convert the User object to a Map (e.g., for serialization)
   Map<String, dynamic> toJson() => {
         'id': id,
