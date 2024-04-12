@@ -4,16 +4,20 @@ class UserDetails {
   final String id; // Unique identifier for the user
   final String username;
   final String email;
-  String? firstName; // Optional first name
-  String? lastName; // Optional last name
+  String? name; // Optional first name
+  String? gender; // Optional last name
+  String? age; // Optional last name
+  String? bio; // Optional last name
   String? profileImageUrl; // Optional profile image URL
 
   UserDetails({
     required this.id,
     required this.username,
     required this.email,
-    this.firstName,
-    this.lastName,
+    this.name,
+    this.gender,
+    this.age,
+    this.bio,
     this.profileImageUrl,
   });
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
@@ -21,28 +25,43 @@ class UserDetails {
         id: user.uid,
         username: user.displayName ?? "no name",
         email: user.email ?? "no email",
-        firstName: "no firstName",
-        lastName: "no lastName",
-        profileImageUrl: user.displayName ?? " ",
+        name: "no name",
+        age: "no age",
+        gender: "no gender",
+        bio: "no bio",
+        profileImageUrl: " ",
+      );
+  // Factory constructor for creating a User object from a Map (e.g., JSON data)
+  factory UserDetails.fromFirebaseData(Map<String, dynamic> userData) =>
+      UserDetails(
+        id: userData['id'],
+        username: userData['username'] ?? "no name",
+        email: userData['email'] ?? "no email",
+        name: userData['name'] ?? "no name",
+        age: userData['age'] ?? "no age",
+        gender: userData['gender'] ?? "no gender",
+        bio: userData['bio'] ?? "no bio",
+        profileImageUrl: userData['profileImageUrl'] ?? " ",
       );
 
-  // Factory constructor for creating a User object from a Map (e.g., JSON data)
   factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
         id: json['id'] as String,
         username: json['username'] as String,
         email: json['email'] as String,
-        firstName: json['firstName'] as String?,
-        lastName: json['lastName'] as String?,
+        name: json['name'] as String?,
+        gender: json['gender'] as String?,
+        age: json['age'] as String?,
         profileImageUrl: json['profileImageUrl'] as String?,
       );
-
   // Method to convert the User object to a Map (e.g., for serialization)
   Map<String, dynamic> toJson() => {
         'id': id,
         'username': username,
         'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
+        'name': name,
+        'age': age,
+        'gender': gender,
+        'bio': bio,
         'profileImageUrl': profileImageUrl,
       };
 

@@ -86,25 +86,25 @@ class _SigninScreenState extends State<SigninScreen> {
                         decoration: AppDecoration.fillBlueGray.copyWith(
                           borderRadius: BorderRadiusStyle.circleBorder75,
                         ),
-                        child: Stack(
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            const Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                child: Divider(),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: SizedBox(
-                                child: Divider(
-                                  indent: 1.h,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
+                        // child: Stack(
+                        //   alignment: Alignment.centerLeft,
+                        //   children: [
+                        //     const Align(
+                        //       alignment: Alignment.center,
+                        //       child: SizedBox(
+                        //         child: Divider(),
+                        //       ),
+                        //     ),
+                        //     Align(
+                        //       alignment: Alignment.centerLeft,
+                        //       child: SizedBox(
+                        //         child: Divider(
+                        //           indent: 1.h,
+                        //         ),
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
                       ),
                     ),
                     SizedBox(height: 60.v),
@@ -180,9 +180,12 @@ class _SigninScreenState extends State<SigninScreen> {
                                 SizedBox(height: 42.v),
                                 Padding(
                                   padding: EdgeInsets.only(left: 205.h),
-                                  child: Text(
-                                    "Forgot Password?",
-                                    style: CustomTextStyles.bodyMediumPrimary,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Text(
+                                      "Forgot Password?",
+                                      style: CustomTextStyles.bodyMediumPrimary,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(height: 65.v),
