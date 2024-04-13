@@ -154,7 +154,7 @@ class QuizContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    coursename != null ? coursename['name'] : "",
+                    coursename != null ? coursename['name'] : "...",
                   ),
                   const Icon(
                     Icons.timelapse_rounded,

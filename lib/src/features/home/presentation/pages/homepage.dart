@@ -1,21 +1,40 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
+
 import 'package:hermione/src/core/widgets/widgets.dart';
+=======
+import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
+
 import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 
 import '../../../auth/presentation/pages/create_account_screen.dart';
+
+import '../../../assessment/presentation/pages/tutor/createdquizscreen.dart';
+import '../../../auth/presentation/pages/auth.dart';
+
 import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
+import '../widgets/customdrawer.dart';
 import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
 import '../widgets/styledappbar.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({
     super.key,
     this.userDetails,
@@ -24,7 +43,7 @@ class HomePage extends StatefulWidget {
   static String id = 'homepage';
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
 final currentUser = FirebaseAuth.instance.currentUser!;
@@ -126,11 +145,25 @@ void deleteUserAccount() async {
         ),
       );
     }
-  }
-}
 
-class _HomePageState extends State<HomePage> {
-  BottomNavItem page = BottomNavItem.home;
+class _HomePageState extends ConsumerState<HomePage> {
+  UserDetails? newUser;
+  @override
+  void initState() {
+    newUser = widget.userDetails;
+    super.initState();
+    fetchUserDetails(FirebaseAuth.instance.currentUser?.email).then((value) {
+      ref.watch(userProvider.notifier).assignUserData(value!);
+      log(value.name.toString());
+      setState(() {
+        newUser = value;
+      });
+    }).onError((error, stackTrace) {
+      log(error.toString());
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,12 +179,13 @@ class _HomePageState extends State<HomePage> {
                   (index) => InkWell(
                       onTap: () {
                         setState(() {
-                          page = BottomNavItem.values[index];
+                          _page = BottomNavItem.values[index];
                         });
                       },
                       child: Image.asset(BottomNavItem.values[index].data))),
             ),
           )),
+
       body: homePageBuilder(page, widget.userDetails),
     );
   }
@@ -278,6 +312,9 @@ class CustomDrawer extends StatelessWidget {
           ),
         ],
       ),
+
+      body: HomePageBuilder(page: _page, userDetails: newUser!),
+
     );
   }
 }
@@ -293,13 +330,16 @@ class HomeDashboardScreen extends StatelessWidget {
     return Column(
       children: [
         CustomAppBar(userDetails: userDetails),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                HomePageCourseCategory(),
-                Courses(),
+                userDetails.isTutor == true
+                    ? const CreatedQuizes()
+                    : const SizedBox(),
+                const HomePageCourseCategory(),
+                const Courses(),
               ],
             ),
           ),
@@ -323,30 +363,53 @@ enum BottomNavItem {
   const BottomNavItem(this.data, this.name);
 }
 
-Widget homePageBuilder(page, userDetails) {
-  return page == BottomNavItem.home
-      ? HomeDashboardScreen(
-          userDetails: userDetails!,
-        )
-      : page == BottomNavItem.courses
-          ? const Scaffold()
-          : page == BottomNavItem.ranking
-              ? const LeaderBoardRankingScreen()
-              : const Scaffold();
-}
-
-class LeaderBoardRankingScreen extends StatelessWidget {
-  const LeaderBoardRankingScreen({
-    super.key,
-  });
-
+class HomePageBuilder extends StatelessWidget {
+  const HomePageBuilder(
+      {super.key, required this.page, required this.userDetails});
+  final BottomNavItem page;
+  final UserDetails userDetails;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leaderboard'),
-        centerTitle: true,
-      ),
-    );
+    return page == BottomNavItem.home
+        ? HomeDashboardScreen(
+            userDetails: userDetails,
+          )
+        : page == BottomNavItem.courses
+            ? const AllCoursesScreen()
+            : page == BottomNavItem.ranking
+                ? const LeaderBoardScreen()
+                : const Scaffold();
   }
 }
+
+void logout() async {
+  bool confirmLogout = await Get.defaultDialog(
+    title: 'Confirm Logout',
+    middleText: 'Are you sure you want to logout?',
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: true); // Return true when confirmed
+        },
+        child: const Text(
+          'Yes',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: false); // Return false when cancelled
+        },
+        child: const Text('No', style: TextStyle(color: Colors.black)),
+      ),
+    ],
+  );
+
+  if (confirmLogout ?? false) {
+    await FirebaseAuth.instance.signOut();
+    // Navigate to the login screen
+    Get.offAll(const SigninScreen());
+  }
+}
+
+BottomNavItem _page = BottomNavItem.home;
