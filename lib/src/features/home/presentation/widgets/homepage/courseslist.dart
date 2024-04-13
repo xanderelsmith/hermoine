@@ -109,6 +109,7 @@ class QuizContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var coursename = parseObject['coursename'];
     return GestureDetector(
       onTap: () {
         ref.watch(quizListProvider).inputData(parseObject);
@@ -153,7 +154,7 @@ class QuizContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    parseObject['coursename']['name'],
+                    coursename != null ? coursename['name'] : "",
                   ),
                   const Icon(
                     Icons.timelapse_rounded,

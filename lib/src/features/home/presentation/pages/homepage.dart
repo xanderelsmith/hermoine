@@ -9,8 +9,10 @@ import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
+import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../assessment/presentation/pages/tutor/createdquizscreen.dart';
 import '../../../auth/presentation/pages/auth.dart';
@@ -21,7 +23,7 @@ import '../widgets/homepage/coursecategory.dart';
 import '../widgets/homepage/courseslist.dart';
 import '../widgets/styledappbar.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({
     super.key,
     this.userDetails,
@@ -30,52 +32,18 @@ class HomePage extends StatefulWidget {
   static String id = 'homepage';
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-// void logout() {
-//   FirebaseAuth.instance.signOut();
-// }
-void logout() async {
-  bool confirmLogout = await Get.defaultDialog(
-    title: 'Confirm Logout',
-    middleText: 'Are you sure you want to logout?',
-    actions: [
-      ElevatedButton(
-        onPressed: () {
-          Get.back(result: true); // Return true when confirmed
-        },
-        child: const Text(
-          'Yes',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          Get.back(result: false); // Return false when cancelled
-        },
-        child: const Text('No', style: TextStyle(color: Colors.black)),
-      ),
-    ],
-  );
-
-  if (confirmLogout ?? false) {
-    await FirebaseAuth.instance.signOut();
-    // Navigate to the login screen
-    Get.offAll(const SigninScreen());
-  }
-}
-
-BottomNavItem _page = BottomNavItem.home;
-
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   UserDetails? newUser;
   @override
   void initState() {
     newUser = widget.userDetails;
     super.initState();
     fetchUserDetails(FirebaseAuth.instance.currentUser?.uid).then((value) {
-      log(value!.name.toString());
+      ref.watch(userProvider.notifier).assignUserData(value!);
+      log(value.name.toString());
       setState(() {
         newUser = value;
       });
@@ -161,7 +129,7 @@ class HomePageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return page == BottomNavItem.home
         ? HomeDashboardScreen(
-            userDetails: userDetails!,
+            userDetails: userDetails,
           )
         : page == BottomNavItem.courses
             ? const AllCoursesScreen()
@@ -170,3 +138,35 @@ class HomePageBuilder extends StatelessWidget {
                 : const Scaffold();
   }
 }
+
+void logout() async {
+  bool confirmLogout = await Get.defaultDialog(
+    title: 'Confirm Logout',
+    middleText: 'Are you sure you want to logout?',
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: true); // Return true when confirmed
+        },
+        child: const Text(
+          'Yes',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: false); // Return false when cancelled
+        },
+        child: const Text('No', style: TextStyle(color: Colors.black)),
+      ),
+    ],
+  );
+
+  if (confirmLogout ?? false) {
+    await FirebaseAuth.instance.signOut();
+    // Navigate to the login screen
+    Get.offAll(const SigninScreen());
+  }
+}
+
+BottomNavItem _page = BottomNavItem.home;

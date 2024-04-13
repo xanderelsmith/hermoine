@@ -83,6 +83,7 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                     MaterialPageRoute(
                         builder: (context) => PreviewQuestionsPage(
                               questionData: value!.output ?? '',
+                              title: quiznameTextEditingController.text,
                             )));
               }).onError((error, stackTrace) {
                 log(error.toString());
