@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
-import 'package:hermione/src/features/assessment/presentation/widgets/minimallisttilecard.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/constants/constants.dart';
@@ -105,7 +105,7 @@ class CreatedQuizes extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 90,
+          height: 100,
           child: FutureBuilder<List<ParseObject>?>(
               future: CoursesApiFetch.getAllCoursesCategory(),
               builder: (context, snapshot) {
@@ -113,39 +113,102 @@ class CreatedQuizes extends StatelessWidget {
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        child: ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              ParseFile src = snapshot.data![index]['image'];
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: SizedBox(
-                                  height: 70,
-                                  width: getScreenSize(context).width - 50,
-                                  child: ListTile(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        side: const BorderSide(
-                                            color: Colors.black)),
-                                    style: ListTileStyle.list,
-                                    leading: CircleAvatar(
-                                      child:
-                                          src.url != null && src.url!.isNotEmpty
-                                              ? Image.network(src.url ?? "")
-                                              : null,
-                                      radius: 15,
-                                    ),
-                                    title: Text(snapshot.data![index]['name']),
-                                  ),
-                                ),
-                              );
-                            }),
-                      );
+                    : ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          ParseFile src = snapshot.data![index]['image'];
+                          return QuizListTile(
+                              screensize: getScreenSize(context),
+                              onTap: (data) {},
+                              quizname: snapshot.data![index]['name'],
+                              datecreated: 'datecreated',
+                              username: 'username',
+                              isViewed: true,
+                              quizEmojis: [],
+                              presentUser: 'presentUser');
+                        });
               }),
         )
+      ],
+    );
+  }
+}
+
+class QuizListTile extends ConsumerStatefulWidget {
+  final String presentUser;
+  final String quizname;
+
+  final String datecreated;
+  final String username;
+  final bool isViewed;
+
+  ///is default to true, so you can set it to false, basically allows you to see options in a quiz like 'delete', 'modify' etc
+  final bool? hasOption;
+  final List quizEmojis;
+  const QuizListTile(
+      {Key? key,
+      required this.screensize,
+      this.hasOption,
+      this.widthPadding,
+      required this.onTap,
+      this.onLongPress,
+      this.canBeLiveEdited,
+      required this.quizname,
+      required this.datecreated,
+      required this.username,
+      required this.isViewed,
+      required this.quizEmojis,
+      required this.presentUser})
+      : super(key: key);
+
+  ///the amount of spacing from the side
+  final int? widthPadding;
+  final Size screensize;
+  final bool? canBeLiveEdited;
+  final Function(ParseObject data) onTap;
+  final Function(ParseObject data)? onLongPress;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _QuizListTileState();
+}
+
+class _QuizListTileState extends ConsumerState<QuizListTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColor.primaryColor)),
+          height: 60,
+          width: widget.screensize.width - 50,
+          child: InkWell(
+            enableFeedback: true,
+            onTap: () {},
+            onLongPress: () {},
+            child: Row(children: [
+              const Expanded(child: CircleAvatar()),
+              Expanded(
+                flex: 4,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.quizname,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyle.mediumTitlename,
+                      ),
+                      Text(widget.username),
+                    ]),
+              ),
+            ]),
+          ),
+        ),
       ],
     );
   }
