@@ -56,15 +56,16 @@ class Courses extends StatelessWidget {
                         )
                       : Builder(builder: (context) {
                           return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: ((context, index) {
-                                ParseObject course = snapshot.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Chip(label: Text(course['name'])),
-                                );
-                              }));
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: ((context, index) {
+                              ParseObject course = snapshot.data![index];
+                              return Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Chip(label: Text(course['name'])),
+                              );
+                            }),
+                          );
                         });
                 }),
           ),

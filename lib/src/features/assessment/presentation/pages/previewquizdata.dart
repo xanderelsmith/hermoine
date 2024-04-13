@@ -27,8 +27,13 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
   void didUpdateWidget(covariant PreviewQuestionsPage oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Update internal state with cleaned data
-    _cleanedQuestionData = cleanjsonString(widget.questionData);
+    // Use a future or function outside widget lifecycle methods
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final notifier = ref.read(createdQuizlistdataProvider.notifier);
+      notifier.validateAiInputData(widget.questionData.startsWith('```json')
+          ? cleanjsonString(widget.questionData)
+          : widget.questionData);
+    });
   }
 
   @override
@@ -38,7 +43,9 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
     // Use a future or function outside widget lifecycle methods
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final notifier = ref.read(createdQuizlistdataProvider.notifier);
-      await notifier.validateAiInputData(widget.questionData);
+      notifier.validateAiInputData(widget.questionData.startsWith('```json')
+          ? cleanjsonString(widget.questionData)
+          : widget.questionData);
     });
   }
 
