@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../domain/repositories/createdquizrepo.dart';
 
@@ -26,14 +28,15 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
   @override
   void didUpdateWidget(covariant PreviewQuestionsPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // Use a future or function outside widget lifecycle methods
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final notifier = ref.read(createdQuizlistdataProvider.notifier);
-      notifier.validateAiInputData(widget.questionData.startsWith('```json')
-          ? cleanjsonString(widget.questionData)
-          : widget.questionData);
-    });
+    var quizlist = ref.watch(createdQuizlistdataProvider);
+    if (quizlist.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final notifier = ref.read(createdQuizlistdataProvider.notifier);
+        notifier.validateAiInputData(widget.questionData.startsWith('```json')
+            ? cleanjsonString(widget.questionData)
+            : widget.questionData);
+      });
+    } // Use a future or function outside widget lifecycle methods
   }
 
   @override
@@ -56,7 +59,18 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(onPressed: () {}, child: const Text('Sumit')),
+        child: SizedBox(
+          height: 45,
+          child: ElevatedButton(
+              onPressed: () {
+                submitQuizDialog(context);
+              },
+              child: Text(
+                'Sumit',
+                style:
+                    AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
+              )),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -89,6 +103,28 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
         )),
       ),
     );
+  }
+
+  Future<dynamic> submitQuizDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: ((context) => AlertDialog(
+              title: const Text('Submit quiz'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      var quiz = ParseObject();
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    },
+                    child: const Text('Yes')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No'))
+              ],
+              content: const Text('Do you want to submit your quiz'),
+            )));
   }
 }
 

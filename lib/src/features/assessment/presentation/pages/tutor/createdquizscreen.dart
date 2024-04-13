@@ -7,12 +7,19 @@ import '../../../../../core/constants/size_utils.dart';
 import '../../../../home/presentation/widgets/homepage/coursecategory.dart';
 import '../../../data/sources/fetchcourses.dart';
 import '../../../data/sources/fetchquizes.dart';
+import 'package:async/async.dart';
 
-class CreatedQuizes extends StatelessWidget {
+class CreatedQuizes extends StatefulWidget {
   const CreatedQuizes({
     super.key,
   });
 
+  @override
+  State<CreatedQuizes> createState() => _CreatedQuizesState();
+}
+
+class _CreatedQuizesState extends State<CreatedQuizes> {
+  AsyncMemoizer<List<ParseObject>?> asyncMemoizer = AsyncMemoizer();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,7 +35,7 @@ class CreatedQuizes extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Created Courses', style: AppTextStyle.titlename),
+              Text('Created Quizes', style: AppTextStyle.titlename),
               const Text('See all'),
             ],
           ),
@@ -36,7 +43,7 @@ class CreatedQuizes extends StatelessWidget {
         SizedBox(
           height: 100,
           child: FutureBuilder<List<ParseObject>?>(
-              future: QuizApiFetch.getAllquizes(),
+              future: asyncMemoizer.runOnce(() => QuizApiFetch.getAllquizes()),
               builder: (context, snapshot) {
                 return !snapshot.hasData
                     ? const Center(

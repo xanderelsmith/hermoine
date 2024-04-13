@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                       child: Image.asset(BottomNavItem.values[index].data))),
             ),
           )),
-      body: homePageBuilder(_page, newUser),
+      body: HomePageBuilder(page: _page, userDetails: newUser!),
     );
   }
 }
@@ -151,14 +152,21 @@ enum BottomNavItem {
   const BottomNavItem(this.data, this.name);
 }
 
-Widget homePageBuilder(page, userDetails) {
-  return page == BottomNavItem.home
-      ? HomeDashboardScreen(
-          userDetails: userDetails!,
-        )
-      : page == BottomNavItem.courses
-          ? const AllCoursesScreen()
-          : page == BottomNavItem.ranking
-              ? const LeaderBoardScreen()
-              : const Scaffold();
+class HomePageBuilder extends StatelessWidget {
+  const HomePageBuilder(
+      {super.key, required this.page, required this.userDetails});
+  final BottomNavItem page;
+  final UserDetails userDetails;
+  @override
+  Widget build(BuildContext context) {
+    return page == BottomNavItem.home
+        ? HomeDashboardScreen(
+            userDetails: userDetails!,
+          )
+        : page == BottomNavItem.courses
+            ? const AllCoursesScreen()
+            : page == BottomNavItem.ranking
+                ? const LeaderBoardScreen()
+                : const Scaffold();
+  }
 }
