@@ -41,12 +41,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     newUser = widget.userDetails;
     super.initState();
-    fetchUserDetails(FirebaseAuth.instance.currentUser?.uid).then((value) {
+    fetchUserDetails(FirebaseAuth.instance.currentUser?.email).then((value) {
       ref.watch(userProvider.notifier).assignUserData(value!);
       log(value.name.toString());
       setState(() {
         newUser = value;
       });
+    }).onError((error, stackTrace) {
+      log(error.toString());
     });
   }
 
