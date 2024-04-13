@@ -12,6 +12,7 @@ class SparkCyberSpaceActivityDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //
     return SizedBox(
         height: 300,
         child: Padding(
