@@ -9,13 +9,14 @@ class UserDetails {
   String? age; // Optional last name
   String? bio; // Optional last name
   String? profileImageUrl; // Optional profile image URL
-
+  bool? isTutor;
   UserDetails({
     required this.id,
     required this.username,
     required this.email,
     this.name,
     this.gender,
+    this.isTutor,
     this.age,
     this.bio,
     this.profileImageUrl,
@@ -23,9 +24,10 @@ class UserDetails {
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
   factory UserDetails.fromFirebaseUser(User user) => UserDetails(
         id: user.uid,
+        isTutor: true,
         username: user.displayName ?? "no name",
         email: user.email ?? "no email",
-        name: "no name",
+        name: '',
         age: "no age",
         gender: "no gender",
         bio: "no bio",
@@ -34,7 +36,8 @@ class UserDetails {
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
   factory UserDetails.fromFirebaseData(Map<String, dynamic> userData) =>
       UserDetails(
-        id: userData['id'],
+        isTutor: userData['isTutor'] ?? '',
+        id: userData['id'] ?? "",
         username: userData['username'] ?? "no name",
         email: userData['email'] ?? "no email",
         name: userData['name'] ?? "no name",
@@ -78,4 +81,29 @@ class UserDetails {
 
   @override
   int get hashCode => id.hashCode ^ username.hashCode ^ email.hashCode;
+
+  // New copyWith method
+  UserDetails copyWith({
+    String? id,
+    String? username,
+    String? email,
+    String? name,
+    String? gender,
+    String? age,
+    String? bio,
+    String? profileImageUrl,
+    bool? isTutor,
+  }) {
+    return UserDetails(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      gender: gender ?? this.gender,
+      age: age ?? this.age,
+      bio: bio ?? this.bio,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      isTutor: isTutor ?? this.isTutor,
+    );
+  }
 }

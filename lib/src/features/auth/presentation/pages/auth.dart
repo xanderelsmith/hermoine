@@ -1,5 +1,6 @@
 import 'dart:developer'; // Import dart:developer for using log function
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/auth/presentation/pages/onboarding_one_screen.dart';
@@ -9,7 +10,9 @@ import '../../../home/presentation/pages/homepage.dart';
 import '../../data/models/user.dart';
 
 class AuthPage extends StatelessWidget {
-  const AuthPage({Key? key});
+  const AuthPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,5 +36,25 @@ class AuthPage extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+Future<UserDetails?> fetchUserDetails(String? userId) async {
+  if (userId == null) return null;
+
+  try {
+    final documentSnapshot =
+        await FirebaseFirestore.instance.collection('Users').doc(userId).get();
+
+    if (documentSnapshot.exists) {
+      final userData = documentSnapshot.data();
+      return UserDetails.fromFirebaseData(userData!);
+    } else {
+      log("User document does not exist");
+      return null;
+    }
+  } on FirebaseException catch (e) {
+    log("Error fetching user data: $e");
+    return null;
   }
 }

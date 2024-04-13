@@ -17,7 +17,11 @@ class GeminiSparkConfig {
       "category": "shortTextAnswer",
       "question": "QUESTION_TEXT",
       "correct_answer": "CORRECT_ANSWER",
-      "answeroption": ["OtherAcceptedANSWER1", "OtherAcceptedANSWER2"],
+      "answeroption": [
+        "anotherCORRECT_ANSWER",
+        "anotherCORRECT_ANSWER",
+        "anotherCORRECT_ANSWER"
+      ],
       "images": []
     },
   ];

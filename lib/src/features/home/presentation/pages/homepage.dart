@@ -1,12 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/colors.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
 
+import '../../../auth/presentation/pages/auth.dart';
 import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
 import '../widgets/customdrawer.dart';
@@ -59,8 +64,22 @@ void logout() async {
   }
 }
 
+BottomNavItem _page = BottomNavItem.home;
+
 class _HomePageState extends State<HomePage> {
-  BottomNavItem page = BottomNavItem.home;
+  UserDetails? newUser;
+  @override
+  void initState() {
+    newUser = widget.userDetails;
+    super.initState();
+    fetchUserDetails(FirebaseAuth.instance.currentUser?.uid).then((value) {
+      log(value!.name.toString());
+      setState(() {
+        newUser = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,13 +95,13 @@ class _HomePageState extends State<HomePage> {
                   (index) => InkWell(
                       onTap: () {
                         setState(() {
-                          page = BottomNavItem.values[index];
+                          _page = BottomNavItem.values[index];
                         });
                       },
                       child: Image.asset(BottomNavItem.values[index].data))),
             ),
           )),
-      body: homePageBuilder(page, widget.userDetails),
+      body: homePageBuilder(_page, newUser),
     );
   }
 }
@@ -98,13 +117,16 @@ class HomeDashboardScreen extends StatelessWidget {
     return Column(
       children: [
         CustomAppBar(userDetails: userDetails),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                HomePageCourseCategory(),
-                Courses(),
+                userDetails.isTutor == true
+                    ? const CreatedQuizes()
+                    : const SizedBox(),
+                const HomePageCourseCategory(),
+                const Courses(),
               ],
             ),
           ),
@@ -136,22 +158,6 @@ Widget homePageBuilder(page, userDetails) {
       : page == BottomNavItem.courses
           ? const AllCoursesScreen()
           : page == BottomNavItem.ranking
-              ? const LeaderBoardRankingScreen()
+              ? const LeaderBoardScreen()
               : const Scaffold();
-}
-
-class LeaderBoardRankingScreen extends StatelessWidget {
-  const LeaderBoardRankingScreen({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leaderboard'),
-        centerTitle: true,
-      ),
-    );
-  }
 }
