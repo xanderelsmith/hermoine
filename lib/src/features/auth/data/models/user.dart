@@ -36,7 +36,7 @@ class UserDetails {
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
   factory UserDetails.fromFirebaseData(Map<String, dynamic> userData) =>
       UserDetails(
-        isTutor: userData['isTutor'] ?? '',
+        isTutor: userData['isTutor'] ?? true,
         id: userData['id'] ?? "",
         username: userData['username'] ?? "no name",
         email: userData['email'] ?? "no email",

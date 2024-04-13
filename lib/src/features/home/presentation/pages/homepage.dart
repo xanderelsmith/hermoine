@@ -23,9 +23,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-// void logout() {
-//   FirebaseAuth.instance.signOut();
-// }
+
 void logout() async {
   bool confirmLogout = await Get.defaultDialog(
     title: 'Confirm Logout',
@@ -53,6 +51,23 @@ void logout() async {
     await FirebaseAuth.instance.signOut();
     // Navigate to the login screen
     Get.offAll(const SigninScreen());
+
+class _HomePageState extends ConsumerState<HomePage> {
+  UserDetails? newUser;
+  @override
+  void initState() {
+    newUser = widget.userDetails;
+    super.initState();
+    fetchUserDetails(FirebaseAuth.instance.currentUser?.email).then((value) {
+      ref.watch(userProvider.notifier).assignUserData(value!);
+      log(value.name.toString());
+      setState(() {
+        newUser = value;
+      });
+    }).onError((error, stackTrace) {
+      log(error.toString());
+    });
+
   }
 }
 

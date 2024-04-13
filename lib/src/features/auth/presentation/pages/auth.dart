@@ -39,12 +39,14 @@ class AuthPage extends StatelessWidget {
   }
 }
 
-Future<UserDetails?> fetchUserDetails(String? userId) async {
-  if (userId == null) return null;
+Future<UserDetails?> fetchUserDetails(String? useremail) async {
+  if (useremail == null) return null;
 
   try {
-    final documentSnapshot =
-        await FirebaseFirestore.instance.collection('Users').doc(userId).get();
+    final documentSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(useremail)
+        .get();
 
     if (documentSnapshot.exists) {
       final userData = documentSnapshot.data();
