@@ -53,13 +53,14 @@ class _CreatedQuizesState extends State<CreatedQuizes> {
                         itemCount: snapshot.data!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          ParseFile src = snapshot.data![index]['image'];
+                          String imageUrl = snapshot.data![index]['image'].url;
                           return QuizListTile(
+                              imageurl: imageUrl,
                               screensize: getScreenSize(context),
                               onTap: (data) {},
                               quizname: snapshot.data![index]['topic'],
                               datecreated: 'datecreated',
-                              username: 'username',
+                              username: snapshot.data![index]['author'],
                               isViewed: true,
                               quizEmojis: [],
                               presentUser: 'presentUser');

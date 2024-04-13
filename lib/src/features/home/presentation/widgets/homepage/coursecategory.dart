@@ -91,7 +91,7 @@ class QuizListTile extends ConsumerStatefulWidget {
   final bool? hasOption;
   final List quizEmojis;
   const QuizListTile(
-      {Key? key,
+      {super.key,
       required this.screensize,
       this.hasOption,
       this.widthPadding,
@@ -103,8 +103,9 @@ class QuizListTile extends ConsumerStatefulWidget {
       required this.username,
       required this.isViewed,
       required this.quizEmojis,
-      required this.presentUser})
-      : super(key: key);
+      required this.presentUser,
+      required this.imageurl});
+  final String imageurl;
 
   ///the amount of spacing from the side
   final int? widthPadding;
@@ -135,7 +136,10 @@ class _QuizListTileState extends ConsumerState<QuizListTile> {
             onTap: () {},
             onLongPress: () {},
             child: Row(children: [
-              const Expanded(child: CircleAvatar()),
+              Expanded(
+                  child: CircleAvatar(
+                child: Image.network(widget.imageurl),
+              )),
               Expanded(
                 flex: 4,
                 child: Column(

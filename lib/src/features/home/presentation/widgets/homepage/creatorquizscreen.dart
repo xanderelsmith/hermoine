@@ -86,13 +86,15 @@ class CreatorAssessmentScreen extends StatelessWidget {
                                           ParseFile src =
                                               snapshot.data![index]['image'];
                                           return QuizListTile(
+                                              imageurl: src.url ?? '',
                                               screensize:
                                                   getScreenSize(context),
                                               onTap: (data) {},
                                               quizname: snapshot.data![index]
                                                   ['topic'],
                                               datecreated: 'datecreated',
-                                              username: 'username',
+                                              username: snapshot.data![index]
+                                                  ['author'],
                                               isViewed: true,
                                               quizEmojis: [],
                                               presentUser: 'presentUser');
