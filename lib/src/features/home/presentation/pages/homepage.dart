@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,7 +69,7 @@ void deleteUserAccount() async {
     actions: [
       ElevatedButton(
         onPressed: () {
-          Get.back(result: true); // Return true when confirmed
+          Get.back(result: true);
         },
         child: const Text(
           'Delete',
@@ -77,7 +78,7 @@ void deleteUserAccount() async {
       ),
       ElevatedButton(
         onPressed: () {
-          Get.back(result: false); // Return false when cancelled
+          Get.back(result: false);
         },
         child:
             const Text('Keep Account', style: TextStyle(color: Colors.black)),
@@ -87,8 +88,13 @@ void deleteUserAccount() async {
 
   if (confirmDelete ?? false) {
     try {
-      // Delete the user account
       await FirebaseAuth.instance.currentUser?.delete();
+
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(FirebaseAuth.instance.currentUser?.email)
+          .delete();
+
       // Show a success dialog
       Get.dialog(
         AlertDialog(
@@ -97,8 +103,7 @@ void deleteUserAccount() async {
           actions: [
             TextButton(
               onPressed: () {
-                Get.offAll(
-                    const CreateAccountScreen()); // Navigate to onboarding screen
+                Get.offAll(const CreateAccountScreen());
               },
               child: const Text('OK'),
             ),

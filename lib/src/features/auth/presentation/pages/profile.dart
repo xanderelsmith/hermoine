@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
       actions: [
         ElevatedButton(
           onPressed: () {
-            Get.back(result: true); // Return true when confirmed
+            Get.back(result: true);
           },
           child: const Text(
             'Delete',
@@ -59,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            Get.back(result: false); // Return false when cancelled
+            Get.back(result: false);
           },
           child:
               const Text('Keep Account', style: TextStyle(color: Colors.black)),
@@ -69,8 +70,13 @@ class ProfileScreen extends StatelessWidget {
 
     if (confirmDelete ?? false) {
       try {
-        // Delete the user account
         await FirebaseAuth.instance.currentUser?.delete();
+
+        await FirebaseFirestore.instance
+            .collection("Users")
+            .doc(FirebaseAuth.instance.currentUser?.email)
+            .delete();
+
         // Show a success dialog
         Get.dialog(
           AlertDialog(
@@ -79,8 +85,7 @@ class ProfileScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  Get.offAll(
-                      const CreateAccountScreen()); // Navigate to onboarding screen
+                  Get.offAll(const CreateAccountScreen());
                 },
                 child: const Text('OK'),
               ),
