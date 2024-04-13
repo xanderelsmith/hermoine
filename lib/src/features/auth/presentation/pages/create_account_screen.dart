@@ -76,8 +76,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'username': usernameController.text,
         'bio': 'Empty bio..',
         'age': 'Empty age..',
-        'gender': 'Empty gender..',
-        'profileImageUrl': 'Empty profileImage..',
+        'gender': 'unknown..',
+        'birthday': 'No date selected..',
+        'profileImageUrl': 'No profileImage selected..',
         'name': 'Empty name..'
       });
     }
@@ -150,25 +151,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           decoration: AppDecoration.fillBlueGray.copyWith(
                             borderRadius: BorderRadiusStyle.circleBorder75,
                           ),
-                          // child: Stack(
-                          //   alignment: Alignment.centerLeft,
-                          //   children: [
-                          //     const Align(
-                          //       alignment: Alignment.center,
-                          //       child: SizedBox(
-                          //         child: Divider(),
-                          //       ),
-                          //     ),
-                          //     Align(
-                          //       alignment: Alignment.centerLeft,
-                          //       child: SizedBox(
-                          //         child: Divider(
-                          //           indent: 1.h,
-                          //         ),
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
                         ),
                       ),
                       const Spacer(),
