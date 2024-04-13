@@ -110,13 +110,13 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
   Future<dynamic> submitQuizDialog(BuildContext context, String topic) {
     return showDialog(
         context: context,
-        builder: ((context) => AlertDialog(
+        builder: ((dialogcontext) => AlertDialog(
               title: const Text('Submit quiz'),
               actions: [
                 TextButton(
                     onPressed: () {
                       showDialog(
-                          context: context,
+                          context: dialogcontext,
                           builder: (context) => AlertDialog(
                                 title: const Text('Submitting Created data'),
                                 actionsAlignment: MainAxisAlignment.spaceEvenly,
@@ -170,7 +170,7 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                     child: const Text('Yes')),
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pop(dialogcontext);
                     },
                     child: const Text('No'))
               ],
