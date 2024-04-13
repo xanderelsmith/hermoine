@@ -151,25 +151,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           decoration: AppDecoration.fillBlueGray.copyWith(
                             borderRadius: BorderRadiusStyle.circleBorder75,
                           ),
-                          // child: Stack(
-                          //   alignment: Alignment.centerLeft,
-                          //   children: [
-                          //     const Align(
-                          //       alignment: Alignment.center,
-                          //       child: SizedBox(
-                          //         child: Divider(),
-                          //       ),
-                          //     ),
-                          //     Align(
-                          //       alignment: Alignment.centerLeft,
-                          //       child: SizedBox(
-                          //         child: Divider(
-                          //           indent: 1.h,
-                          //         ),
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
                         ),
                       ),
                       const Spacer(),

@@ -27,9 +27,6 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-// void logout() {
-//   FirebaseAuth.instance.signOut();
-// }
 final currentUser = FirebaseAuth.instance.currentUser!;
 
 void logout() async {
@@ -57,7 +54,6 @@ void logout() async {
 
   if (confirmLogout ?? false) {
     await FirebaseAuth.instance.signOut();
-    // Navigate to the login screen
     Get.offAll(const SigninScreen());
   }
 }
@@ -111,7 +107,6 @@ void deleteUserAccount() async {
         ),
       );
     } catch (e) {
-      // Show an error dialog if account deletion fails
       Get.dialog(
         AlertDialog(
           title: const Text('Error'),
