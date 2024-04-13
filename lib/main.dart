@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/core/theme/theme.dart';
+import 'package:hermione/src/features/assessment/domain/entities/geminiapihelper.dart';
 import 'package:hermione/src/features/auth/presentation/pages/auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -15,7 +17,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  Gemini.init(apiKey: GeminiSparkConfig.apiKey);
   await Parse().initialize(
       appName: 'Hermoine',
       appVersion: '1.0',

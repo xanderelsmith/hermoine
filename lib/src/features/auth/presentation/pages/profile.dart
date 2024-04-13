@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,8 +6,6 @@ import 'package:hermione/src/features/auth/presentation/pages/edit_profile.dart'
 import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart';
 
 import '../../../../core/widgets/widgets.dart';
-import 'create_account_screen.dart';
-import 'forget_password.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -41,74 +38,6 @@ class ProfileScreen extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
       // Navigate to the login screen
       Get.offAll(const SigninScreen());
-    }
-  }
-
-  void deleteUserAccount() async {
-    bool confirmDelete = await Get.defaultDialog(
-      title: 'Confirm Delete',
-      middleText: 'Are you sure you want to delete your account?',
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Get.back(result: true);
-          },
-          child: const Text(
-            'Delete',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Get.back(result: false);
-          },
-          child:
-              const Text('Keep Account', style: TextStyle(color: Colors.black)),
-        ),
-      ],
-    );
-
-    if (confirmDelete ?? false) {
-      try {
-        await FirebaseAuth.instance.currentUser?.delete();
-
-        await FirebaseFirestore.instance
-            .collection("Users")
-            .doc(FirebaseAuth.instance.currentUser?.email)
-            .delete();
-
-        // Show a success dialog
-        Get.dialog(
-          AlertDialog(
-            title: const Text('User Account Deleted'),
-            content: const Text('Your account has been successfully deleted.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.offAll(const CreateAccountScreen());
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      } catch (e) {
-        // Show an error dialog if account deletion fails
-        Get.dialog(
-          AlertDialog(
-            title: const Text('Error'),
-            content: Text('Failed to delete account: $e'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back(); // Close the dialog
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
     }
   }
 
@@ -243,15 +172,10 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.black,
                         width: double.maxFinite,
                       ),
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => ForgetPasswordScreen());
-                        },
-                        child: const ListTile(
-                          leading: Icon(Icons.lock, color: Color(0xFF065774)),
-                          title: Text('Change Password'),
-                          trailing: Icon(Icons.arrow_forward_ios),
-                        ),
+                      const ListTile(
+                        leading: Icon(Icons.lock, color: Color(0xFF065774)),
+                        title: Text('Change Password'),
+                        trailing: Icon(Icons.arrow_forward_ios),
                       ),
                       Container(
                         height: 0.3,
@@ -268,15 +192,10 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.black,
                         width: double.maxFinite,
                       ),
-                      InkWell(
-                        onTap: () {
-                          deleteUserAccount();
-                        },
-                        child: const ListTile(
-                          leading: Icon(Icons.delete, color: Color(0xFF065774)),
-                          title: Text('Delete Account'),
-                          trailing: Icon(Icons.arrow_forward_ios),
-                        ),
+                      const ListTile(
+                        leading: Icon(Icons.delete, color: Color(0xFF065774)),
+                        title: Text('Delete Account'),
+                        trailing: Icon(Icons.arrow_forward_ios),
                       ),
                       Container(
                         height: 0.3,

@@ -56,15 +56,16 @@ class Courses extends StatelessWidget {
                         )
                       : Builder(builder: (context) {
                           return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: ((context, index) {
-                                ParseObject course = snapshot.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Chip(label: Text(course['name'])),
-                                );
-                              }));
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: ((context, index) {
+                              ParseObject course = snapshot.data![index];
+                              return Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Chip(label: Text(course['name'])),
+                              );
+                            }),
+                          );
                         });
                 }),
           ),
@@ -108,6 +109,7 @@ class QuizContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var coursename = parseObject['coursename'];
     return GestureDetector(
       onTap: () {
         ref.watch(quizListProvider).inputData(parseObject);
@@ -152,7 +154,7 @@ class QuizContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    parseObject['coursename']['name'],
+                    coursename != null ? coursename['name'] : "",
                   ),
                   const Icon(
                     Icons.timelapse_rounded,
