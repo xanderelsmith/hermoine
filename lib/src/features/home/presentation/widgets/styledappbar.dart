@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../auth/data/models/user.dart';
+import '../pages/homepage.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.userDetails});
@@ -42,11 +43,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           style: AppTextStyle.titlename
                               .copyWith(color: Colors.white),
                         ),
+                        // Text(
+                        //   userDetails?.name ?? 'no name',
+                        //   style: AppTextStyle.mediumTitlename
+                        //       .copyWith(color: Colors.white),
+                        // ),
                         Text(
-                          userDetails?.name ?? 'no name',
-                          style: AppTextStyle.mediumTitlename
-                              .copyWith(color: Colors.white),
-                        ),
+                          currentUser.email!,
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     ),
                   ),
