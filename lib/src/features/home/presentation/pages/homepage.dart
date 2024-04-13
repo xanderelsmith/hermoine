@@ -1,10 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/colors.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/core/widgets/widgets.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
 
+import '../../../auth/presentation/pages/create_account_screen.dart';
 import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
 import '../widgets/homepage/coursecategory.dart';
@@ -23,9 +27,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-// void logout() {
-//   FirebaseAuth.instance.signOut();
-// }
+final currentUser = FirebaseAuth.instance.currentUser!;
+
 void logout() async {
   bool confirmLogout = await Get.defaultDialog(
     title: 'Confirm Logout',
@@ -53,6 +56,76 @@ void logout() async {
     await FirebaseAuth.instance.signOut();
     // Navigate to the login screen
     Get.offAll(const SigninScreen());
+  }
+}
+
+void deleteUserAccount() async {
+  bool confirmDelete = await Get.defaultDialog(
+    title: 'Confirm Delete',
+    middleText: 'Are you sure you want to delete your account?',
+    actions: [
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: true); // Return true when confirmed
+        },
+        child: const Text(
+          'Delete',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () {
+          Get.back(result: false); // Return false when cancelled
+        },
+        child:
+            const Text('Keep Account', style: TextStyle(color: Colors.black)),
+      ),
+    ],
+  );
+
+  if (confirmDelete ?? false) {
+    try {
+      // Delete the user account
+      await FirebaseAuth.instance.currentUser?.delete();
+
+      // Delete the user document from Firestore collection
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(FirebaseAuth.instance.currentUser?.email)
+          .delete();
+
+      // Show a success dialog
+      Get.dialog(
+        AlertDialog(
+          title: const Text('User Account Deleted'),
+          content: const Text('Your account has been successfully deleted.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.offAll(const CreateAccountScreen());
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      // Show an error dialog if account deletion fails
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Error'),
+          content: Text('Failed to delete account: $e'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -95,16 +168,61 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(),
-                Text('name'),
-                Text('email'),
-              ],
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  height: 210,
+                  width: double.maxFinite,
+                  child: Center(
+                    child: ListView(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Stack(
+                          children: [
+                            Column(
+                              children: [
+                                Center(
+                                  child: CustomImageView(
+                                    imagePath:
+                                        "assets/images/img_ellipse_4.png",
+                                    height: 105.adaptSize,
+                                    width: 105.adaptSize,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Positioned(
+                              top: 90,
+                              right: 0,
+                              left: 0,
+                              child: Center(
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 32,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          currentUser.email!,
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           Column(
             children: [
@@ -147,9 +265,13 @@ class CustomDrawer extends StatelessWidget {
                       },
                       child: const Text('Log out')),
                 ),
-                const ListTile(
-                  leading: Icon(Icons.delete, color: Color(0xFF065774)),
-                  title: Text('Delete account'),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Color(0xFF065774)),
+                  title: InkWell(
+                      onTap: () {
+                        deleteUserAccount();
+                      },
+                      child: const Text('Delete account')),
                 ),
               ],
             ),
