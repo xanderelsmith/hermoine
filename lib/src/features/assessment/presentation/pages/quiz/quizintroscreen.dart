@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+import 'package:rive/rive.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../home/data/sources/mascotdata.dart';
@@ -26,6 +31,13 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
   String topic = '';
   Animation<double>? animation;
   AnimationController? animationController;
+  // RiveAnimation? riveAnimation = const RiveAnimation.asset(
+  //   'assets/mascot/hermione.riv',
+  //   animations: ['wrong'],
+  //   useArtboardSize: true,
+  // );
+  RiveFile? riveFile;
+  RiveAnimation? riveAnimation;
   @override
   void initState() {
     topic = widget.quizdata['topic'];
@@ -35,7 +47,13 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
     animationController!.addListener(() {
       setState(() {});
     });
+
     animationController!.forward();
+    riveAnimation = const RiveAnimation.asset(
+      'assets/mascot/hermione.riv',
+      animations: ['correct'],
+      useArtboardSize: true,
+    );
     super.initState();
   }
 
@@ -97,10 +115,11 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
               ),
             ),
           ),
-          Align(
-            alignment: const Alignment(-0.8, -0.4),
-            child: Image.asset('assets/mascot/mascot.png'),
-          ),
+          Positioned(
+            right: 130,
+            top: getScreenSize(context).height / 6,
+            child: riveAnimation!,
+          )
         ],
       ),
     );

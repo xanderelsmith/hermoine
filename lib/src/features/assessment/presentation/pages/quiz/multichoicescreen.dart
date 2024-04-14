@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
-import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../../../../core/constants/colors.dart';
 
 class MultiChoiceUIScreen extends ConsumerStatefulWidget {
   const MultiChoiceUIScreen({

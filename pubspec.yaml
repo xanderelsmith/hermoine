@@ -28,31 +28,26 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cupertino_icons: ^1.0.6
+  async: ^2.11.0
   cached_network_image: ^3.3.0
-  firebase_core: ^2.22.0
-  firebase_auth: ^4.14.0
   cloud_firestore: ^4.13.1
-  flutter_svg: ^2.0.9
-  intl: ^0.18.0
+  cupertino_icons: ^1.0.6
+  file_picker: ^8.0.0+1
+  firebase_auth: ^4.14.0
+  firebase_core: ^2.22.0
   flutter:
     sdk: flutter
-  parse_server_sdk_flutter: ^7.0.1
-  get: ^4.6.6
   flutter_gemini: ^2.0.3
+  flutter_svg: ^2.0.9
+  get: ^4.6.6
   hooks_riverpod: ^2.5.1
-  syncfusion_flutter_pdfviewer: ^20.4.54
-  file_picker: ^8.0.0+1
   image_picker: ^1.0.7
-  async: ^2.11.0
+  intl: ^0.18.0
+  parse_server_sdk_flutter: ^7.0.1
+  rive: ^0.13.1
+  syncfusion_flutter_pdfviewer: ^20.4.54
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
@@ -83,6 +78,5 @@ flutter:
           weight: 500
         - asset: assets/fonts/InterRegular.ttf
           weight: 400
-
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
