@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rive/rive.dart';
+
+import '../../widgets/questioncard.dart';
 
 class MultiChoiceUIScreen extends ConsumerStatefulWidget {
   const MultiChoiceUIScreen({
@@ -52,9 +55,18 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  QuestionCard(
-                    question: widget.question,
-                    screensize: widget.screensize,
+                  Column(
+                    children: [
+                      QuestionCard(
+                        animationChild: const RiveAnimation.asset(
+                          'assets/mascot/hermione.riv',
+                          animations: ['idle question', 'correct', 'wrong'],
+                          fit: BoxFit.fitHeight,
+                        ),
+                        question: widget.question,
+                        screensize: widget.screensize,
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
@@ -90,42 +102,6 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                   ),
                 ]),
           ),
-        ));
-  }
-}
-
-class QuestionCard extends StatelessWidget {
-  const QuestionCard({
-    super.key,
-    required this.screensize,
-    required this.question,
-  });
-
-  final Size screensize;
-  final Question question;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: screensize.width / 2,
-        width: screensize.width,
-        decoration: BoxDecoration(
-            color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  question.question,
-                  style: AppTextStyle.mediumTitlename,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: HIntWidget(question: question),
-            )
-          ],
         ));
   }
 }

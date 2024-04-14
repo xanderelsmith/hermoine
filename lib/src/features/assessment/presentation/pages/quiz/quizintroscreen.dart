@@ -51,7 +51,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
     animationController!.forward();
     riveAnimation = const RiveAnimation.asset(
       'assets/mascot/hermione.riv',
-      animations: ['correct'],
+      animations: ['intro idle'],
       useArtboardSize: true,
     );
     super.initState();
@@ -93,23 +93,26 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
           ...List.generate(
             4,
             (index) => AnimatedPositioned(
-              curve: Curves.bounceInOut,
+              curve: Curves.easeIn,
               top: index * 120,
               right: index * 100 * (animation!.value!),
               duration: Duration(seconds: index * 5),
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: AppColor.primaryColor,
-                ),
-                width: 200,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    getMascotWords(topic, index),
-                    style: const TextStyle(color: Colors.white),
+              child: Visibility(
+                visible: (animation!.value!) < 0.4,
+                child: Container(
+                  margin: const EdgeInsets.all(8.0),
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: AppColor.primaryColor,
+                  ),
+                  width: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      getMascotWords(topic, index),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),

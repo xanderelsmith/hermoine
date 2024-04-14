@@ -4,8 +4,10 @@ import 'package:hermione/src/core/widgets/specialtextfield.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/multichoicescreen.dart';
+import 'package:hermione/src/features/assessment/presentation/widgets/questioncard.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:rive/rive.dart';
 
 class ShortAnswerQuizScreen extends HookConsumerWidget {
   //it was named questions because theres already a variable called [question]
@@ -41,7 +43,13 @@ class ShortAnswerQuizScreen extends HookConsumerWidget {
                       height: screensize.height / 3,
                       width: screensize.width,
                       child: QuestionCard(
-                          screensize: screensize, question: questionData)),
+                          animationChild: const RiveAnimation.asset(
+                            'assets/mascot/hermione.riv',
+                            animations: ['idle question', 'correct', 'wrong'],
+                            fit: BoxFit.fitHeight,
+                          ),
+                          screensize: screensize,
+                          question: questionData)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
