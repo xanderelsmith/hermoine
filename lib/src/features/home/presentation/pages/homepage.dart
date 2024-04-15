@@ -1,26 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
-
 import 'package:hermione/src/core/widgets/widgets.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
 
-
-import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
-import 'package:hermione/src/features/auth/data/models/user.dart';
-import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../../../assessment/presentation/pages/tutor/createdquizscreen.dart';
-import '../../../auth/presentation/pages/auth.dart';
 import '../../../auth/presentation/pages/create_account_screen.dart';
 import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
@@ -39,7 +26,6 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 
 final currentUser = FirebaseAuth.instance.currentUser!;
 
@@ -140,22 +126,6 @@ void deleteUserAccount() async {
         ),
       );
     }
-
-class _HomePageState extends ConsumerState<HomePage> {
-  UserDetails? newUser;
-  @override
-  void initState() {
-    newUser = widget.userDetails;
-    super.initState();
-    fetchUserDetails(FirebaseAuth.instance.currentUser?.email).then((value) {
-      ref.watch(userProvider.notifier).assignUserData(value!);
-      log(value.name.toString());
-      setState(() {
-        newUser = value;
-      });
-    }).onError((error, stackTrace) {
-      log(error.toString());
-    });
   }
 }
 
@@ -203,7 +173,7 @@ class CustomDrawer extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Container(
+                child: SizedBox(
                   height: 210,
                   width: double.maxFinite,
                   child: Center(
@@ -308,7 +278,6 @@ class CustomDrawer extends StatelessWidget {
           ),
         ],
       ),
-      body: HomePageBuilder(page: _page, userDetails: newUser!),
     );
   }
 }
@@ -381,75 +350,3 @@ class LeaderBoardRankingScreen extends StatelessWidget {
     );
   }
 }
-
-void deleteUserAccount() async {
-  bool confirmDelete = await Get.defaultDialog(
-    title: 'Confirm Delete',
-    middleText: 'Are you sure you want to delete your account?',
-    actions: [
-      ElevatedButton(
-        onPressed: () {
-          Get.back(result: true); // Return true when confirmed
-        },
-        child: const Text(
-          'Delete',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          Get.back(result: false); // Return false when cancelled
-        },
-        child:
-            const Text('Keep Account', style: TextStyle(color: Colors.black)),
-      ),
-    ],
-  );
-
-  if (confirmDelete ?? false) {
-    try {
-      // Delete the user account
-      await FirebaseAuth.instance.currentUser?.delete();
-
-      // Delete the user document from Firestore collection
-      await FirebaseFirestore.instance
-          .collection("Users")
-          .doc(FirebaseAuth.instance.currentUser?.email)
-          .delete();
-
-      // Show a success dialog
-      Get.dialog(
-        AlertDialog(
-          title: const Text('User Account Deleted'),
-          content: const Text('Your account has been successfully deleted.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.offAll(const CreateAccountScreen());
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      // Show an error dialog if account deletion fails
-      Get.dialog(
-        AlertDialog(
-          title: const Text('Error'),
-          content: Text('Failed to delete account: $e'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back(); // Close the dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-}
-
-BottomNavItem _page = BottomNavItem.home;

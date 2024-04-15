@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/auth/presentation/pages/edit_profile.dart';
+import 'package:hermione/src/features/auth/presentation/pages/forget_password.dart';
 import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart';
 
 import '../../../../core/widgets/widgets.dart';
@@ -195,6 +196,10 @@ class ProfileScreen extends StatelessWidget {
                         Text(
                           currentUser.email!,
                           textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          currentUser.email!,
+                          textAlign: TextAlign.center,
                         )
                       ],
                     ),
@@ -244,10 +249,15 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.black,
                         width: double.maxFinite,
                       ),
-                      const ListTile(
-                        leading: Icon(Icons.lock, color: Color(0xFF065774)),
-                        title: Text('Change Password'),
-                        trailing: Icon(Icons.arrow_forward_ios),
+                      ListTile(
+                        leading:
+                            const Icon(Icons.lock, color: Color(0xFF065774)),
+                        title: InkWell(
+                            onTap: () {
+                              Get.to(() => ForgetPasswordScreen());
+                            },
+                            child: const Text('Change Password')),
+                        trailing: const Icon(Icons.arrow_forward_ios),
                       ),
                       Container(
                         height: 0.3,

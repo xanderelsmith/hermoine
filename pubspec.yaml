@@ -44,6 +44,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^20.4.54
   file_picker: ^8.0.0+1
   image_picker: ^1.0.7
+  firebase_storage: ^11.7.1
   async: ^2.11.0
 
 dev_dependencies:
