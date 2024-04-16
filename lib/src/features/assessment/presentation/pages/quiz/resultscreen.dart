@@ -5,6 +5,7 @@ import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+import 'package:rive/rive.dart';
 
 import '../../../../home/presentation/pages/homepage.dart';
 import '../../../domain/repositories/retievedquizdata.dart';
@@ -62,11 +63,15 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                  quizstate.incorrect.isNotEmpty
-                      ? 'images/scales.png'
-                      : 'images/trophy.png',
-                  height: 150),
+              const Stack(
+                children: [
+                  RiveAnimation.asset(
+                    'assets/mascot/hermione.riv',
+                    animations: ['correct'],
+                    useArtboardSize: true,
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
@@ -91,14 +96,14 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Column(
                   children: [
                     Text(
                       'Rate the quiz',
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -117,7 +122,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: ((context) => Scaffold())));
+                                  builder: ((context) => const Scaffold())));
                         },
                       ),
               ),
@@ -141,21 +146,21 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                           builder: (context) =>
                               const Center(child: CircularProgressIndicator()));
 
-                      await sendViewerDetails(user, score, total)
-                          .then((value) async {
-                        ref.refresh(quizListProvider).clearQuiz();
-                        ref
-                            .refresh(quizcontrollerProvider.notifier)
-                            .clearQuizState();
+                      // await sendViewerDetails(user, score, total)
+                      //     .then((value) async {
+                      //   ref.refresh(quizListProvider).clearQuiz();
+                      //   ref
+                      //       .refresh(quizcontrollerProvider.notifier)
+                      //       .clearQuizState();
 
-                        Navigator.pop(context);
+                      //   Navigator.pop(context);
 
-                        // Navigator.popUntil(context, (route) => route.isFirst);
-                        Navigator.popUntil(context,
-                            (route) => route.settings.name == HomePage.id);
-                      }).onError((error, stackTrace) {
-                        print(error.toString());
-                      });
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      //   Navigator.popUntil(context,
+                      //       (route) => route.settings.name == HomePage.id);
+                      // }).onError((error, stackTrace) {
+                      //   print(error.toString());
+                      // });
                     }),
               )
             ],
@@ -165,15 +170,15 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
     );
   }
 
-  Future<void> sendViewerDetails(ParseUser? user, int score, int total) async {
-    List quizViewersList = quizObject!['viewers'] ?? [];
+  // Future<void> sendViewerDetails(ParseUser? user, int score, int total) async {
+  //   List quizViewersList = quizObject!['viewers'] ?? [];
 
-    quizViewersList.add(
-        {'user': user, 'score': score, 'total': total, 'date': DateTime.now()});
+  //   quizViewersList.add(
+  //       {'user': user, 'score': score, 'total': total, 'date': DateTime.now()});
 
-    log(quizViewersList.length.toString());
-    quizObject!.set('viewers', quizViewersList);
-    await quizObject!.update();
-    log(quizViewersList.length.toString());
-  }
+  //   log(quizViewersList.length.toString());
+  //   quizObject!.set('viewers', quizViewersList);
+  //   await quizObject!.update();
+  //   log(quizViewersList.length.toString());
+  // }
 }

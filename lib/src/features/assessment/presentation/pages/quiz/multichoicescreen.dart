@@ -27,6 +27,11 @@ class MultiChoiceUIScreen extends ConsumerStatefulWidget {
 
 class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
   late MultiChoice quizdata;
+  StateMachineController? controller;
+  SMITrigger? idle;
+  SMITrigger? correct;
+  SMITrigger? wrong;
+
   List<String> answer = [];
   @override
   void initState() {
@@ -42,6 +47,7 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
   @override
   Widget build(BuildContext context) {
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
+
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -58,11 +64,24 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                   Column(
                     children: [
                       QuestionCard(
-                        animationChild: const RiveAnimation.asset(
-                          'assets/mascot/hermione.riv',
-                          animations: ['idle question', 'correct', 'wrong'],
-                          fit: BoxFit.fitHeight,
-                        ),
+                        animationChild:
+                            RiveAnimation.asset('assets/mascot/hermione.riv',
+                                animations: const [
+                                  'idle question',
+                                ],
+                                fit: BoxFit.fitHeight,
+                                stateMachines: const ['State Machine 1'],
+                                onInit: (artboard) {
+                          controller = StateMachineController.fromArtboard(
+                            artboard,
+                            "State Machine 1",
+                          );
+                          if (controller == null) return;
+                          artboard.addController(controller!);
+                          correct = controller!.findSMI('correct');
+                          wrong = controller!.findSMI('wrong');
+                          idle = controller!.findSMI('intro idle');
+                        }),
                         question: widget.question,
                         screensize: widget.screensize,
                       ),
@@ -95,6 +114,11 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                                                 quizdata.incorrectanswers,
                                             question_: quizdata.question_),
                                         answer[index]);
+                                if (answer[index] == quizdata.correctanswer) {
+                                  correct!.fire();
+                                } else {
+                                  wrong!.fire();
+                                }
                               }),
                         ).toList(),
                       ),
