@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
@@ -30,7 +31,7 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
   final pageController = PageController(initialPage: 0);
-
+  @override
   @override
   Widget build(BuildContext context) {
     final quizlist = ref.watch(quizListProvider).getQuizes;
@@ -103,11 +104,18 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
                                       );
                                     }
                                   } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: ((context) =>
-                                                const QuizResultScreen())));
+                                    await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: ((context) =>
+                                                    const QuizResultScreen())))
+                                        .then((value) {
+                                      ref
+                                          .watch(
+                                              quizcontrollerProvider.notifier)
+                                          .clearQuizState();
+                                      pageController.jumpToPage(0);
+                                    });
                                   }
                                 }),
                           ),
@@ -118,13 +126,24 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
             ],
           ),
           appBar: AppBar(
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    '${quizdatacontroller.correct.length}/${quizes.length}'
+                        .toString(),
+                    style: AppTextStyle.mediumTitlename,
+                  ),
+                )
+              ],
               title: LinearProgressIndicator(
-            value: 0.1,
-            backgroundColor: Colors.blue,
-            minHeight: 20,
-            color: const Color(0xff88FF59),
-            borderRadius: BorderRadius.circular(10),
-          )),
+                value: quizdatacontroller.correct.length.toDouble() /
+                    quizes.length.toDouble(),
+                backgroundColor: Colors.blue,
+                minHeight: 20,
+                color: const Color(0xff88FF59),
+                borderRadius: BorderRadius.circular(10),
+              )),
           body: PageView.builder(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: quizes.length,

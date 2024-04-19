@@ -111,7 +111,8 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
                                             widget.questionData.questions),
                                     lowerCaseanswer);
                             if (lowerCaseanswer ==
-                                widget.questionData.correctanswer) {
+                                widget.questionData.correctanswer
+                                    .toLowerCase()) {
                               correct!.fire();
                             } else {
                               wrong!.fire();

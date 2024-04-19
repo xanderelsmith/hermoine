@@ -7,6 +7,7 @@ import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:rive/rive.dart';
 
@@ -44,6 +45,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController!);
+
     animationController!.addListener(() {
       setState(() {});
     });
@@ -81,7 +83,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
       ),
       appBar: AppBar(
           title: LinearProgressIndicator(
-        value: 0.1,
+        value: 0,
         backgroundColor: Colors.blue,
         minHeight: 20,
         color: const Color(0xff88FF59),

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
+import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
+import '../../../domain/entities/geminiapihelper.dart';
 import '../../widgets/questioncard.dart';
 
 class MultiChoiceUIScreen extends ConsumerStatefulWidget {
@@ -151,7 +156,9 @@ class HIntWidget extends StatelessWidget {
                     maxChildSize: 1, //set this as you want
                     minChildSize: 0.5, //set this as you want
                     builder: (BuildContext context, scrollController) {
-                      return const ChatScreen();
+                      return SectionChat(
+                        extractedText: '',
+                      );
                     },
                   ),
                 ));
@@ -181,67 +188,218 @@ class HIntWidget extends StatelessWidget {
   }
 }
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
+class SectionChat extends ConsumerStatefulWidget {
+  const SectionChat({super.key, required this.extractedText});
+  final String extractedText;
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<SectionChat> createState() => _SectionChatState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  var textEditingController = TextEditingController();
+class _SectionChatState extends ConsumerState<SectionChat> {
+  TextEditingController controller = TextEditingController();
+  final gemini = Gemini.instance;
+  bool _loading = false;
+  bool isAsking = true;
+  bool get loading => _loading;
+
+  set loading(bool set) => setState(() => _loading = set);
+  final List<Content> chats = [];
   var scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: SizedBox(
-            width: 200,
-            child: Divider(
-              height: 10,
-              thickness: 10,
-              endIndent: 10,
-            ),
+    final userDetails = ref.watch(userProvider);
+    Size screensize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Expanded(
+              child: chats.isNotEmpty
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SingleChildScrollView(
+                        reverse: true,
+                        child: ListView.builder(
+                          itemBuilder: chatItem,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: chats.length,
+                          reverse: false,
+                        ),
+                      ),
+                    )
+                  : isAsking == false
+                      ? const SizedBox(
+                          child: Center(child: Text('Send a message')),
+                        )
+                      : Center(
+                          child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: 300,
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isAsking = false;
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Ask a question concerning the material',
+                                      style: AppTextStyle.mediumTitlename,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Scrollbar(
+                                      interactive: true,
+                                      thumbVisibility: true,
+                                      controller: scrollController,
+                                      child: SingleChildScrollView(
+                                        controller: scrollController,
+                                        child: Text(
+                                          widget.extractedText,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ))),
+          if (loading) const CircularProgressIndicator(),
+          ChatInputBox(
+            controller: controller,
+            onSend: () {
+              String prompt = 'Generate a brief understandable response ';
+              if (controller.text.isNotEmpty) {
+                final searchedText = chats.isNotEmpty || isAsking == false
+                    ? controller.text
+                    : '$prompt,**${controller.text}**,${widget.extractedText}';
+                chats.add(Content(
+                    role: userDetails!.username ?? 'user',
+                    parts: [Parts(text: searchedText)]));
+                controller.clear();
+                loading = true;
+
+                gemini.streamGenerateContent(searchedText).listen((value) {
+                  chats.add(Content(
+                      role: 'Spark_Gemini',
+                      parts: [Parts(text: value.output)]));
+                  loading = false;
+                });
+              }
+            },
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: messages.length,
-            itemBuilder: (context, index) => messageBubble(messages[index]),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: 'Type your message',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+        ],
+      ),
+    );
+  }
+
+  Widget chatItem(BuildContext context, int index) {
+    final Content content = chats[index];
+
+    return Card(
+      elevation: 0,
+      color: content.role == 'Spark_Gemini'
+          ? Colors.blue.shade800
+          : Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: content.role == 'Spark_Gemini'
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: content.role != 'Spark_Gemini'
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                    child: Icon(content.role != 'Spark_Gemini'
+                        ? Icons.person
+                        : Icons.android)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(content.role ?? 'role'),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  setState(() {
-                    messages.add(Message(textEditingController.text, true));
-                    scrollController
-                        .jumpTo(scrollController.position.maxScrollExtent);
-                  });
-                },
-              ),
-            ],
-          ),
+              ],
+            ),
+            Markdown(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                data:
+                    content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class ChatInputBox extends StatelessWidget {
+  final TextEditingController? controller;
+  final VoidCallback? onSend, onClickCamera;
+
+  const ChatInputBox({
+    super.key,
+    this.controller,
+    this.onSend,
+    this.onClickCamera,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (onClickCamera != null)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                  onPressed: onClickCamera,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  icon: const Icon(Icons.file_copy_rounded)),
+            ),
+          Expanded(
+              child: TextField(
+            controller: controller,
+            minLines: 1,
+            maxLines: 6,
+            cursorColor: Theme.of(context).colorScheme.inversePrimary,
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.multiline,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+              hintText: 'Message',
+              border: InputBorder.none,
+            ),
+            onTapOutside: (event) =>
+                FocusManager.instance.primaryFocus?.unfocus(),
+          )),
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: FloatingActionButton.small(
+              onPressed: onSend,
+              child: const Icon(Icons.send_rounded),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

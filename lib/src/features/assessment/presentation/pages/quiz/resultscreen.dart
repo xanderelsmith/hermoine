@@ -1,30 +1,50 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:rive/rive.dart';
 
-import '../../../../home/presentation/pages/homepage.dart';
+import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/features/assessment/domain/entities/quizstate.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/customappbar.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
+
 import '../../../domain/repositories/retievedquizdata.dart';
+import '../../widgets/resultsubcomponent.dart';
 
 class QuizResultScreen extends ConsumerStatefulWidget {
   static String id = 'QuizResultScreen';
   const QuizResultScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _QuizResultScreenState();
 }
 
-class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
+class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
+    with SingleTickerProviderStateMixin {
   ParseObject? quizObject;
-
+  Animation? animation;
+  AnimationController? animationController;
   @override
   void initState() {
+    animationController = AnimationController(
+        value: 1, vsync: this, duration: const Duration(milliseconds: 1500));
+    animation = Tween<double>(begin: 0, end: 1).animate(animationController!);
+    animation!.addListener(() {
+      setState(() {
+        log(animation!.value.toString());
+      });
+    });
+    animationController!.forward();
     super.initState();
   }
 
@@ -40,131 +60,67 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
     var user;
 
     final quizlist = ref.watch(quizListProvider).getQuizes;
-    final quizdatacontroller = ref.watch(quizcontrollerProvider);
     final quizstate = ref.watch(quizcontrollerProvider);
-    var score = quizstate.correct.length;
+
     var total = quizlist.length;
     return Scaffold(
-      appBar: AppBar(
-        leading: const SizedBox(),
-        centerTitle: true,
-        title: Text(
-          !quizstate.incorrect.isNotEmpty
-              ? 'Congratulations'
-              : 'Let\'s get better, Comrade!',
-          textAlign: TextAlign.center,
-          style:
-              AppTextStyle.largeTitlename.copyWith(fontWeight: FontWeight.bold),
-        ),
+      appBar: CustomResultAppBar(
+        quizState: quizstate,
+        quizlength: total,
+        score: animationController!.value,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Stack(
-                children: [
-                  RiveAnimation.asset(
-                    'assets/mascot/hermione.riv',
-                    animations: ['correct'],
-                    useArtboardSize: true,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Keep practicing and you\'ll never forget the answers to these questions!',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyle.mediumTitlename,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Your Score',
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      '${score}/${total}',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyle.mediumTitlename,
-                    ),
-                  ],
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Rate the quiz',
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: quizstate.incorrect.isEmpty
-                    ? const SizedBox.shrink()
-                    : TextButton.icon(
-                        icon: const Icon(
-                            Icons.keyboard_double_arrow_right_outlined),
-                        label: Text(
-                          'Preview failed quizes ',
-                          style: AppTextStyle.mediumTitlename,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: ((context) => const Scaffold())));
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(
+              3,
+              (index) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (index == 0) {
+                            ref
+                                .watch(quizcontrollerProvider.notifier)
+                                .clearQuizState();
+                            Navigator.pop(context);
+                          } else if (index == 1) {
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ReviewsScreen()));
+                          }
                         },
+                        child: CircleAvatar(
+                            backgroundColor: index == 0
+                                ? Colors.amber
+                                : index == 1
+                                    ? Colors.blueAccent
+                                    : Colors.green,
+                            child: Icon(
+                              index == 0
+                                  ? Icons.replay
+                                  : index == 1
+                                      ? Icons.home_outlined
+                                      : Icons.rate_review_rounded,
+                              color: Colors.white,
+                            )),
                       ),
-              ),
-              // reaction == null
-              //     ? const SizedBox.shrink()
-              //     :
-              Container(
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).canvasColor,
-                  border: Border.all(width: 2, color: Colors.white60),
-                ),
-                height: 50,
-                width: 50,
-                child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () async {
-                      showDialog(
-                          context: context,
-                          builder: (context) =>
-                              const Center(child: CircularProgressIndicator()));
-
-                      // await sendViewerDetails(user, score, total)
-                      //     .then((value) async {
-                      //   ref.refresh(quizListProvider).clearQuiz();
-                      //   ref
-                      //       .refresh(quizcontrollerProvider.notifier)
-                      //       .clearQuizState();
-
-                      //   Navigator.pop(context);
-
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                      //   Navigator.popUntil(context,
-                      //       (route) => route.settings.name == HomePage.id);
-                      // }).onError((error, stackTrace) {
-                      //   print(error.toString());
-                      // });
-                    }),
-              )
-            ],
-          ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 20),
+                        child: Text(index == 0
+                            ? 'Replay'
+                            : index == 1
+                                ? 'home'
+                                : 'Review'),
+                      )
+                    ],
+                  )),
         ),
       ),
     );
@@ -181,4 +137,140 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
   //   await quizObject!.update();
   //   log(quizViewersList.length.toString());
   // }
+}
+
+class ReviewsScreen extends ConsumerWidget {
+  const ReviewsScreen({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var quizquestionsList = ref.watch(quizListProvider).getQuizes;
+    var incorrectQuizList = ref.watch(quizcontrollerProvider).incorrect;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quiz Review'),
+        centerTitle: true,
+        backgroundColor: const Color(0xff076688),
+      ),
+      body: SizedBox(
+        height: getScreenSize(context).height,
+        width: getScreenSize(context).width,
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: List.generate(quizquestionsList.length, (index) {
+            return Card(
+              color: incorrectQuizList.any((element) =>
+                      element.correctanswer ==
+                      quizquestionsList[index].correctanswer)
+                  ? Colors.red
+                  : null,
+              child: Container(
+                  margin: const EdgeInsets.all(15),
+                  height: 100,
+                  width: getScreenSize(context).width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text((index + 1).toString()),
+                          ),
+                          Expanded(
+                            child: Text(
+                              quizquestionsList[index].question,
+                              style: AppTextStyle.mediumTitlename,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Text('Ans:'),
+                          ),
+                          Expanded(
+                            child: Text(
+                              quizquestionsList[index].correctanswer,
+                              style: AppTextStyle.titlename
+                                  .copyWith(color: Colors.green),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  )),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class ScoreChart extends ConsumerWidget {
+  const ScoreChart({
+    super.key,
+    required this.score,
+  });
+  final double score;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final quizlist = ref.watch(quizListProvider).getQuizes;
+
+    final quizstate = ref.watch(quizcontrollerProvider);
+
+    var total = quizlist.length;
+    return Center(
+        child: Stack(
+      children: [
+        const Center(
+          child: CircleAvatar(
+            radius: 83,
+            backgroundColor: Colors.white,
+            child: CircularProgressIndicator(
+              strokeWidth: 55,
+              strokeAlign: 1.4,
+              value: 0.1,
+              color: Color(0xff076688),
+            ),
+          ),
+        ),
+        Center(
+          child: Material(
+            shape: const CircleBorder(),
+            elevation: 5,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 45,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Your Score'),
+                  Text(
+                    score.toString(),
+                    style: AppTextStyle.mediumTitlename
+                        .copyWith(color: const Color(0xff065774)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    ));
+  }
 }
