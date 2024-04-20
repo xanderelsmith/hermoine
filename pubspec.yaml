@@ -35,22 +35,32 @@ dependencies:
   file_picker: ^8.0.0+1
   firebase_auth: ^4.14.0
   firebase_core: ^2.22.0
+  fl_chart: ^0.67.0
   flutter:
     sdk: flutter
   flutter_gemini: ^2.0.3
+  flutter_launcher_icons: ^0.13.1
+  flutter_markdown: ^0.6.23
   flutter_svg: ^2.0.9
   get: ^4.6.6
   hooks_riverpod: ^2.5.1
   image_picker: ^1.0.7
   intl: ^0.18.0
+  just_audio: ^0.9.37
+  just_audio_cache: ^0.1.1
   parse_server_sdk_flutter: ^7.0.1
   rive: ^0.13.1
+  syncfusion_flutter_charts: ^20.4.54
   syncfusion_flutter_pdfviewer: ^20.4.54
 
 dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
+flutter_launcher_icons:
+  android: "ic_launcher" # Or "ic_launcher" (depending on your preference)
+  ios: true
+  image_path: "assets/mascot/mascot.png" # Path to your icon image
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

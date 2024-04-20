@@ -7,6 +7,7 @@ import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:rive/rive.dart';
 
@@ -41,9 +42,10 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
   @override
   void initState() {
     topic = widget.quizdata['topic'];
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    animation = Tween<double>(begin: 1, end: 0).animate(animationController!);
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    animation = Tween<double>(begin: 0, end: 1).animate(animationController!);
+
     animationController!.addListener(() {
       setState(() {});
     });
@@ -64,7 +66,6 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
             onPressed: () {
-              ref.watch(quizListProvider).addQuizData(widget.quizdata);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -82,7 +83,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
       ),
       appBar: AppBar(
           title: LinearProgressIndicator(
-        value: 0.1,
+        value: 0,
         backgroundColor: Colors.blue,
         minHeight: 20,
         color: const Color(0xff88FF59),
@@ -94,24 +95,26 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
             4,
             (index) => AnimatedPositioned(
               curve: Curves.easeIn,
-              top: index * 120,
-              right: index * 100 * (animation!.value!),
-              duration: Duration(seconds: index * 5),
-              child: Visibility(
-                visible: (animation!.value!) < 0.4,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: AppColor.primaryColor,
-                  ),
-                  width: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      getMascotWords(topic, index),
-                      style: const TextStyle(color: Colors.white),
+              right: 0,
+              top: index * 120 * (animation!.value!),
+              duration: Duration(seconds: index * 2),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Visibility(
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColor.primaryColor,
+                    ),
+                    width: 200,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        getMascotWords(topic, index),
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
