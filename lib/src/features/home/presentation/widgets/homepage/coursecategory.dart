@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/constants/constants.dart';
@@ -71,6 +76,91 @@ class HomePageCourseCategory extends StatelessWidget {
                         });
               }),
         )
+      ],
+    );
+  }
+}
+
+class QuizListTile extends ConsumerStatefulWidget {
+  final String presentUser;
+  final String quizname;
+
+  final String datecreated;
+  final String username;
+  final bool isViewed;
+
+  ///is default to true, so you can set it to false, basically allows you to see options in a quiz like 'delete', 'modify' etc
+  final bool? hasOption;
+  final List quizEmojis;
+  const QuizListTile(
+      {super.key,
+      required this.screensize,
+      this.hasOption,
+      this.widthPadding,
+      required this.onTap,
+      this.onLongPress,
+      this.canBeLiveEdited,
+      required this.quizname,
+      required this.datecreated,
+      required this.username,
+      required this.isViewed,
+      required this.quizEmojis,
+      required this.presentUser,
+      required this.imageurl});
+  final String imageurl;
+
+  ///the amount of spacing from the side
+  final int? widthPadding;
+  final Size screensize;
+  final bool? canBeLiveEdited;
+  final VoidCallback onTap;
+  final Function(ParseObject data)? onLongPress;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _QuizListTileState();
+}
+
+class _QuizListTileState extends ConsumerState<QuizListTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColor.primaryColor)),
+          height: 60,
+          width: widget.screensize.width - 50,
+          child: InkWell(
+            enableFeedback: true,
+            onTap: () {
+              widget.onTap();
+            },
+            onLongPress: () {},
+            child: Row(children: [
+              Expanded(
+                  child: CircleAvatar(
+                child: Image.network(widget.imageurl),
+              )),
+              Expanded(
+                flex: 4,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.quizname,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyle.mediumTitlename,
+                      ),
+                      Text(widget.username),
+                    ]),
+              ),
+            ]),
+          ),
+        ),
       ],
     );
   }
