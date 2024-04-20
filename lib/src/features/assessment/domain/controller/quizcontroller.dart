@@ -5,6 +5,7 @@ import 'package:hermione/src/features/assessment/data/sources/enums/quiztype_enu
 import 'package:hermione/src/features/assessment/domain/entities/quiz_status.dart';
 import 'package:hermione/src/features/assessment/domain/entities/quizstate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 
 class QuizController extends StateNotifier<QuizState> {
   QuizState get quizstate => state;
@@ -17,6 +18,7 @@ class QuizController extends StateNotifier<QuizState> {
   }
 
   QuizController() : super(QuizState.initial());
+
   void submitAnswer(Question currentquestion, dynamic answer) {
     //checks if the quiz is complete
     if (state.answered) return;
@@ -52,7 +54,8 @@ class QuizController extends StateNotifier<QuizState> {
         );
       }
     } else {
-      if (currentquestion.correctanswer == answer ||
+      if (currentquestion.correctanswer.toString().toLowerCase() ==
+              answer.toString().toLowerCase() ||
           (currentquestion as ShortAnswer)
               .otherCorrectAnswers!
               .contains(answer)) {
@@ -86,12 +89,19 @@ class QuizController extends StateNotifier<QuizState> {
   }
 }
 
-void wrongSelectionSound() {
-  // AudioPlayer plyr = AudioPlayer();
-  // plyr.play(AssetSource('wronganswer.mp3'));
+final player = AudioPlayer();
+Future<void> wrongSelectionSound() async {
+  // Create a player
+  await player.setAsset(// Load a URL
+      'assets/wrong-buzzer-6268.mp3'); // Schemes: (https: | file: | asset: )
+  player.play(); // Play without waiting for completion
+  await player.play();
+  // Pla
 }
 
-void successSound() {
-  // AudioPlayer plyr = AudioPlayer();
-  // plyr.play(AssetSource('correct.mp3'));
+Future<void> successSound() async {
+  await player.setAsset(// Load a URL
+      'assets/correct-6033.mp3'); // Schemes: (https: | file: | asset: )
+  player.play(); // Play without waiting for completion
+  await player.play(); // Play while waiting for completion
 }

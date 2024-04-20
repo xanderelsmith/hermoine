@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hermione/src/features/assessment/data/sources/enums/quizdataenum.dart';
 import 'package:hermione/src/features/assessment/domain/entities/geminiapihelper.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/pdfquizifyscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/previewquizdata.dart';
 import 'package:hermione/src/features/auth/domain/entities/loginvalidator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rive/rive.dart';
 
 import '../../../../core/constants/colors.dart';
 import '../../../auth/presentation/widgets/styled_textfield.dart';
@@ -42,49 +44,61 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
 
     return Scaffold(
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8.0,
-        ),
-        child: ElevatedButton(
-          child: const Text('Generate'),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: ((context) => const AlertDialog(
-                      content: SizedBox(
-                          height: 50,
-                          child: Center(child: CircularProgressIndicator())),
-                      title: Text('Loading'),
-                    )));
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        child: SizedBox(
+          height: 40,
+          child: ElevatedButton(
+            child: Text(
+              'Generate',
+              style: AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
+            ),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: ((context) => const SizedBox(
+                        height: 100,
+                        child: AlertDialog(
+                          content: SizedBox(
+                            height: 250,
+                            child: RiveAnimation.asset(
+                              'assets/mascot/hermione.riv',
+                              animations: ['idle question'],
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                          title: Text('Loading'),
+                        ),
+                      )));
 
-            final gemini = Gemini.instance;
+              // final gemini = Gemini.instance;
 
-            if (quizDataSource == QuizDataSource.fromPdf) {
-              extractedText = pdfdata;
-            } else {
-              extractedText = sampleDataTextEditingController.text;
-            }
-            gemini
-                .text(GeminiSparkConfig.prompt(
-                    message:
-                        extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
-                    difficulty: difficulty,
-                    questionNumber: questionNo))
-                .then((value) {
-              log('result $value.output');
-              Navigator.pop(context);
+              // if (quizDataSource == QuizDataSource.fromPdf) {
+              //   extractedText = pdfdata;
+              // } else {
+              //   extractedText = sampleDataTextEditingController.text;
+              // }
+              // gemini
+              //     .text(GeminiSparkConfig.prompt(
+              //         message:
+              //             extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
+              //         difficulty: difficulty,
+              //         questionNumber: questionNo))
+              //     .then((value) {
+              //   log('result $value.output');
+              //   Navigator.pop(context);
 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PreviewQuestionsPage(
-                            questionData: value!.output ?? '',
-                          )));
-            }).onError((error, stackTrace) {
-              log(error.toString());
-            });
-            ;
-          },
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => PreviewQuestionsPage(
+              //                 questionData: value!.output ?? '',
+              //                 title: quiznameTextEditingController.text,
+              //               )));
+              // }).onError((error, stackTrace) {
+              //   log(error.toString());
+              // });
+            },
+          ),
         ),
       ),
       appBar: AppBar(),

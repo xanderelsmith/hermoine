@@ -1,8 +1,8 @@
 
 
-## Hermoine (H-1123): AI Assessment Chatbot for Tutors (Google AI Hackathon Project)
+## Hermoine AI (H-1123): AI Assessment Chatbot for Tutors (Google AI Hackathon Project)
 
-**Hermoine** (H-1123) is an AI-powered chatbot we built during the Google AI Hackathon. It's designed to assist tutors in assessing students' knowledge on specific topics, aiming to revolutionize the learning experience.
+**Hermoine AI** (H-1123) is an AI-powered chatbot we built during the Google AI Hackathon. It's designed to assist tutors in assessing students' knowledge on specific topics, aiming to revolutionize the learning experience.
 
 **Features:**
 

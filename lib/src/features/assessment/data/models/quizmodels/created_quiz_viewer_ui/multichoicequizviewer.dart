@@ -44,83 +44,88 @@ class MultiChoice extends Question {
       sortedAnswer.add(answer);
     }
     Size screensize = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
-              child: Text(question),
-            ),
-            Expanded(
-              child: Container(
-                width: double.infinity,
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.grey, borderRadius: BorderRadius.circular(10)),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(10)),
-                  gradient: RadialGradient(colors: [
-                    Theme.of(context).canvasColor,
-                    Colors.blueAccent
-                  ]),
-                ),
-                child: ListView(
-                    children: List.generate(
-                  sortedAnswer.length,
-                  (index) => Container(
-                    width: screensize.width - 100,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: answer == sortedAnswer[index]
-                          ? Colors.lightGreen
-                          : Colors.transparent,
-                    ),
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Icon(Icons.radio_button_checked),
-                        ),
-                        SizedBox(
-                          width: 200,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              sortedAnswer[index],
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(),
-                              softWrap: true,
+                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
+                child: Text(question),
+              ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(10)),
+                    gradient: RadialGradient(colors: [
+                      Theme.of(context).canvasColor,
+                      Colors.blueAccent
+                    ]),
+                  ),
+                  child: ListView(
+                      children: List.generate(
+                    sortedAnswer.length,
+                    (index) => Container(
+                      width: screensize.width - 100,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: answer == sortedAnswer[index]
+                            ? Colors.lightGreen
+                            : Colors.transparent,
+                      ),
+                      child: Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Icon(Icons.radio_button_checked),
+                          ),
+                          SizedBox(
+                            width: 200,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                sortedAnswer[index],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(),
+                                softWrap: true,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )),
+                  )),
+                ),
               ),
-            ),
-          ],
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: images == null || images!.isEmpty
-              ? const SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    // showDialog(
-                    //     context: context,
-                    //     builder: ((context) =>
-                    //         QuizImageEditor(images: images)));
-                  },
-                  icon: const CircleAvatar(child: Icon(Icons.image))),
-        )
-      ],
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: images == null || images!.isEmpty
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      // showDialog(
+                      //     context: context,
+                      //     builder: ((context) =>
+                      //         QuizImageEditor(images: images)));
+                    },
+                    icon: const CircleAvatar(child: Icon(Icons.image))),
+          )
+        ],
+      ),
     );
   }
 

@@ -34,45 +34,49 @@ class ShortAnswer extends Question {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenSize = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Column(children: [
-          Expanded(
-            flex: 2,
-            child: Center(
-                child: Card(
-                    child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                questions,
-                textAlign: TextAlign.center,
-              ),
-            ))),
-          ),
-          Expanded(
-              flex: 5,
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.red, borderRadius: BorderRadius.circular(10)),
+      child: Stack(
+        children: [
+          Column(children: [
+            Expanded(
+              flex: 2,
               child: Center(
                   child: Card(
                       child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-                child: Text(list.join(',').toString()),
-              ))))
-        ]),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: images == null || images!.isEmpty
-              ? const SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    // showDialog(
-                    //     context: context,
-                    //     builder: ((context) =>
-                    //         QuizImageEditor(images: images)));
-                  },
-                  icon: const CircleAvatar(child: Icon(Icons.image))),
-        )
-      ],
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  questions,
+                  textAlign: TextAlign.center,
+                ),
+              ))),
+            ),
+            Expanded(
+                flex: 5,
+                child: Center(
+                    child: Card(
+                        child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+                  child: Text(list.join(',').toString()),
+                ))))
+          ]),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: images == null || images!.isEmpty
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      // showDialog(
+                      //     context: context,
+                      //     builder: ((context) =>
+                      //         QuizImageEditor(images: images)));
+                    },
+                    icon: const CircleAvatar(child: Icon(Icons.image))),
+          )
+        ],
+      ),
     );
   }
 

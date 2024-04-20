@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../auth/data/models/user.dart';
+import '../pages/homepage.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.userDetails});
@@ -11,7 +12,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-      height: 700,
       color: AppColor.primaryColor,
       child: SafeArea(
         child: Column(
@@ -20,9 +20,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 150, 158, 160),
-                  child: Icon(Icons.person),
+                // Wrap the CircleAvatar with a GestureDetector
+                GestureDetector(
+                  onTap: () {
+                    // Open the drawer on tap (assuming you have a drawer widget)
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 150, 158, 160),
+                    child: Icon(Icons.person),
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -36,11 +43,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           style: AppTextStyle.titlename
                               .copyWith(color: Colors.white),
                         ),
+                        // Text(
+                        //   userDetails?.name ?? 'no name',
+                        //   style: AppTextStyle.mediumTitlename
+                        //       .copyWith(color: Colors.white),
+                        // ),
                         Text(
-                          userDetails!.email! ?? 'no name',
-                          style: AppTextStyle.mediumTitlename
-                              .copyWith(color: Colors.white),
-                        ),
+                          userDetails!.name!,
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     ),
                   ),
