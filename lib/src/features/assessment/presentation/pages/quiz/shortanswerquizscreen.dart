@@ -16,10 +16,11 @@ class ShortAnswerQuizScreen extends ConsumerStatefulWidget {
 
   final ShortAnswer questionData;
   const ShortAnswerQuizScreen({
+    required this.index,
     Key? key,
     required this.questionData,
   }) : super(key: key);
-
+  final int index;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _ShortAnswerQuizScreenState();
@@ -56,6 +57,7 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
                       height: screensize.height / 3,
                       width: screensize.width,
                       child: QuestionCard(
+                        index: widget.index,
                         question: widget.questionData,
                         screensize: screensize,
                         animationChild:

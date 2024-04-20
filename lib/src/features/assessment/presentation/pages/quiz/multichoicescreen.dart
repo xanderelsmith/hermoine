@@ -16,12 +16,13 @@ import '../../widgets/questioncard.dart';
 
 class MultiChoiceUIScreen extends ConsumerStatefulWidget {
   const MultiChoiceUIScreen({
+    required this.index,
     super.key,
     required this.screensize,
     // required this.topic,
     required this.question,
   });
-
+  final int index;
   final Size screensize;
   // final String topic;
   final Question question;
@@ -38,6 +39,7 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
   SMITrigger? wrong;
 
   List<String> answer = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -69,6 +71,7 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                   Column(
                     children: [
                       QuestionCard(
+                        index: widget.index,
                         animationChild:
                             RiveAnimation.asset('assets/mascot/hermione.riv',
                                 animations: const [

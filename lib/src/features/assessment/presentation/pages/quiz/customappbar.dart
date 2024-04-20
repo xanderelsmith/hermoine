@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/resultscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/widgets/resultsubcomponent.dart';
+import 'package:hermione/src/features/assessment/presentation/widgets/scorewidget.dart';
 
 import '../../../../../core/constants/size_utils.dart';
 import '../../../domain/entities/quizstate.dart';
@@ -31,45 +32,49 @@ class CustomResultAppBar extends StatelessWidget implements PreferredSize {
           ),
           Align(
             alignment: const Alignment(0, 1.6),
-            child: Container(
-              height: 80,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              width: getScreenSize(context).width - 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ResultDataSubComponent(
-                          name: 'Completion',
-                          value:
-                              '${((quizState.correct.length / quizlength) * 100).floor()}%',
-                          tagcolor: Color(0xff065774)),
-                      ResultDataSubComponent(
-                          name: 'Correct',
-                          value: '${quizState.correct.length}',
-                          tagcolor: Colors.green),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ResultDataSubComponent(
-                          name: 'Questions',
-                          value: '$quizlength',
-                          tagcolor: Colors.amber),
-                      ResultDataSubComponent(
-                          name: 'Wrong',
-                          value: '${quizState.incorrect.length}',
-                          tagcolor: Colors.red),
-                    ],
-                  ),
-                ],
+            child: Card(
+              elevation: 5,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+                width: getScreenSize(context).width - 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ResultDataSubComponent(
+                            name: 'Completion',
+                            value:
+                                '${((quizState.correct.length / quizlength) * 100).floor()}%',
+                            tagcolor: Color(0xff065774)),
+                        ResultDataSubComponent(
+                            name: 'Correct',
+                            value: '${quizState.correct.length}',
+                            tagcolor: Colors.green),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ResultDataSubComponent(
+                            name: 'Questions',
+                            value: '$quizlength',
+                            tagcolor: Colors.amber),
+                        ResultDataSubComponent(
+                            name: 'Wrong',
+                            value: '${quizState.incorrect.length}',
+                            tagcolor: Colors.red),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           )

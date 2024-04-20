@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
@@ -43,8 +44,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool ispop) {
-        ref.watch(quizcontrollerProvider.notifier).clearQuizState();
-        pageController.dispose();
+        // ref.watch(quizcontrollerProvider.notifier).clearQuizState();
+        // pageController.dispose();
       },
       child: Scaffold(
           // bottomSheet: quizlist[0].runtimeType == MultiChoice
@@ -104,12 +105,20 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
                                       );
                                     }
                                   } else {
+                                    final quizlist =
+                                        ref.watch(quizListProvider).getQuizes;
+                                    final quizstate =
+                                        ref.watch(quizcontrollerProvider);
+                                    double scoreDecimal =
+                                        quizstate.correct.length /
+                                            quizlist.length;
                                     await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: ((context) =>
-                                                    const QuizResultScreen())))
-                                        .then((value) {
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                QuizResultScreen(
+                                                  scoreDecimal: scoreDecimal,
+                                                )))).then((value) {
                                       ref
                                           .watch(
                                               quizcontrollerProvider.notifier)
@@ -126,24 +135,14 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
             ],
           ),
           appBar: AppBar(
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Text(
-                    '${quizdatacontroller.correct.length}/${quizes.length}'
-                        .toString(),
-                    style: AppTextStyle.mediumTitlename,
-                  ),
-                )
-              ],
               title: LinearProgressIndicator(
-                value: quizdatacontroller.correct.length.toDouble() /
-                    quizes.length.toDouble(),
-                backgroundColor: Colors.blue,
-                minHeight: 20,
-                color: const Color(0xff88FF59),
-                borderRadius: BorderRadius.circular(10),
-              )),
+            value: quizdatacontroller.correct.length.toDouble() /
+                quizes.length.toDouble(),
+            backgroundColor: Colors.blue,
+            minHeight: 20,
+            color: const Color(0xff88FF59),
+            borderRadius: BorderRadius.circular(10),
+          )),
           body: PageView.builder(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: quizes.length,
@@ -207,11 +206,15 @@ class BottomSheet extends StatelessWidget {
 questionScreenBuilder(List<Question> quizes, int index, Size screensize) {
   return quizes[index].quizType == QuizType.multichoice
       ? MultiChoiceUIScreen(
+          index: index,
           screensize: screensize,
           // topic:quizes[index]. topic,
           question: quizes[index],
         )
-      : ShortAnswerQuizScreen(questionData: quizes[index] as ShortAnswer);
+      : ShortAnswerQuizScreen(
+          questionData: quizes[index] as ShortAnswer,
+          index: index,
+        );
 }
 
 final quizcontrollerProvider =
