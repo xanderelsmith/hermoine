@@ -197,7 +197,21 @@ class Analytics extends StatelessWidget {
               tooltipBehavior: TooltipBehavior(enable: true),
             ),
           ),
-          const Expanded(child: SizedBox())
+          Expanded(
+              child: ListView(
+            children: List.generate(
+                chartData.length,
+                (index) => SizedBox(
+                      width: getScreenSize(context).width,
+                      height: 40,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(2.0),
+                        leading: const CircleAvatar(),
+                        subtitle: Text(chartData[index].score.toString()),
+                        title: Text(chartData[index].username ?? ''),
+                      ),
+                    )),
+          ))
         ],
       ),
     );
@@ -205,12 +219,6 @@ class Analytics extends StatelessWidget {
 }
 
 List timeline = ['Last 7 hours', 'Last 10 hours', 'Today'];
-
-class SalesData {
-  SalesData(this.year, this.sales);
-  final String year;
-  final double sales;
-}
 
 /// The method returns line series to chart.
 List<LineSeries<QuizReportData, num>> _getDefaultLineSeries(chartData) {
