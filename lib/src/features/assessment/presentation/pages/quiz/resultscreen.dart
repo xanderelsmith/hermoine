@@ -64,7 +64,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
     var user;
-
+    log(ref.watch(userProvider)!.name.toString());
     final quizlist = ref.watch(quizListProvider).getQuizes;
     final quizstate = ref.watch(quizcontrollerProvider);
 
@@ -98,7 +98,8 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                                 context: context,
                                 builder: (context) => const Center(
                                     child: CircularProgressIndicator()));
-                            sendViewerDetails(user?.email, score, total)
+                            sendViewerDetails(
+                                    user?.username, user?.email, score, total)
                                 .then((value) {
                               Navigator.pop(context);
                               Navigator.popUntil(
@@ -143,12 +144,13 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
   }
 
   Future<void> sendViewerDetails(
-      String? userEmaill, int score, int total) async {
+      String? username, String? userEmaill, int score, int total) async {
     List quizViewersList =
         quizObject!['viewers'] != null ? quizObject!['viewers']! : [];
 
     quizViewersList.add({
-      'user': userEmaill,
+      'username': username,
+      'userEmail': userEmaill,
       'score': score,
       'total': total,
       'date': DateTime.now()

@@ -134,14 +134,16 @@ class Analytics extends StatelessWidget {
   Widget build(BuildContext context) {
     List quizlist = quiz['viewers'] ?? [];
     List<QuizReportData> chartData = quizlist.map((e) {
-      log(e['date'].toString());
+      var date = DateTime.tryParse(e['date']['iso']);
+      log(date!.minute.toString());
       return QuizReportData(
-          color: Colors.primaries.first,
-          date: e['date'],
+          color: Colors.primaries[9],
+          date: date,
           score: e['score'],
           total: e['total'],
           username: e['user'] ?? '');
     }).toList();
+    int selectedIndex = 1;
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
@@ -162,14 +164,17 @@ class Analytics extends StatelessWidget {
                         width: 100,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xff065774)),
+                            color: selectedIndex == index
+                                ? const Color(0xff065774)
+                                : Colors.grey),
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               timeline[index],
-                              style: AppTextStyle.mediumTitlename
-                                  .copyWith(fontSize: 12, color: Colors.white),
+                              style: AppTextStyle.mediumTitlename.copyWith(
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -194,7 +199,21 @@ class Analytics extends StatelessWidget {
                   majorTickLines:
                       const MajorTickLines(color: Colors.transparent)),
               series: _getDefaultLineSeries(chartData),
-              tooltipBehavior: TooltipBehavior(enable: true),
+              tooltipBehavior: TooltipBehavior(
+                  enable: true,
+                  builder: (data, dynamic point, dynamic series, int pointIndex,
+                      int seriesIndex) {
+                    return Container(
+                        height: 50,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                        ),
+                        child: Text(data.username));
+                  }),
+              onTooltipRender: (tooltipArgs) {
+                return;
+              },
             ),
           ),
           Expanded(
@@ -206,9 +225,16 @@ class Analytics extends StatelessWidget {
                       height: 40,
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(2.0),
-                        leading: const CircleAvatar(),
+                        leading: const CircleAvatar(
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                        ),
                         subtitle: Text(chartData[index].score.toString()),
-                        title: Text(chartData[index].username ?? ''),
+                        title: Text(chartData[index].username.isNotEmpty
+                            ? chartData[index].username
+                            : 'Emmanuel Onyeji'),
                       ),
                     )),
           ))
@@ -225,10 +251,12 @@ List<LineSeries<QuizReportData, num>> _getDefaultLineSeries(chartData) {
   return <LineSeries<QuizReportData, num>>[
     LineSeries<QuizReportData, num>(
         dataSource: chartData,
-        xValueMapper: (QuizReportData sales, _) => sales.score,
+        pointColorMapper: (QuizReportData sales, _) => sales.color,
+        dataLabelMapper: (datum, index) => 'hi',
+        xValueMapper: (QuizReportData sales, _) => sales.date!.hour,
         yValueMapper: (QuizReportData sales, _) =>
             (sales.score / sales.total) * 100,
-        name: 'Score',
+        name: 'Grade',
         markerSettings: const MarkerSettings(
           isVisible: true,
         )),
@@ -246,5 +274,5 @@ class QuizReportData {
   final int score;
   final Color color;
   final int total;
-  final Map date;
+  final DateTime? date;
 }

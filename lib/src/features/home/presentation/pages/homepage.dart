@@ -47,6 +47,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         newUser = value;
       });
     }).onError((error, stackTrace) {
+      ref.watch(userProvider.notifier).assignUserData(widget.userDetails!);
       log(error.toString());
     });
   }
