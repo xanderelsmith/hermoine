@@ -7,18 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:hermione/src/core/constants/colors.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/leaderboard/leaderboard.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
 import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../assessment/presentation/pages/tutor/createdquizscreen.dart';
 import '../../../auth/presentation/pages/auth.dart';
 import '../../../auth/presentation/pages/create_account_screen.dart';
-import '../../../auth/presentation/pages/profile.dart';
 import '../../../auth/presentation/pages/signin_screen.dart';
 import '../widgets/customdrawer.dart';
 import '../widgets/homepage/coursecategory.dart';

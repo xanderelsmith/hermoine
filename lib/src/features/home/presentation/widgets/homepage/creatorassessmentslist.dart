@@ -6,16 +6,12 @@ import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchquizes.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/assessmentdetailscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/createquizscreen.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/coursecategory.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/courseslist.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import '../../../../../core/widgets/specialtextfield.dart';
 import '../../../../assessment/data/sources/fetchcourses.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class CreatorAssessmentScreen extends StatelessWidget {
   const CreatorAssessmentScreen({
@@ -103,7 +99,11 @@ class CreatorAssessmentScreen extends StatelessWidget {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: ((context) =>
-                                                                const Analytics()
+                                                                Analytics(
+                                                                  quiz: snapshot
+                                                                          .data![
+                                                                      index],
+                                                                )
                                                             // const AssessmentDetailScreen()
 
                                                             )));
@@ -127,10 +127,21 @@ class CreatorAssessmentScreen extends StatelessWidget {
 class Analytics extends StatelessWidget {
   const Analytics({
     super.key,
+    required this.quiz,
   });
-
+  final ParseObject quiz;
   @override
   Widget build(BuildContext context) {
+    List quizlist = quiz['viewers'] ?? [];
+    List<QuizReportData> chartData = quizlist.map((e) {
+      log(e['date'].toString());
+      return QuizReportData(
+          color: Colors.primaries.first,
+          date: e['date'],
+          score: e['score'],
+          total: e['total'],
+          username: e['user'] ?? '');
+    }).toList();
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
@@ -166,22 +177,23 @@ class Analytics extends StatelessWidget {
             ),
           ),
           Expanded(
+            flex: 2,
             child: SfCartesianChart(
               plotAreaBorderWidth: 0,
-              title: ChartTitle(text: 'Inflation - Consumer price'),
-              legend: Legend(
-                  isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
+              title: ChartTitle(text: 'Score - Time'),
               primaryXAxis: NumericAxis(
                   edgeLabelPlacement: EdgeLabelPlacement.shift,
                   interval: 2,
+                  maximum: 24,
                   majorGridLines: const MajorGridLines(width: 0)),
               primaryYAxis: NumericAxis(
                   labelFormat: '{value}%',
-                  interval: 10,
+                  interval: 2,
+                  maximum: 100,
                   axisLine: const AxisLine(width: 0),
                   majorTickLines:
                       const MajorTickLines(color: Colors.transparent)),
-              series: _getDefaultLineSeries(),
+              series: _getDefaultLineSeries(chartData),
               tooltipBehavior: TooltipBehavior(enable: true),
             ),
           ),
@@ -200,31 +212,31 @@ class SalesData {
   final double sales;
 }
 
-const List<QuizReportData> chartData = [
-  QuizReportData(2005, 21, 28),
-  QuizReportData(2006, 24, 44),
-  QuizReportData(2007, 36, 48),
-  QuizReportData(2008, 38, 50),
-  QuizReportData(2009, 54, 66),
-  QuizReportData(2010, 57, 78),
-  QuizReportData(2011, 70, 84)
-];
-
 /// The method returns line series to chart.
-List<LineSeries<QuizReportData, num>> _getDefaultLineSeries() {
+List<LineSeries<QuizReportData, num>> _getDefaultLineSeries(chartData) {
   return <LineSeries<QuizReportData, num>>[
     LineSeries<QuizReportData, num>(
         dataSource: chartData,
-        xValueMapper: (QuizReportData sales, _) => sales.x,
-        yValueMapper: (QuizReportData sales, _) => sales.y,
-        name: 'Germany',
-        markerSettings: const MarkerSettings(isVisible: true)),
+        xValueMapper: (QuizReportData sales, _) => sales.score,
+        yValueMapper: (QuizReportData sales, _) =>
+            (sales.score / sales.total) * 100,
+        name: 'Score',
+        markerSettings: const MarkerSettings(
+          isVisible: true,
+        )),
   ];
 }
 
 class QuizReportData {
-  const QuizReportData(this.x, this.y, this.y2);
-  final double x;
-  final double y;
-  final double y2;
+  const QuizReportData(
+      {required this.username,
+      required this.color,
+      required this.date,
+      required this.score,
+      required this.total});
+  final String username;
+  final int score;
+  final Color color;
+  final int total;
+  final Map date;
 }
