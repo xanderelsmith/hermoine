@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/utils/screensizeutils.dart';
@@ -201,19 +202,22 @@ class Analytics extends StatelessWidget {
               series: _getDefaultLineSeries(chartData),
               tooltipBehavior: TooltipBehavior(
                   enable: true,
+                  color: Colors.grey,
                   builder: (data, dynamic point, dynamic series, int pointIndex,
                       int seriesIndex) {
                     QuizReportData data2 = data;
                     return Container(
                         height: 50,
                         width: 100,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
                           color: Colors.blueGrey,
                         ),
                         child: Center(
-                            child: Row(
+                            child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Text(data2.username.toString()),
                             Text(
                               ('${data2.score}/${data2.total}'.toString()),
                             )
@@ -226,24 +230,30 @@ class Analytics extends StatelessWidget {
             ),
           ),
           Expanded(
-              child: ListView(
-            children: List.generate(
-                chartData.length,
-                (index) => SizedBox(
-                      width: getScreenSize(context).width,
-                      height: 40,
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(2.0),
-                        leading: const CircleAvatar(
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
+              child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 20,
+            ),
+            child: ListView(
+              children: List.generate(
+                  chartData.length,
+                  (index) => SizedBox(
+                        width: getScreenSize(context).width,
+                        height: 40,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(2.0),
+                          leading: const CircleAvatar(
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
                           ),
+                          subtitle: Text(chartData[index].score.toString()),
+                          title: Text(chartData[index].username),
                         ),
-                        subtitle: Text(chartData[index].score.toString()),
-                        title: Text(chartData[index].username),
-                      ),
-                    )),
+                      )),
+            ),
           ))
         ],
       ),
