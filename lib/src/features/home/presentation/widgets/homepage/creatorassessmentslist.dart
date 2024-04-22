@@ -141,7 +141,7 @@ class Analytics extends StatelessWidget {
           date: date,
           score: e['score'],
           total: e['total'],
-          username: e['user'] ?? '');
+          username: e['user'].toString());
     }).toList();
     int selectedIndex = 1;
     return Scaffold(
@@ -203,13 +203,22 @@ class Analytics extends StatelessWidget {
                   enable: true,
                   builder: (data, dynamic point, dynamic series, int pointIndex,
                       int seriesIndex) {
+                    QuizReportData data2 = data;
                     return Container(
                         height: 50,
                         width: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
+                        decoration: const BoxDecoration(
+                          color: Colors.blueGrey,
                         ),
-                        child: Text(data.username));
+                        child: Center(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ('${data2.score}/${data2.total}'.toString()),
+                            )
+                          ],
+                        )));
                   }),
               onTooltipRender: (tooltipArgs) {
                 return;
@@ -232,9 +241,7 @@ class Analytics extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(chartData[index].score.toString()),
-                        title: Text(chartData[index].username.isNotEmpty
-                            ? chartData[index].username
-                            : 'Emmanuel Onyeji'),
+                        title: Text(chartData[index].username),
                       ),
                     )),
           ))
