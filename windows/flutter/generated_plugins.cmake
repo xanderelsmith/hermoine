@@ -8,7 +8,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   firebase_auth
   firebase_core
-  firebase_storage
+
+  rive_common
   syncfusion_pdfviewer_windows
   url_launcher_windows
 )

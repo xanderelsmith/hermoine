@@ -18,11 +18,13 @@ class RetrievedQuizRepository extends StateNotifier<List<Question>> {
 
 //quizdata
   ParseObject? quizdata;
+
+  ///stores the quiz parseonject
   addQuizData(parseQuizData) {
     return quizdata = parseQuizData;
   }
 
-  ///this stores the data of a single quiz,*(not list of quiz)
+  ///this transforms the stored the data of a single quiz,*(not list of quiz)
   inputData(ParseObject questionData) {
     final List<Question> questiondata =
         List.generate(questionData['questions'].length, (index) {

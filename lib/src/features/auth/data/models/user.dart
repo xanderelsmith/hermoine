@@ -27,7 +27,7 @@ class UserDetails {
         isTutor: true,
         username: user.displayName ?? "no name",
         email: user.email ?? "no email",
-        name: '',
+        name: user.displayName,
         age: "no age",
         gender: "no gender",
         bio: "no bio",
