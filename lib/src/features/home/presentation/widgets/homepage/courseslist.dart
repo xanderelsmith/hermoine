@@ -45,30 +45,6 @@ class Courses extends StatelessWidget {
                   ],
                 ),
               )),
-          Container(
-            height: 50,
-            child: FutureBuilder<List<ParseObject>?>(
-                future: CoursesApiFetch.getAllCourses(),
-                builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Builder(builder: (context) {
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: ((context, index) {
-                              ParseObject course = snapshot.data![index];
-                              return Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Chip(label: Text(course['name'])),
-                              );
-                            }),
-                          );
-                        });
-                }),
-          ),
           Expanded(
             child: FutureBuilder<List<ParseObject>?>(
                 future: QuizApiFetch.getAllquizes(),
@@ -84,8 +60,8 @@ class Courses extends StatelessWidget {
                               const SliverGridDelegateWithMaxCrossAxisExtent(
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 20,
-                                  mainAxisExtent: 200,
-                                  maxCrossAxisExtent: 200),
+                                  mainAxisExtent: 150,
+                                  maxCrossAxisExtent: 180),
                           itemBuilder: (context, index) {
                             var parseObject = snapshot.data![index];
                             return QuizContainer(parseObject: parseObject);

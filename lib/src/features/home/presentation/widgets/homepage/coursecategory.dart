@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -54,22 +55,34 @@ class HomePageCourseCategory extends StatelessWidget {
                           return SizedBox(
                             height: 100,
                             width: 100,
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: CircleAvatar(
-                                      child:
-                                          src.url != null && src.url!.isNotEmpty
-                                              ? Image.network(src.url ?? "")
-                                              : null,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AllCoursesScreen(
+                                              category: snapshot.data![index]
+                                                  ['name'],
+                                            )));
+                              },
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: CircleAvatar(
+                                        child: src.url != null &&
+                                                src.url!.isNotEmpty
+                                            ? Image.network(src.url ?? "")
+                                            : null,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(snapshot.data![index]['name']),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:
+                                          Text(snapshot.data![index]['name']),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );

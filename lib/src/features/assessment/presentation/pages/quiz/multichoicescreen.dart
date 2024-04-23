@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -160,7 +162,8 @@ class HIntWidget extends StatelessWidget {
                     minChildSize: 0.5, //set this as you want
                     builder: (BuildContext context, scrollController) {
                       return SectionChat(
-                        extractedText: '',
+                        question: question,
+                        extractedText: question.question,
                       );
                     },
                   ),
@@ -192,8 +195,10 @@ class HIntWidget extends StatelessWidget {
 }
 
 class SectionChat extends ConsumerStatefulWidget {
-  const SectionChat({super.key, required this.extractedText});
+  const SectionChat(
+      {super.key, required this.extractedText, required this.question});
   final String extractedText;
+  final Question question;
   @override
   ConsumerState<SectionChat> createState() => _SectionChatState();
 }
@@ -209,97 +214,99 @@ class _SectionChatState extends ConsumerState<SectionChat> {
   final List<Content> chats = [];
   var scrollController = ScrollController();
   @override
+  void initState() {
+    chats.add(Content(role: 'Me', parts: [Parts(text: widget.extractedText)]));
+
+    String command =
+        'do not give the direct answer, just a 3 sentence explanation.you are to assist, not tell the answer directly';
+    String prompt = '';
+    if (widget.question is MultiChoice) {
+      prompt = '${widget.extractedText}considering these options ${[
+        (widget.question as MultiChoice).incorrectanswers,
+        (widget.question as MultiChoice).correctanswer
+      ]..shuffle()}';
+    } else {
+      prompt =
+          '${widget.extractedText}considering these options ${(widget.question as ShortAnswer).correctanswer}';
+    }
+    loading = true;
+    gemini.streamGenerateContent('$command$prompt').listen((value) {
+      chats.add(Content(role: 'Hermoine', parts: [Parts(text: value.output)]));
+      loading = false;
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userDetails = ref.watch(userProvider);
     Size screensize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Ask Hermoine '),
+      ),
       body: Column(
         children: [
           Expanded(
-              child: chats.isNotEmpty
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SingleChildScrollView(
-                        reverse: true,
-                        child: ListView.builder(
-                          itemBuilder: chatItem,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: chats.length,
-                          reverse: false,
-                        ),
-                      ),
-                    )
-                  : isAsking == false
-                      ? const SizedBox(
-                          child: Center(child: Text('Send a message')),
-                        )
-                      : Center(
-                          child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 300,
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isAsking = false;
-                                          });
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.red,
-                                        )),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Ask a question concerning the material',
-                                      style: AppTextStyle.mediumTitlename,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Scrollbar(
-                                      interactive: true,
-                                      thumbVisibility: true,
-                                      controller: scrollController,
-                                      child: SingleChildScrollView(
-                                        controller: scrollController,
-                                        child: Text(
-                                          widget.extractedText,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ))),
-          if (loading) const CircularProgressIndicator(),
+              child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SingleChildScrollView(
+              reverse: true,
+              child: ListView.builder(
+                itemBuilder: chatItem,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: chats.length,
+              ),
+            ),
+          )),
+          if (loading)
+            SizedBox(
+              height: 85,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Loading response',
+                    textAlign: TextAlign.end,
+                    style: AppTextStyle.mediumTitlename,
+                  ),
+                  const RiveAnimation.asset(
+                    'assets/mascot/hermione.riv',
+                    animations: ['intro idle'],
+                    useArtboardSize: true,
+                  ),
+                ],
+              ),
+            ),
           ChatInputBox(
             controller: controller,
             onSend: () {
               String prompt = 'Generate a brief understandable response ';
+              String newprompt = '';
+              if (widget.question is MultiChoice) {
+                newprompt =
+                    '${widget.extractedText}considering these options ${[
+                  (widget.question as MultiChoice).incorrectanswers,
+                  (widget.question as MultiChoice).correctanswer
+                ]..shuffle()}';
+              } else {
+                newprompt =
+                    '${widget.extractedText}considering these options ${(widget.question as ShortAnswer).correctanswer}';
+              }
               if (controller.text.isNotEmpty) {
-                final searchedText = chats.isNotEmpty || isAsking == false
-                    ? controller.text
-                    : '$prompt,**${controller.text}**,${widget.extractedText}';
-                chats.add(Content(
-                    role: userDetails!.username ?? 'user',
-                    parts: [Parts(text: searchedText)]));
+                final customPrompt =
+                    '$prompt,**${controller.text}**,$newprompt';
+                chats.add(
+                  Content(role: 'Me', parts: [Parts(text: controller.text)]),
+                );
                 controller.clear();
                 loading = true;
 
-                gemini.streamGenerateContent(searchedText).listen((value) {
+                gemini.streamGenerateContent(customPrompt).listen((value) {
                   chats.add(Content(
-                      role: 'Spark_Gemini',
-                      parts: [Parts(text: value.output)]));
+                      role: 'Hermoine', parts: [Parts(text: value.output)]));
                   loading = false;
                 });
               }
@@ -315,25 +322,25 @@ class _SectionChatState extends ConsumerState<SectionChat> {
 
     return Card(
       elevation: 0,
-      color: content.role == 'Spark_Gemini'
-          ? Colors.blue.shade800
-          : Colors.transparent,
+      color: content.role == 'Hermoine' ? Colors.grey : Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: content.role == 'Spark_Gemini'
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment: content.role == 'Hermoine'
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.end,
           children: [
             Row(
-              mainAxisAlignment: content.role != 'Spark_Gemini'
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.end,
+              mainAxisAlignment: content.role != 'Hermoine'
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
               children: [
-                CircleAvatar(
-                    child: Icon(content.role != 'Spark_Gemini'
-                        ? Icons.person
-                        : Icons.android)),
+                content.role != 'Hermoine'
+                    ? const CircleAvatar(child: Icon(Icons.person))
+                    : Image.asset(
+                        'assets/mascot/mascot.png',
+                        height: 45,
+                      ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(content.role ?? 'role'),
@@ -431,13 +438,6 @@ Widget messageBubble(Message message) {
   );
 }
 
-// Replace with your actual list of messages
-List<Message> messages = [
-  Message('Hi there!', false),
-  Message('Hello! How can I help you?', true),
-];
-
-//
 class AnswerCard extends StatelessWidget {
   final String answer;
   final bool isSelected;
