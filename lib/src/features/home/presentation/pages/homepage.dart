@@ -52,9 +52,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
   }
 
+  var centerDocked = FloatingActionButtonLocation.startDocked;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Image.asset(_page.data),
+      ),
+      floatingActionButtonLocation: centerDocked,
       drawer: CustomDrawer(
         currentUser: newUser!,
       ),
@@ -62,17 +68,23 @@ class _HomePageState extends ConsumerState<HomePage> {
           height: 50,
           color: AppColor.primaryColor,
           child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(
-                  BottomNavItem.values.length,
-                  (index) => InkWell(
-                      onTap: () {
-                        setState(() {
-                          _page = BottomNavItem.values[index];
-                        });
-                      },
-                      child: Image.asset(BottomNavItem.values[index].data))),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 35.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                    BottomNavItem.values.length,
+                    (index) => InkWell(
+                        onTap: () {
+                          setState(() {
+                            _page = BottomNavItem.values[index];
+                            centerDocked = _page.floatingActionButtonLocation;
+                          });
+                        },
+                        child: Image.asset(
+                          BottomNavItem.values[index].data,
+                        ))),
+              ),
             ),
           )),
       body: HomePageBuilder(page: _page, userDetails: newUser!),
@@ -115,13 +127,17 @@ int _selectedIndex = 0;
 
 // Models
 enum BottomNavItem {
-  home('assets/icons/home.png', 'Home'),
-  courses('assets/icons/course.png', 'Courses'),
-  ranking('assets/icons/ranking.png', 'Ranking');
+  home('assets/icons/home.png', 'Home',
+      FloatingActionButtonLocation.startDocked),
+  courses('assets/icons/course.png', 'Courses',
+      FloatingActionButtonLocation.centerDocked),
+  ranking('assets/icons/ranking.png', 'Ranking',
+      FloatingActionButtonLocation.endDocked);
 
   final String name;
   final String data;
-  const BottomNavItem(this.data, this.name);
+  final FloatingActionButtonLocation floatingActionButtonLocation;
+  const BottomNavItem(this.data, this.name, this.floatingActionButtonLocation);
 }
 
 class HomePageBuilder extends StatelessWidget {
