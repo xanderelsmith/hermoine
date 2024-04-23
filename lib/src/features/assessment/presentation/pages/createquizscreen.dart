@@ -70,33 +70,33 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                         ),
                       )));
 
-              // final gemini = Gemini.instance;
+              final gemini = Gemini.instance;
 
-              // if (quizDataSource == QuizDataSource.fromPdf) {
-              //   extractedText = pdfdata;
-              // } else {
-              //   extractedText = sampleDataTextEditingController.text;
-              // }
-              // gemini
-              //     .text(GeminiSparkConfig.prompt(
-              //         message:
-              //             extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
-              //         difficulty: difficulty,
-              //         questionNumber: questionNo))
-              //     .then((value) {
-              //   log('result $value.output');
-              //   Navigator.pop(context);
+              if (quizDataSource == QuizDataSource.fromPdf) {
+                extractedText = pdfdata;
+              } else {
+                extractedText = sampleDataTextEditingController.text;
+              }
+              gemini
+                  .text(GeminiSparkConfig.prompt(
+                      message:
+                          extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
+                      difficulty: difficulty,
+                      questionNumber: questionNo))
+                  .then((value) {
+                log('result $value.output');
+                Navigator.pop(context);
 
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => PreviewQuestionsPage(
-              //                 questionData: value!.output ?? '',
-              //                 title: quiznameTextEditingController.text,
-              //               )));
-              // }).onError((error, stackTrace) {
-              //   log(error.toString());
-              // });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PreviewQuestionsPage(
+                              questionData: value!.output ?? '',
+                              title: quiznameTextEditingController.text,
+                            )));
+              }).onError((error, stackTrace) {
+                log(error.toString());
+              });
             },
           ),
         ),
@@ -106,12 +106,10 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           padding: const EdgeInsets.all(8.0),
-          color: const Color(0xffC5CAE9).withOpacity(0.21),
           child: Column(
             children: [
               StyledTextField(
                 innerHint: 'Quiz Name',
-                fillColor: const Color(0xffC5CAE9).withOpacity(0.23),
                 controller: quiznameTextEditingController,
               ),
               Row(
@@ -120,7 +118,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   DropdownButton<int>(
                       icon: const Text(
                         '(Questions)',
-                        style: TextStyle(color: Colors.white),
                       ),
                       value: questionNo,
                       items: List.generate(
@@ -135,7 +132,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   DropdownButton<String>(
                       icon: const Text(
                         '(Difficulty)',
-                        style: TextStyle(color: Colors.white),
                       ),
                       value: difficulty,
                       items: List.generate(

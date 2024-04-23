@@ -89,16 +89,17 @@ class HomeDashboardScreen extends StatelessWidget {
     return Column(
       children: [
         CustomAppBar(userDetails: userDetails),
-        Expanded(
+        const Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Column(
               children: [
-                userDetails.isTutor == true
-                    ? const CreatedQuizes()
-                    : const SizedBox(),
-                const HomePageCourseCategory(),
-                const Courses(),
+                CreatedQuizes(),
+                // userDetails.isTutor == true
+                //     ? const CreatedQuizes()
+                //     : const SizedBox(),
+                HomePageCourseCategory(),
+                Courses(),
               ],
             ),
           ),
