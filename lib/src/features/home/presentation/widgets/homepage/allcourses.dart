@@ -1,16 +1,33 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+
 import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchquizes.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/courseslist.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/widgets/specialtextfield.dart';
 import '../../../../assessment/data/sources/fetchcourses.dart';
 
-class AllCoursesScreen extends StatelessWidget {
+class AllCoursesScreen extends StatefulWidget {
   const AllCoursesScreen({
-    super.key,
-  });
+    Key? key,
+    this.category,
+  }) : super(key: key);
+  final String? category;
+
+  @override
+  State<AllCoursesScreen> createState() => _AllCoursesScreenState();
+}
+
+class _AllCoursesScreenState extends State<AllCoursesScreen> {
+  TextEditingController? textEditingController;
+
+  @override
+  void initState() {
+    textEditingController = TextEditingController(text: widget.category);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +44,7 @@ class AllCoursesScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SpecialTextfield(
+                        controller: textEditingController,
                         borderRadius: BorderRadius.circular(20),
                         prefixwidget: const Icon(Icons.search),
                       ),

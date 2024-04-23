@@ -68,7 +68,7 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                 submitQuizDialog(context, widget.title);
               },
               child: Text(
-                'Sumit',
+                'Submit',
                 style:
                     AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
               )),
@@ -110,14 +110,14 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
   Future<dynamic> submitQuizDialog(BuildContext context, String topic) {
     return showDialog(
         context: context,
-        builder: ((dialogcontext) => AlertDialog(
+        builder: ((newdialogcontext) => AlertDialog(
               title: const Text('Submit quiz'),
               actions: [
                 TextButton(
                     onPressed: () {
                       showDialog(
-                          context: dialogcontext,
-                          builder: (context) => AlertDialog(
+                          context: newdialogcontext,
+                          builder: (newdialogcontext) => AlertDialog(
                                 title: const Text('Submitting Created data'),
                                 actionsAlignment: MainAxisAlignment.spaceEvenly,
                                 actions: [
@@ -127,11 +127,11 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                                       onPressed: () async {
                                         var quizlist = ref
                                             .watch(createdQuizlistdataProvider);
-                                        Navigator.pop(context);
+                                        Navigator.pop(newdialogcontext);
                                         customLoadingDialog(context);
                                         var user = ref.watch(userProvider);
                                         var quizdata = ParseObject('Quiz')
-                                          ..set('author', user!.name)
+                                          ..set('author', user!.username)
                                           ..set('topic', topic)
                                           ..set(
                                               'questions',
@@ -170,7 +170,7 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                     child: const Text('Yes')),
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(dialogcontext);
+                      Navigator.pop(newdialogcontext);
                     },
                     child: const Text('No'))
               ],

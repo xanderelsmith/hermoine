@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorquizscreen.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/constants/size_utils.dart';
+import '../../../../analytics/presentation/pages/analytics.dart';
 import '../../../../home/presentation/widgets/homepage/coursecategory.dart';
 import '../../../data/sources/fetchcourses.dart';
 import '../../../data/sources/fetchquizes.dart';
@@ -57,7 +58,17 @@ class _CreatedQuizesState extends State<CreatedQuizes> {
                           return QuizListTile(
                               imageurl: imageUrl,
                               screensize: getScreenSize(context),
-                              onTap: (data) {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) => Analytics(
+                                                  quiz: snapshot.data![index],
+                                                )
+                                            // const AssessmentDetailScreen()
+
+                                            )));
+                              },
                               quizname: snapshot.data![index]['topic'],
                               datecreated: 'datecreated',
                               username: snapshot.data![index]['author'],

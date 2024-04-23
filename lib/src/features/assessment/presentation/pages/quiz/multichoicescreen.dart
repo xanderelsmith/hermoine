@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/core/constants/text_style.dart';
+import 'package:hermione/src/core/utils/screensizeutils.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
+import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rive/rive.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
-import '../../../../../core/constants/colors.dart';
+import '../../../domain/entities/geminiapihelper.dart';
+import '../../widgets/questioncard.dart';
 
 class MultiChoiceUIScreen extends ConsumerStatefulWidget {
   const MultiChoiceUIScreen({
+    required this.index,
     super.key,
     required this.screensize,
     // required this.topic,
     required this.question,
   });
-
+  final int index;
   final Size screensize;
   // final String topic;
   final Question question;
@@ -28,7 +35,13 @@ class MultiChoiceUIScreen extends ConsumerStatefulWidget {
 
 class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
   late MultiChoice quizdata;
+  StateMachineController? controller;
+  SMITrigger? idle;
+  SMITrigger? correct;
+  SMITrigger? wrong;
+
   List<String> answer = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -43,6 +56,7 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
   @override
   Widget build(BuildContext context) {
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
+
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -56,9 +70,32 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  QuestionCard(
-                    question: widget.question,
-                    screensize: widget.screensize,
+                  Column(
+                    children: [
+                      QuestionCard(
+                        index: widget.index,
+                        animationChild:
+                            RiveAnimation.asset('assets/mascot/hermione.riv',
+                                animations: const [
+                                  'idle question',
+                                ],
+                                fit: BoxFit.fitHeight,
+                                stateMachines: const ['State Machine 1'],
+                                onInit: (artboard) {
+                          controller = StateMachineController.fromArtboard(
+                            artboard,
+                            "State Machine 1",
+                          );
+                          if (controller == null) return;
+                          artboard.addController(controller!);
+                          correct = controller!.findSMI('correct');
+                          wrong = controller!.findSMI('wrong');
+                          idle = controller!.findSMI('intro idle');
+                        }),
+                        question: widget.question,
+                        screensize: widget.screensize,
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
@@ -87,6 +124,11 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                                                 quizdata.incorrectanswers,
                                             question_: quizdata.question_),
                                         answer[index]);
+                                if (answer[index] == quizdata.correctanswer) {
+                                  correct!.fire();
+                                } else {
+                                  wrong!.fire();
+                                }
                               }),
                         ).toList(),
                       ),
@@ -94,42 +136,6 @@ class _MultiChoiceUIScreenState extends ConsumerState<MultiChoiceUIScreen> {
                   ),
                 ]),
           ),
-        ));
-  }
-}
-
-class QuestionCard extends StatelessWidget {
-  const QuestionCard({
-    super.key,
-    required this.screensize,
-    required this.question,
-  });
-
-  final Size screensize;
-  final Question question;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: screensize.width / 2,
-        width: screensize.width,
-        decoration: BoxDecoration(
-            color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  question.question,
-                  style: AppTextStyle.mediumTitlename,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: HIntWidget(question: question),
-            )
-          ],
         ));
   }
 }
@@ -155,7 +161,10 @@ class HIntWidget extends StatelessWidget {
                     maxChildSize: 1, //set this as you want
                     minChildSize: 0.5, //set this as you want
                     builder: (BuildContext context, scrollController) {
-                      return const ChatScreen();
+                      return SectionChat(
+                        question: question,
+                        extractedText: question.question,
+                      );
                     },
                   ),
                 ));
@@ -185,67 +194,222 @@ class HIntWidget extends StatelessWidget {
   }
 }
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
+class SectionChat extends ConsumerStatefulWidget {
+  const SectionChat(
+      {super.key, required this.extractedText, required this.question});
+  final String extractedText;
+  final Question question;
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<SectionChat> createState() => _SectionChatState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  var textEditingController = TextEditingController();
+class _SectionChatState extends ConsumerState<SectionChat> {
+  TextEditingController controller = TextEditingController();
+  final gemini = Gemini.instance;
+  bool _loading = false;
+  bool isAsking = true;
+  bool get loading => _loading;
+
+  set loading(bool set) => setState(() => _loading = set);
+  final List<Content> chats = [];
   var scrollController = ScrollController();
   @override
+  void initState() {
+    chats.add(Content(role: 'Me', parts: [Parts(text: widget.extractedText)]));
+
+    String command =
+        'do not give the direct answer, just a 3 sentence explanation.you are to assist, not tell the answer directly';
+    String prompt = '';
+    if (widget.question is MultiChoice) {
+      prompt = '${widget.extractedText}considering these options ${[
+        (widget.question as MultiChoice).incorrectanswers,
+        (widget.question as MultiChoice).correctanswer
+      ]..shuffle()}';
+    } else {
+      prompt =
+          '${widget.extractedText}considering these options ${(widget.question as ShortAnswer).correctanswer}';
+    }
+    loading = true;
+    gemini.streamGenerateContent('$command$prompt').listen((value) {
+      chats.add(Content(role: 'Hermoine', parts: [Parts(text: value.output)]));
+      loading = false;
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: SizedBox(
-            width: 200,
-            child: Divider(
-              height: 10,
-              thickness: 10,
-              endIndent: 10,
+    final userDetails = ref.watch(userProvider);
+    Size screensize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ask Hermoine '),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+              child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SingleChildScrollView(
+              reverse: true,
+              child: ListView.builder(
+                itemBuilder: chatItem,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: chats.length,
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: messages.length,
-            itemBuilder: (context, index) => messageBubble(messages[index]),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: 'Type your message',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+          )),
+          if (loading)
+            SizedBox(
+              height: 85,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Loading response',
+                    textAlign: TextAlign.end,
+                    style: AppTextStyle.mediumTitlename,
                   ),
-                ),
+                  const RiveAnimation.asset(
+                    'assets/mascot/hermione.riv',
+                    animations: ['intro idle'],
+                    useArtboardSize: true,
+                  ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  setState(() {
-                    messages.add(Message(textEditingController.text, true));
-                    scrollController
-                        .jumpTo(scrollController.position.maxScrollExtent);
-                  });
-                },
-              ),
-            ],
+            ),
+          ChatInputBox(
+            controller: controller,
+            onSend: () {
+              String prompt = 'Generate a brief understandable response ';
+              String newprompt = '';
+              if (widget.question is MultiChoice) {
+                newprompt =
+                    '${widget.extractedText}considering these options ${[
+                  (widget.question as MultiChoice).incorrectanswers,
+                  (widget.question as MultiChoice).correctanswer
+                ]..shuffle()}';
+              } else {
+                newprompt =
+                    '${widget.extractedText}considering these options ${(widget.question as ShortAnswer).correctanswer}';
+              }
+              if (controller.text.isNotEmpty) {
+                final customPrompt =
+                    '$prompt,**${controller.text}**,$newprompt';
+                chats.add(
+                  Content(role: 'Me', parts: [Parts(text: controller.text)]),
+                );
+                controller.clear();
+                loading = true;
+
+                gemini.streamGenerateContent(customPrompt).listen((value) {
+                  chats.add(Content(
+                      role: 'Hermoine', parts: [Parts(text: value.output)]));
+                  loading = false;
+                });
+              }
+            },
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget chatItem(BuildContext context, int index) {
+    final Content content = chats[index];
+
+    return Card(
+      elevation: 0,
+      color: content.role == 'Hermoine' ? Colors.grey : Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: content.role == 'Hermoine'
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: content.role != 'Hermoine'
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.start,
+              children: [
+                content.role != 'Hermoine'
+                    ? const CircleAvatar(child: Icon(Icons.person))
+                    : Image.asset(
+                        'assets/mascot/mascot.png',
+                        height: 45,
+                      ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(content.role ?? 'role'),
+                ),
+              ],
+            ),
+            Markdown(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                data:
+                    content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class ChatInputBox extends StatelessWidget {
+  final TextEditingController? controller;
+  final VoidCallback? onSend, onClickCamera;
+
+  const ChatInputBox({
+    super.key,
+    this.controller,
+    this.onSend,
+    this.onClickCamera,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (onClickCamera != null)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                  onPressed: onClickCamera,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  icon: const Icon(Icons.file_copy_rounded)),
+            ),
+          Expanded(
+              child: TextField(
+            controller: controller,
+            minLines: 1,
+            maxLines: 6,
+            cursorColor: Theme.of(context).colorScheme.inversePrimary,
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.multiline,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+              hintText: 'Message',
+              border: InputBorder.none,
+            ),
+            onTapOutside: (event) =>
+                FocusManager.instance.primaryFocus?.unfocus(),
+          )),
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: FloatingActionButton.small(
+              onPressed: onSend,
+              child: const Icon(Icons.send_rounded),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -274,13 +438,6 @@ Widget messageBubble(Message message) {
   );
 }
 
-// Replace with your actual list of messages
-List<Message> messages = [
-  Message('Hi there!', false),
-  Message('Hello! How can I help you?', true),
-];
-
-//
 class AnswerCard extends StatelessWidget {
   final String answer;
   final bool isSelected;

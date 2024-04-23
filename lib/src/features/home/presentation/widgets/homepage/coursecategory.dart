@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorquizscreen.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -52,22 +55,34 @@ class HomePageCourseCategory extends StatelessWidget {
                           return SizedBox(
                             height: 100,
                             width: 100,
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: CircleAvatar(
-                                      child:
-                                          src.url != null && src.url!.isNotEmpty
-                                              ? Image.network(src.url ?? "")
-                                              : null,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AllCoursesScreen(
+                                              category: snapshot.data![index]
+                                                  ['name'],
+                                            )));
+                              },
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: CircleAvatar(
+                                        child: src.url != null &&
+                                                src.url!.isNotEmpty
+                                            ? Image.network(src.url ?? "")
+                                            : null,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(snapshot.data![index]['name']),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:
+                                          Text(snapshot.data![index]['name']),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -111,7 +126,7 @@ class QuizListTile extends ConsumerStatefulWidget {
   final int? widthPadding;
   final Size screensize;
   final bool? canBeLiveEdited;
-  final Function(ParseObject data) onTap;
+  final VoidCallback onTap;
   final Function(ParseObject data)? onLongPress;
 
   @override
@@ -133,7 +148,9 @@ class _QuizListTileState extends ConsumerState<QuizListTile> {
           width: widget.screensize.width - 50,
           child: InkWell(
             enableFeedback: true,
-            onTap: () {},
+            onTap: () {
+              widget.onTap();
+            },
             onLongPress: () {},
             child: Row(children: [
               Expanded(

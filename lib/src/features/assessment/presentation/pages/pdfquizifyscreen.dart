@@ -15,7 +15,6 @@ class PdfQuizScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<PdfQuizScreen> createState() => _PdfQuizScreenState();
 }
-
 class _PdfQuizScreenState extends ConsumerState<PdfQuizScreen> {
   final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
   PdfDocument? _pdfDocument;

@@ -13,6 +13,7 @@ import 'package:hermione/src/features/assessment/presentation/pages/pdfquizifysc
 import 'package:hermione/src/features/assessment/presentation/pages/previewquizdata.dart';
 import 'package:hermione/src/features/auth/domain/entities/loginvalidator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rive/rive.dart';
 
 import '../../../../core/constants/colors.dart';
 import '../../../auth/presentation/widgets/styled_textfield.dart';
@@ -54,11 +55,19 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
             onPressed: () {
               showDialog(
                   context: context,
-                  builder: ((context) => const AlertDialog(
-                        content: SizedBox(
-                            height: 50,
-                            child: Center(child: CircularProgressIndicator())),
-                        title: Text('Loading'),
+                  builder: ((context) => const SizedBox(
+                        height: 100,
+                        child: AlertDialog(
+                          content: SizedBox(
+                            height: 250,
+                            child: RiveAnimation.asset(
+                              'assets/mascot/hermione.riv',
+                              animations: ['idle question'],
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                          title: Text('Loading'),
+                        ),
                       )));
 
               final gemini = Gemini.instance;
@@ -88,7 +97,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
               }).onError((error, stackTrace) {
                 log(error.toString());
               });
-              ;
             },
           ),
         ),
@@ -98,12 +106,10 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           padding: const EdgeInsets.all(8.0),
-          color: const Color(0xffC5CAE9).withOpacity(0.21),
           child: Column(
             children: [
               StyledTextField(
                 innerHint: 'Quiz Name',
-                fillColor: const Color(0xffC5CAE9).withOpacity(0.23),
                 controller: quiznameTextEditingController,
               ),
               Row(
@@ -112,7 +118,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   DropdownButton<int>(
                       icon: const Text(
                         '(Questions)',
-                        style: TextStyle(color: Colors.white),
                       ),
                       value: questionNo,
                       items: List.generate(
@@ -127,7 +132,6 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   DropdownButton<String>(
                       icon: const Text(
                         '(Difficulty)',
-                        style: TextStyle(color: Colors.white),
                       ),
                       value: difficulty,
                       items: List.generate(

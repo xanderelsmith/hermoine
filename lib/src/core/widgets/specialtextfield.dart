@@ -7,7 +7,7 @@ class SpecialTextfield extends StatelessWidget {
   final TextInputType? textInputtype;
   final Widget? suffixwidget;
   final Widget? prefixwidget;
-  final Function? onChanged;
+  final Function(String value)? onChanged;
   final TextCapitalization? textCapitalization;
   const SpecialTextfield({
     Key? key,

@@ -4,18 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/features/auth/presentation/pages/onboarding_one_screen.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../assessment/presentation/pages/createquizscreen.dart';
+import '../../../home/domain/repositories/currentuserrepository.dart';
 import '../../../home/presentation/pages/homepage.dart';
 import '../../data/models/user.dart';
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends ConsumerWidget {
   const AuthPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, AsyncSnapshot<User?> snapshot) {
@@ -29,7 +31,7 @@ class AuthPage extends StatelessWidget {
           log(snapshot.hasData.toString());
           UserDetails userDetails =
               UserDetails.fromFirebaseUser(snapshot.data!);
-
+          ;
           return HomePage(
             userDetails: userDetails,
           );

@@ -2,9 +2,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/data/sources/enums/quiztype_enum.dart';
 import 'package:hermione/src/features/assessment/domain/entities/quiz_status.dart';
@@ -30,7 +30,7 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
   final pageController = PageController(initialPage: 0);
-
+  @override
   @override
   Widget build(BuildContext context) {
     final quizlist = ref.watch(quizListProvider).getQuizes;
@@ -42,8 +42,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool ispop) {
-        ref.watch(quizcontrollerProvider.notifier).clearQuizState();
-        pageController.dispose();
+        // ref.watch(quizcontrollerProvider.notifier).clearQuizState();
+        // pageController.dispose();
       },
       child: Scaffold(
           // bottomSheet: quizlist[0].runtimeType == MultiChoice
@@ -103,11 +103,26 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
                                       );
                                     }
                                   } else {
-                                    Navigator.push(
+                                    final quizlist =
+                                        ref.watch(quizListProvider).getQuizes;
+                                    final quizstate =
+                                        ref.watch(quizcontrollerProvider);
+                                    double scoreDecimal =
+                                        quizstate.correct.length /
+                                            quizlist.length;
+                                    await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: ((context) =>
-                                                const QuizResultScreen())));
+                                                QuizResultScreen(
+                                                  scoreDecimal: scoreDecimal,
+                                                )))).then((value) {
+                                      ref
+                                          .watch(
+                                              quizcontrollerProvider.notifier)
+                                          .clearQuizState();
+                                      pageController.jumpToPage(0);
+                                    });
                                   }
                                 }),
                           ),
@@ -119,7 +134,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
           ),
           appBar: AppBar(
               title: LinearProgressIndicator(
-            value: 0.1,
+            value: quizdatacontroller.correct.length.toDouble() /
+                quizes.length.toDouble(),
             backgroundColor: Colors.blue,
             minHeight: 20,
             color: const Color(0xff88FF59),
@@ -188,11 +204,15 @@ class BottomSheet extends StatelessWidget {
 questionScreenBuilder(List<Question> quizes, int index, Size screensize) {
   return quizes[index].quizType == QuizType.multichoice
       ? MultiChoiceUIScreen(
+          index: index,
           screensize: screensize,
           // topic:quizes[index]. topic,
           question: quizes[index],
         )
-      : ShortAnswerQuizScreen(questionData: quizes[index] as ShortAnswer);
+      : ShortAnswerQuizScreen(
+          questionData: quizes[index] as ShortAnswer,
+          index: index,
+        );
 }
 
 final quizcontrollerProvider =
