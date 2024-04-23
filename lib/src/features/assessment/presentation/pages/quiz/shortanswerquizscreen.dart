@@ -1,41 +1,25 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rive/rive.dart';
-
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/widgets/specialtextfield.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/multichoicescreen.dart';
-import 'package:hermione/src/features/assessment/presentation/widgets/questioncard.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class ShortAnswerQuizScreen extends ConsumerStatefulWidget {
+class ShortAnswerQuizScreen extends HookConsumerWidget {
   //it was named questions because theres already a variable called [question]
 
   final ShortAnswer questionData;
   const ShortAnswerQuizScreen({
-    required this.index,
-    Key? key,
+    super.key,
     required this.questionData,
-  }) : super(key: key);
-  final int index;
+  });
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ShortAnswerQuizScreenState();
-}
-
-class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
-  StateMachineController? controller;
-  SMITrigger? idle;
-  SMITrigger? correct;
-  SMITrigger? wrong;
-  @override
-  Widget build(BuildContext context) {
-    var scrollController = ScrollController();
+  Widget build(BuildContext context, WidgetRef ref) {
+    var scrollController = useScrollController();
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
-    var focusnode = FocusNode();
+    var focusnode = useFocusNode();
     TextEditingController answercontroller = TextEditingController();
     Size screensize = MediaQuery.of(context).size;
     if (focusnode.hasFocus && scrollController.position.maxScrollExtent < 100) {
@@ -57,28 +41,7 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
                       height: screensize.height / 3,
                       width: screensize.width,
                       child: QuestionCard(
-                        index: widget.index,
-                        question: widget.questionData,
-                        screensize: screensize,
-                        animationChild:
-                            RiveAnimation.asset('assets/mascot/hermione.riv',
-                                animations: const [
-                                  'idle question',
-                                ],
-                                fit: BoxFit.fitHeight,
-                                stateMachines: const ['State Machine 1'],
-                                onInit: (artboard) {
-                          controller = StateMachineController.fromArtboard(
-                            artboard,
-                            "State Machine 1",
-                          );
-                          if (controller == null) return;
-                          artboard.addController(controller!);
-                          correct = controller!.findSMI('correct');
-                          wrong = controller!.findSMI('wrong');
-                          idle = controller!.findSMI('intro idle');
-                        }),
-                      )),
+                          screensize: screensize, question: questionData)),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -98,27 +61,16 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
                   !quizdatacontroller.answered
                       ? CustomButton(
                           onTap: () {
-                            var lowerCaseanswer =
-                                answercontroller.text.toLowerCase();
                             ref
                                 .read(quizcontrollerProvider.notifier)
                                 .submitAnswer(
                                     ShortAnswer(
-                                        otherCorrectAnswers: widget
-                                            .questionData.otherCorrectAnswers,
-                                        indexS: widget.questionData.indexS,
-                                        answer:
-                                            widget.questionData.correctanswer,
-                                        questions:
-                                            widget.questionData.questions),
-                                    lowerCaseanswer);
-                            if (lowerCaseanswer ==
-                                widget.questionData.correctanswer
-                                    .toLowerCase()) {
-                              correct!.fire();
-                            } else {
-                              wrong!.fire();
-                            }
+                                        otherCorrectAnswers:
+                                            questionData.otherCorrectAnswers,
+                                        indexS: questionData.indexS,
+                                        answer: questionData.correctanswer,
+                                        questions: questionData.questions),
+                                    answercontroller.text.toLowerCase());
                           },
                           title: 'Check')
                       : const SizedBox.shrink()

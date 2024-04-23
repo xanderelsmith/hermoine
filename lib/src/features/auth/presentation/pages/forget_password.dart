@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
-import 'package:hermione/src/core/theme/custom_text_style.dart';
 import 'package:hermione/src/core/theme/theme.dart';
 import 'package:hermione/src/core/widgets/widgets.dart';
+
+import '../../../../core/theme/custom_text_style.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   ForgetPasswordScreen({super.key});
@@ -78,9 +79,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     padding: EdgeInsets.all(24.h),
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           "Please enter your email to reset the password",
-                          style: CustomTextStyles.titleSmallMedium,
+                          style: TextStyle(color: Colors.black),
                         ),
                         SizedBox(
                           height: 22.v,
@@ -92,11 +93,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           textInputAction: TextInputAction.done,
                           textInputType: TextInputType.emailAddress,
                         ),
-                        const Spacer(
-                          flex: 34,
+                        SizedBox(
+                          height: 92.v,
                         ),
                         CustomElevatedButton(
                           text: "Reset Password",
+                          buttonTextStyle:
+                              CustomTextStyles.titleMediumOnPrimary,
                           onPressed: passwordReset,
                         )
                       ],

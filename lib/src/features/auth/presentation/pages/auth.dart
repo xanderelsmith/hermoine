@@ -16,28 +16,6 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Display a loading indicator when waiting for data.
-          } else if (snapshot.hasError) {
-            return const OnboardingOneScreen(); // Display an error message if an error occurs.
-          } else if (!snapshot.hasData) {
-            return const OnboardingOneScreen(); // Display a message when no data is available.
-          } else {
-            log(snapshot.hasData.toString());
-
-            UserDetails userDetails =
-                UserDetails.fromFirebaseUser(snapshot.data!);
-
-            return HomePage(
-              userDetails: userDetails,
-            );
-          }
-        });
-=======
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, AsyncSnapshot<User?> snapshot) {
@@ -80,6 +58,5 @@ Future<UserDetails?> fetchUserDetails(String? useremail) async {
   } on FirebaseException catch (e) {
     log("Error fetching user data: $e");
     return null;
->>>>>>> ee8bd9e678a1097d23821f071a813dd50177307f
   }
 }

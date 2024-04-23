@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorquizscreen.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../../../core/constants/constants.dart';
@@ -57,7 +57,7 @@ class _CreatedQuizesState extends State<CreatedQuizes> {
                           return QuizListTile(
                               imageurl: imageUrl,
                               screensize: getScreenSize(context),
-                              onTap: () {},
+                              onTap: (data) {},
                               quizname: snapshot.data![index]['topic'],
                               datecreated: 'datecreated',
                               username: snapshot.data![index]['author'],

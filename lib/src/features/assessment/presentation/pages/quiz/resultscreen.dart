@@ -1,56 +1,29 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hermione/src/core/constants/text_style.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/quiz/reviewscreen.dart';
-import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
+import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:rive/rive.dart';
 
-import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
-import 'package:hermione/src/features/assessment/domain/entities/quizstate.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/quiz/customappbar.dart';
-import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
-
+import '../../../../home/presentation/pages/homepage.dart';
 import '../../../domain/repositories/retievedquizdata.dart';
-import '../../widgets/resultsubcomponent.dart';
 
 class QuizResultScreen extends ConsumerStatefulWidget {
   static String id = 'QuizResultScreen';
-  final double scoreDecimal;
   const QuizResultScreen({
-    required this.scoreDecimal,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _QuizResultScreenState();
 }
 
-class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
-    with SingleTickerProviderStateMixin {
+class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
   ParseObject? quizObject;
-  Animation? animation;
-  AnimationController? animationController;
+
   @override
   void initState() {
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    animation = Tween<double>(begin: 0, end: widget.scoreDecimal)
-        .animate(animationController!);
-
-    animationController!.addListener(() {
-      setState(() {});
-    });
-
-    animationController!.forward();
     super.initState();
   }
 
@@ -66,93 +39,137 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     var user;
 
     final quizlist = ref.watch(quizListProvider).getQuizes;
+    final quizdatacontroller = ref.watch(quizcontrollerProvider);
     final quizstate = ref.watch(quizcontrollerProvider);
-
-    int total = quizlist.length;
+    var score = quizstate.correct.length;
+    var total = quizlist.length;
     return Scaffold(
-      appBar: CustomResultAppBar(
-        quizState: quizstate,
-        quizlength: total,
-        score: animation!.value,
+      appBar: AppBar(
+        leading: const SizedBox(),
+        centerTitle: true,
+        title: Text(
+          !quizstate.incorrect.isNotEmpty
+              ? 'Congratulations'
+              : 'Let\'s get better, Comrade!',
+          textAlign: TextAlign.center,
+          style:
+              AppTextStyle.largeTitlename.copyWith(fontWeight: FontWeight.bold),
+        ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(
-              3,
-              (index) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          var user = ref.watch(userProvider);
-                          int score = quizstate.correct.length;
-                          if (index == 0) {
-                            ref
-                                .watch(quizcontrollerProvider.notifier)
-                                .clearQuizState();
-                            Navigator.pop(context);
-                          } else if (index == 1) {
-                            showDialog(
-                                context: context,
-                                builder: (context) => const Center(
-                                    child: CircularProgressIndicator()));
-                            sendViewerDetails(user?.email, score, total)
-                                .then((value) {
-                              Navigator.pop(context);
-                              Navigator.popUntil(
-                                  context, (route) => route.isFirst);
-                            });
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ReviewsScreen()));
-                          }
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                  quizstate.incorrect.isNotEmpty
+                      ? 'images/scales.png'
+                      : 'images/trophy.png',
+                  height: 150),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Keep practicing and you\'ll never forget the answers to these questions!',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyle.mediumTitlename,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Your Score',
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      '${score}/${total}',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyle.mediumTitlename,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Rate the quiz',
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: quizstate.incorrect.isEmpty
+                    ? const SizedBox.shrink()
+                    : TextButton.icon(
+                        icon: const Icon(
+                            Icons.keyboard_double_arrow_right_outlined),
+                        label: Text(
+                          'Preview failed quizes ',
+                          style: AppTextStyle.mediumTitlename,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => Scaffold())));
                         },
-                        child: CircleAvatar(
-                            backgroundColor: index == 0
-                                ? Colors.amber
-                                : index == 1
-                                    ? Colors.blueAccent
-                                    : Colors.green,
-                            child: Icon(
-                              index == 0
-                                  ? Icons.replay
-                                  : index == 1
-                                      ? Icons.home_outlined
-                                      : Icons.rate_review_rounded,
-                              color: Colors.white,
-                            )),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 20),
-                        child: Text(index == 0
-                            ? 'Replay'
-                            : index == 1
-                                ? 'home'
-                                : 'Review'),
-                      )
-                    ],
-                  )),
+              ),
+              // reaction == null
+              //     ? const SizedBox.shrink()
+              //     :
+              Container(
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).canvasColor,
+                  border: Border.all(width: 2, color: Colors.white60),
+                ),
+                height: 50,
+                width: 50,
+                child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () async {
+                      showDialog(
+                          context: context,
+                          builder: (context) =>
+                              const Center(child: CircularProgressIndicator()));
+
+                      await sendViewerDetails(user, score, total)
+                          .then((value) async {
+                        ref.refresh(quizListProvider).clearQuiz();
+                        ref
+                            .refresh(quizcontrollerProvider.notifier)
+                            .clearQuizState();
+
+                        Navigator.pop(context);
+
+                        // Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.popUntil(context,
+                            (route) => route.settings.name == HomePage.id);
+                      }).onError((error, stackTrace) {
+                        print(error.toString());
+                      });
+                    }),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Future<void> sendViewerDetails(
-      String? userEmaill, int score, int total) async {
-    List quizViewersList =
-        quizObject!['viewers'] != null ? quizObject!['viewers']! : [];
+  Future<void> sendViewerDetails(ParseUser? user, int score, int total) async {
+    List quizViewersList = quizObject!['viewers'] ?? [];
 
-    quizViewersList.add({
-      'user': userEmaill,
-      'score': score,
-      'total': total,
-      'date': DateTime.now()
-    });
+    quizViewersList.add(
+        {'user': user, 'score': score, 'total': total, 'date': DateTime.now()});
 
     log(quizViewersList.length.toString());
     quizObject!.set('viewers', quizViewersList);

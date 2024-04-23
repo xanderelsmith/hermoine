@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
+import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -113,7 +111,7 @@ class QuizListTile extends ConsumerStatefulWidget {
   final int? widthPadding;
   final Size screensize;
   final bool? canBeLiveEdited;
-  final VoidCallback onTap;
+  final Function(ParseObject data) onTap;
   final Function(ParseObject data)? onLongPress;
 
   @override
@@ -135,9 +133,7 @@ class _QuizListTileState extends ConsumerState<QuizListTile> {
           width: widget.screensize.width - 50,
           child: InkWell(
             enableFeedback: true,
-            onTap: () {
-              widget.onTap();
-            },
+            onTap: () {},
             onLongPress: () {},
             child: Row(children: [
               Expanded(

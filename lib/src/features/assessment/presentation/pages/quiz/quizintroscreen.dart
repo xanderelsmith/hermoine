@@ -1,15 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:rive/rive.dart';
 
 import '../../../../../core/constants/colors.dart';
 import '../../../../home/data/sources/mascotdata.dart';
@@ -32,30 +26,16 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
   String topic = '';
   Animation<double>? animation;
   AnimationController? animationController;
-  // RiveAnimation? riveAnimation = const RiveAnimation.asset(
-  //   'assets/mascot/hermione.riv',
-  //   animations: ['wrong'],
-  //   useArtboardSize: true,
-  // );
-  RiveFile? riveFile;
-  RiveAnimation? riveAnimation;
   @override
   void initState() {
     topic = widget.quizdata['topic'];
-    animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    animation = Tween<double>(begin: 0, end: 1).animate(animationController!);
-
+    animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    animation = Tween<double>(begin: 1, end: 0).animate(animationController!);
     animationController!.addListener(() {
       setState(() {});
     });
-
     animationController!.forward();
-    riveAnimation = const RiveAnimation.asset(
-      'assets/mascot/hermione.riv',
-      animations: ['intro idle'],
-      useArtboardSize: true,
-    );
     super.initState();
   }
 
@@ -66,6 +46,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
             onPressed: () {
+              ref.watch(quizListProvider).addQuizData(widget.quizdata);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -83,7 +64,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
       ),
       appBar: AppBar(
           title: LinearProgressIndicator(
-        value: 0,
+        value: 0.1,
         backgroundColor: Colors.blue,
         minHeight: 20,
         color: const Color(0xff88FF59),
@@ -94,38 +75,32 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
           ...List.generate(
             4,
             (index) => AnimatedPositioned(
-              curve: Curves.easeIn,
-              right: 0,
-              top: index * 120 * (animation!.value!),
-              duration: Duration(seconds: index * 2),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Visibility(
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColor.primaryColor,
-                    ),
-                    width: 200,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        getMascotWords(topic, index),
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
+              curve: Curves.bounceInOut,
+              top: index * 120,
+              right: index * 100 * (animation!.value!),
+              duration: Duration(seconds: index * 5),
+              child: Container(
+                margin: const EdgeInsets.all(8.0),
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColor.primaryColor,
+                ),
+                width: 200,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    getMascotWords(topic, index),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            right: 130,
-            top: getScreenSize(context).height / 6,
-            child: riveAnimation!,
-          )
+          Align(
+            alignment: const Alignment(-0.8, -0.4),
+            child: Image.asset('assets/mascot/mascot.png'),
+          ),
         ],
       ),
     );

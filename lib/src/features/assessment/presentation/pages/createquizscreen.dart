@@ -13,7 +13,6 @@ import 'package:hermione/src/features/assessment/presentation/pages/pdfquizifysc
 import 'package:hermione/src/features/assessment/presentation/pages/previewquizdata.dart';
 import 'package:hermione/src/features/auth/domain/entities/loginvalidator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rive/rive.dart';
 
 import '../../../../core/constants/colors.dart';
 import '../../../auth/presentation/widgets/styled_textfield.dart';
@@ -55,48 +54,41 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
             onPressed: () {
               showDialog(
                   context: context,
-                  builder: ((context) => const SizedBox(
-                        height: 100,
-                        child: AlertDialog(
-                          content: SizedBox(
-                            height: 250,
-                            child: RiveAnimation.asset(
-                              'assets/mascot/hermione.riv',
-                              animations: ['idle question'],
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          title: Text('Loading'),
-                        ),
+                  builder: ((context) => const AlertDialog(
+                        content: SizedBox(
+                            height: 50,
+                            child: Center(child: CircularProgressIndicator())),
+                        title: Text('Loading'),
                       )));
 
-              // final gemini = Gemini.instance;
+              final gemini = Gemini.instance;
 
-              // if (quizDataSource == QuizDataSource.fromPdf) {
-              //   extractedText = pdfdata;
-              // } else {
-              //   extractedText = sampleDataTextEditingController.text;
-              // }
-              // gemini
-              //     .text(GeminiSparkConfig.prompt(
-              //         message:
-              //             extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
-              //         difficulty: difficulty,
-              //         questionNumber: questionNo))
-              //     .then((value) {
-              //   log('result $value.output');
-              //   Navigator.pop(context);
+              if (quizDataSource == QuizDataSource.fromPdf) {
+                extractedText = pdfdata;
+              } else {
+                extractedText = sampleDataTextEditingController.text;
+              }
+              gemini
+                  .text(GeminiSparkConfig.prompt(
+                      message:
+                          extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
+                      difficulty: difficulty,
+                      questionNumber: questionNo))
+                  .then((value) {
+                log('result $value.output');
+                Navigator.pop(context);
 
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => PreviewQuestionsPage(
-              //                 questionData: value!.output ?? '',
-              //                 title: quiznameTextEditingController.text,
-              //               )));
-              // }).onError((error, stackTrace) {
-              //   log(error.toString());
-              // });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PreviewQuestionsPage(
+                              questionData: value!.output ?? '',
+                              title: quiznameTextEditingController.text,
+                            )));
+              }).onError((error, stackTrace) {
+                log(error.toString());
+              });
+              ;
             },
           ),
         ),

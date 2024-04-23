@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../auth/data/models/user.dart';
-import '../pages/homepage.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.userDetails});
@@ -49,7 +48,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         //       .copyWith(color: Colors.white),
                         // ),
                         Text(
-                          userDetails!.name!,
+                          userDetails!.email,
                           textAlign: TextAlign.center,
                         )
                       ],

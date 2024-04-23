@@ -112,9 +112,7 @@ class QuizContainer extends ConsumerWidget {
     var coursename = parseObject['coursename'];
     return GestureDetector(
       onTap: () {
-        ref.watch(quizListProvider)
-          ..inputData(parseObject)
-          ..addQuizData(parseObject);
+        ref.watch(quizListProvider).inputData(parseObject);
         log('hi');
         Navigator.push(
             context,
