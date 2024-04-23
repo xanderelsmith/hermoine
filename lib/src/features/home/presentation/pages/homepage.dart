@@ -55,7 +55,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(
+        currentUser: newUser!,
+      ),
       bottomNavigationBar: Container(
           height: 50,
           color: AppColor.primaryColor,

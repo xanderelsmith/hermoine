@@ -49,7 +49,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         //       .copyWith(color: Colors.white),
                         // ),
                         Text(
-                          userDetails!.name!,
+                          userDetails!.email,
                           textAlign: TextAlign.center,
                         )
                       ],
