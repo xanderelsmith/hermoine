@@ -51,6 +51,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     });
 
     animationController!.forward();
+
     super.initState();
   }
 
@@ -101,6 +102,10 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                             sendViewerDetails(
                                     user?.username, user?.email, score, total)
                                 .then((value) {
+                              ref
+                                  .watch(quizcontrollerProvider.notifier)
+                                  .clearQuizState();
+
                               Navigator.pop(context);
                               Navigator.popUntil(
                                   context, (route) => route.isFirst);

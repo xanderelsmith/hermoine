@@ -117,8 +117,7 @@ int _selectedIndex = 0;
 enum BottomNavItem {
   home('assets/icons/home.png', 'Home'),
   courses('assets/icons/course.png', 'Courses'),
-  ranking('assets/icons/ranking.png', 'Ranking'),
-  profile('assets/icons/profile.png', 'Profile');
+  ranking('assets/icons/ranking.png', 'Ranking');
 
   final String name;
   final String data;
@@ -138,9 +137,7 @@ class HomePageBuilder extends StatelessWidget {
           )
         : page == BottomNavItem.courses
             ? const AllCoursesScreen()
-            : page == BottomNavItem.ranking
-                ? const LeaderBoardScreen()
-                : const Scaffold();
+            : const LeaderBoardScreen();
   }
 }
 

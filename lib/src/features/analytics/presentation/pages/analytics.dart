@@ -84,6 +84,7 @@ class _AnalyticsState extends State<Analytics> {
               plotAreaBorderWidth: 0,
               title: ChartTitle(text: 'Score - Time'),
               primaryXAxis: NumericAxis(
+                  labelFormat: '{value}%',
                   edgeLabelPlacement: EdgeLabelPlacement.shift,
                   interval: 2,
                   maximum: 24,

@@ -31,10 +31,10 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
   final pageController = PageController(initialPage: 0);
   @override
-  @override
   Widget build(BuildContext context) {
     final quizlist = ref.watch(quizListProvider).getQuizes;
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
+
     Size screensize = MediaQuery.of(context).size;
     List<Question> quizes = ref.watch(quizListProvider).getQuizes;
     log(quizes.length.toString());
