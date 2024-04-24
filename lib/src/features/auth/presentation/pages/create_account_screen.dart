@@ -66,7 +66,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
-  Future<void> createUserDocument(UserCredential? userCredential) async {
+  void createUserDocument(UserCredential? userCredential) async {
     if (userCredential != null && userCredential.user != null) {
       await FirebaseFirestore.instance
           .collection("Users")
@@ -89,21 +89,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   double password_strength = 0;
 
   bool validatePassword(String pass) {
-    String _password = pass.trim();
-    if (_password.isEmpty) {
+    String password = pass.trim();
+    if (password.isEmpty) {
       setState(() {
         password_strength = 0;
       });
-    } else if (_password.length < 6) {
+    } else if (password.length < 6) {
       setState(() {
         password_strength = 1 / 4;
       });
-    } else if (_password.length < 8) {
+    } else if (password.length < 8) {
       setState(() {
         password_strength = 2 / 4;
       });
     } else {
-      if (pass_valid.hasMatch(_password)) {
+      if (pass_valid.hasMatch(password)) {
         setState(() {
           password_strength = 4 / 4;
         });

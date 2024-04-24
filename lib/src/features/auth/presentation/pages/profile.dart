@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       actions: [
         ElevatedButton(
           onPressed: () {
-            Get.back(result: true); // Return true when confirmed
+            Get.back(result: true);
           },
           child: const Text(
             'Delete',
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         ElevatedButton(
           onPressed: () {
-            Get.back(result: false); // Return false when cancelled
+            Get.back(result: false);
           },
           child:
               const Text('Keep Account', style: TextStyle(color: Colors.black)),
@@ -75,16 +75,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirmDelete ?? false) {
       try {
-        // Delete the user account
         await FirebaseAuth.instance.currentUser?.delete();
 
-        // Delete the user document from Firestore collection
         await FirebaseFirestore.instance
             .collection("Users")
             .doc(FirebaseAuth.instance.currentUser?.email)
             .delete();
 
-        // Show a success dialog
         Get.dialog(
           AlertDialog(
             title: const Text('User Account Deleted'),
@@ -100,7 +97,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       } catch (e) {
-        // Show an error dialog if account deletion fails
         Get.dialog(
           AlertDialog(
             title: const Text('Error'),
