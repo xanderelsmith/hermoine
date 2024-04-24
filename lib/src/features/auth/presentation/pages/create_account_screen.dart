@@ -80,7 +80,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'birthday': 'No date selected..',
         'profileImageUrl': 'No profileImage selected..',
         'name': 'Empty name..',
-        'xp': 'No XP'
+        'xp': '0'
       });
     }
   }

@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
 import '../../../auth/data/models/user.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key, this.userDetails});
+  CustomAppBar({super.key, this.userDetails});
+
   final UserDetails? userDetails;
+
+  final currentUser = FirebaseAuth.instance.currentUser!;
 
   @override
   Widget build(BuildContext context) {
@@ -37,33 +41,68 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(
-                          'Hello',
-                          style: AppTextStyle.titlename
-                              .copyWith(color: Colors.white),
+                        Row(
+                          children: [
+                            Text(
+                              'Hello',
+                              style: AppTextStyle.titlename
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ],
                         ),
-                        // Text(
-                        //   userDetails?.name ?? 'no name',
-                        //   style: AppTextStyle.mediumTitlename
-                        //       .copyWith(color: Colors.white),
-                        // ),
-                        Text(
-                          userDetails!.email,
-                          textAlign: TextAlign.center,
+                        // StreamBuilder<DocumentSnapshot>(
+                        //     stream: FirebaseFirestore.instance
+                        //         .collection('Users')
+                        //         .doc(currentUser.email)
+                        //         .snapshots(),
+                        //     builder: (context, snapshot) {
+                        //       if (!snapshot.hasData) {
+                        //         return const CircularProgressIndicator(); // Display loading indicator
+                        //       }
+                        //
+                        //       UserDetails userDetails =
+                        //           UserDetails.fromFirebaseData(snapshot.data!
+                        //               .data() as Map<String, dynamic>);
+                        //
+                        //       return Text(
+                        //         userDetails.name ?? 'N/A',
+                        //         style: AppTextStyle.mediumTitlename
+                        //             .copyWith(color: Colors.white),
+                        //       );
+                        //     }),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              userDetails!.email,
+                              style: AppTextStyle.mediumTitlename
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                            Icon(
+                              Icons.notifications_none_outlined,
+                              color: AppColor.white,
+                            )
+                          ],
                         )
                       ],
                     ),
                   ),
                 ),
-                Icon(
-                  Icons.notifications_none_outlined,
-                  color: AppColor.white,
-                )
               ],
             ),
-            Text(
-              'What subject would you like to improve on today?',
-              style: AppTextStyle.tinyTitlename.copyWith(color: Colors.white),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 50),
+                  child: Text(
+                    'What subject would you like to improve on today?',
+                    style: AppTextStyle.tinyTitlename
+                        .copyWith(color: Colors.white),
+                  ),
+                ),
+              ],
             )
           ],
         ),

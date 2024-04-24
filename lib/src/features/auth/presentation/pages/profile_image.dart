@@ -1,14 +1,20 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/constants/constants.dart';
+import '../../data/models/user.dart';
+
 class ProfileImage extends StatefulWidget {
   final bool isEditMode;
-  const ProfileImage({super.key, this.isEditMode = true});
+  const ProfileImage({super.key, this.isEditMode = true, this.userDetails});
+  final UserDetails? userDetails;
 
   @override
   State<ProfileImage> createState() => _ProfileImageState();
@@ -92,7 +98,7 @@ class _ProfileImageState extends State<ProfileImage> {
           child: ListView(
             children: [
               const SizedBox(
-                height: 25,
+                height: 5,
               ),
               Stack(
                 children: [
@@ -125,16 +131,42 @@ class _ProfileImageState extends State<ProfileImage> {
                 ],
               ),
               const SizedBox(
-                height: 10,
+                height: 5,
               ),
               Text(
                 currentUser.email!,
                 textAlign: TextAlign.center,
               ),
-              // Text(
-              //   currentUser.email!,
-              //   textAlign: TextAlign.center,
-              // )
+              StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(currentUser.email)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator(); // Display loading indicator
+                    }
+
+                    UserDetails userDetails = UserDetails.fromFirebaseData(
+                        snapshot.data!.data() as Map<String, dynamic>);
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/diamond.svg',
+                          width: 24, // Adjust width as needed
+                          height: 24, // Adjust height as needed
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          userDetails.xp ?? '0',
+                          style: AppTextStyle.mediumTitlename
+                              .copyWith(color: Colors.black),
+                        ),
+                      ],
+                    );
+                  }),
             ],
           ),
         ),
