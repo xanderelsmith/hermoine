@@ -25,7 +25,9 @@ class CustomDrawer extends StatelessWidget {
           const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ProfileImage(),
+              ProfileImage(
+                isEditMode: false,
+              ),
             ],
           ),
           Column(

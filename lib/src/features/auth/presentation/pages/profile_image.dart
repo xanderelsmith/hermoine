@@ -1,13 +1,14 @@
-import 'dart:io';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileImage extends StatefulWidget {
-  const ProfileImage({super.key});
+  final bool isEditMode;
+  const ProfileImage({super.key, this.isEditMode = true});
 
   @override
   State<ProfileImage> createState() => _ProfileImageState();
@@ -18,20 +19,22 @@ class _ProfileImageState extends State<ProfileImage> {
 
   Uint8List? pickedImage;
 
-  void pickUploadImage() async {
-    final image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        maxHeight: 512,
-        maxWidth: 512,
-        imageQuality: 75);
-    if (image == null) return;
+  @override
+  void initState() {
+    super.initState();
+    // Load saved image from local storage on initialization
+    loadSavedImage();
+  }
 
-    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
-    // final imageRef = storageRef.child("user_${currentUser.uid}.jpg");
-    await ref.putFile(File(image.path));
-    ref.getDownloadURL().then((value) {
-      print(value);
-    });
+  loadSavedImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? imageString = prefs.getString('profile_image');
+    if (imageString != null) {
+      List<int> imageBytes = base64Decode(imageString);
+      setState(() {
+        pickedImage = Uint8List.fromList(imageBytes);
+      });
+    }
   }
 
   pickImage(ImageSource source) async {
@@ -45,8 +48,18 @@ class _ProfileImageState extends State<ProfileImage> {
 
   void selectedImage() async {
     Uint8List? img = await pickImage(ImageSource.gallery);
+    if (img != null) {
+      // Save picked image to local storage
+      saveImageToLocal(img);
+    }
+  }
+
+  saveImageToLocal(Uint8List imageBytes) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String imageString = base64Encode(imageBytes);
+    prefs.setString('profile_image', imageString);
     setState(() {
-      pickedImage = img;
+      pickedImage = imageBytes;
     });
   }
 
@@ -99,15 +112,16 @@ class _ProfileImageState extends State<ProfileImage> {
                       ],
                     ),
                   ),
-                  Positioned(
-                    bottom: -10,
-                    left: 220,
-                    child: IconButton(
-                      icon: const Icon(Icons.add_a_photo),
-                      color: Colors.black,
-                      onPressed: pickUploadImage,
+                  if (widget.isEditMode)
+                    Positioned(
+                      bottom: -10,
+                      left: 220,
+                      child: IconButton(
+                        icon: const Icon(Icons.add_a_photo),
+                        color: Colors.black,
+                        onPressed: selectedImage,
+                      ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(

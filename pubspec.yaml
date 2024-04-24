@@ -51,6 +51,7 @@ dependencies:
   just_audio_cache: ^0.1.1
   parse_server_sdk_flutter: ^7.0.1
   rive: ^0.13.1
+  shared_preferences: ^2.2.3
   syncfusion_flutter_charts: ^20.4.54
   syncfusion_flutter_pdfviewer: ^20.4.54
 

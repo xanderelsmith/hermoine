@@ -136,7 +136,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: Column(
           children: [
-            const ProfileImage(),
+            const ProfileImage(
+              isEditMode: false,
+            ),
             Padding(
               padding: const EdgeInsets.all(25),
               child: ClipRRect(
