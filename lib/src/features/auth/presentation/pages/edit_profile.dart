@@ -1,10 +1,12 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/features/auth/presentation/pages/profile_image.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
@@ -20,20 +22,27 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
 
-  File? _pickedImage;
-
-  void _pickImage() async {
-    // Implement image picking logic using image_picker package or any other method
-    // Example using image_picker:
-    // final pickedImage = await ImagePicker().getImage(source: ImageSource.gallery);
-    // if (pickedImage != null) {
-    //   setState(() {
-    //     _pickedImage = File(pickedImage.path);
-    //   });
-    // }
+  pickImage(ImageSource source) async {
+    final ImagePicker _imagePicker = ImagePicker();
+    XFile? _file = await _imagePicker.pickImage(source: source);
+    if (_file != null) {
+      return await _file.readAsBytes();
+    }
+    print("No Image Selected");
   }
 
-  void updateUserDocument(String email) async {
+  void selectedImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = img;
+    });
+  }
+
+  Uint8List? _image;
+
+  void updateUserDocument(
+    String email,
+  ) async {
     try {
       await FirebaseFirestore.instance.collection("Users").doc(email).update({
         'username': usernameController.text,
@@ -112,76 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 210,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.6),
-                      offset: const Offset(5, 5), // Right and bottom shadow
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                    const BoxShadow(
-                      color: Colors.black, // Left and top shadow (transparent)
-                      offset: Offset(-5, -5),
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: ListView(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Center(
-                                child: CustomImageView(
-                                  imagePath: "assets/images/img_ellipse_4.png",
-                                  height: 105.adaptSize,
-                                  width: 105.adaptSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Positioned(
-                            top: 90,
-                            right: 0,
-                            left: 0,
-                            child: Center(
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 32,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        currentUser.email!,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const ProfileImage(),
           Padding(
             padding: const EdgeInsets.all(25),
             child: ClipRRect(
