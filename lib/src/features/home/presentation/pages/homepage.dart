@@ -39,8 +39,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     newUser = widget.userDetails;
-    super.initState();
-    fetchUserDetails(FirebaseAuth.instance.currentUser?.email).then((value) {
+    log('here');
+    var useremail = FirebaseAuth.instance.currentUser!.uid!;
+    log(useremail);
+    fetchUserDetails(useremail).then((value) {
       ref.watch(userProvider.notifier).assignUserData(value!);
       log(value.name.toString());
       setState(() {
@@ -50,7 +52,10 @@ class _HomePageState extends ConsumerState<HomePage> {
       ref.watch(userProvider.notifier).assignUserData(widget.userDetails!);
       log(error.toString());
     });
+    super.initState();
   }
+
+  BottomNavItem _page = BottomNavItem.home;
 
   var centerDocked = FloatingActionButtonLocation.startDocked;
   @override
@@ -81,9 +86,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                             centerDocked = _page.floatingActionButtonLocation;
                           });
                         },
-                        child: Image.asset(
-                          BottomNavItem.values[index].data,
-                        ))),
+                        child: BottomNavItem.values[index].data == _page.data
+                            ? const SizedBox()
+                            : Image.asset(
+                                BottomNavItem.values[index].data,
+                              ))),
               ),
             ),
           )),
@@ -140,18 +147,24 @@ enum BottomNavItem {
   const BottomNavItem(this.data, this.name, this.floatingActionButtonLocation);
 }
 
-class HomePageBuilder extends StatelessWidget {
+class HomePageBuilder extends StatefulWidget {
   const HomePageBuilder(
       {super.key, required this.page, required this.userDetails});
   final BottomNavItem page;
   final UserDetails userDetails;
+
+  @override
+  State<HomePageBuilder> createState() => _HomePageBuilderState();
+}
+
+class _HomePageBuilderState extends State<HomePageBuilder> {
   @override
   Widget build(BuildContext context) {
-    return page == BottomNavItem.home
+    return widget.page == BottomNavItem.home
         ? HomeDashboardScreen(
-            userDetails: userDetails,
+            userDetails: widget.userDetails,
           )
-        : page == BottomNavItem.courses
+        : widget.page == BottomNavItem.courses
             ? const AllCoursesScreen()
             : const LeaderBoardScreen();
   }
@@ -256,5 +269,3 @@ void deleteUserAccount() async {
     }
   }
 }
-
-BottomNavItem _page = BottomNavItem.home;

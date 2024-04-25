@@ -42,8 +42,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool ispop) {
-        // ref.watch(quizcontrollerProvider.notifier).clearQuizState();
-        // pageController.dispose();
+        ref.watch(quizcontrollerProvider.notifier).clearQuizState();
+        pageController.dispose();
       },
       child: Scaffold(
           // bottomSheet: quizlist[0].runtimeType == MultiChoice

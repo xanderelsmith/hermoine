@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class UserDetails {
   final String id; // Unique identifier for the user
@@ -42,6 +43,17 @@ class UserDetails {
         email: userData['email'] ?? "no email",
         name: userData['name'] ?? "no name",
         age: userData['age'] ?? "no age",
+        gender: userData['gender'] ?? "no gender",
+        bio: userData['bio'] ?? "no bio",
+        profileImageUrl: userData['profileImageUrl'] ?? " ",
+      );
+  factory UserDetails.fromParseUSer(ParseUser userData) => UserDetails(
+        isTutor: userData['isTutor'] ?? true,
+        id: userData.objectId ?? "",
+        username: userData.username ?? "no name",
+        email: userData.emailAddress ?? "no email",
+        name: userData.username ?? "no name",
+        age: userData['age'] ?? "0",
         gender: userData['gender'] ?? "no gender",
         bio: userData['bio'] ?? "no bio",
         profileImageUrl: userData['profileImageUrl'] ?? " ",

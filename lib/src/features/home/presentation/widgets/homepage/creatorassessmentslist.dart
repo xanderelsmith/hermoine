@@ -45,12 +45,14 @@ class CreatorAssessmentScreen extends StatelessWidget {
               child: FutureBuilder<List<ParseObject>?>(
                   future: QuizApiFetch.getAllquizes(),
                   builder: (context, snapshot) {
-                    return !snapshot.hasData
+                    return !snapshot.hasData && snapshot.data != null
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : ListView.builder(
-                            itemCount: snapshot.data!.length,
+                            itemCount: snapshot.data == null
+                                ? 0
+                                : snapshot.data!.length,
                             scrollDirection: Axis.vertical,
                             itemBuilder: (context, index) {
                               ParseFile src = snapshot.data![index]['image'];

@@ -31,7 +31,7 @@ class AuthPage extends ConsumerWidget {
           log(snapshot.hasData.toString());
           UserDetails userDetails =
               UserDetails.fromFirebaseUser(snapshot.data!);
-          ;
+
           return HomePage(
             userDetails: userDetails,
           );
@@ -41,9 +41,7 @@ class AuthPage extends ConsumerWidget {
   }
 }
 
-Future<UserDetails?> fetchUserDetails(String? useremail) async {
-  if (useremail == null) return null;
-
+Future<UserDetails?> fetchUserDetails(String useremail) async {
   try {
     final documentSnapshot = await FirebaseFirestore.instance
         .collection('Users')

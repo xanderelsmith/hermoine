@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,17 +33,19 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
   SMITrigger? idle;
   SMITrigger? correct;
   SMITrigger? wrong;
+  TextEditingController answercontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var scrollController = ScrollController();
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
     var focusnode = FocusNode();
-    TextEditingController answercontroller = TextEditingController();
+
     Size screensize = MediaQuery.of(context).size;
     if (focusnode.hasFocus && scrollController.position.maxScrollExtent < 100) {
       scrollController.animateTo(500,
           duration: const Duration(seconds: 2), curve: Curves.linear);
     }
+    log(widget.questionData.otherCorrectAnswers!.toList().toString());
     return Card(
         color: AppColor.white,
         elevation: 5,
@@ -113,8 +117,12 @@ class _ShortAnswerQuizScreenState extends ConsumerState<ShortAnswerQuizScreen> {
                                             widget.questionData.questions),
                                     lowerCaseanswer);
                             if (lowerCaseanswer ==
-                                widget.questionData.correctanswer
-                                    .toLowerCase()) {
+                                    widget.questionData.correctanswer
+                                        .toLowerCase() ||
+                                widget.questionData.otherCorrectAnswers!
+                                    .map((e) => e.toString().toLowerCase())
+                                    .toList()
+                                    .contains(lowerCaseanswer.toString())) {
                               correct!.fire();
                             } else {
                               wrong!.fire();

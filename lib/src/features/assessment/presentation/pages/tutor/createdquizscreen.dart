@@ -29,9 +29,10 @@ class _CreatedQuizesState extends State<CreatedQuizes> {
         GestureDetector(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CreatorAssessmentScreen()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreatorAssessmentScreen()))
+                .then((value) => setState(() {}));
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,12 +47,13 @@ class _CreatedQuizesState extends State<CreatedQuizes> {
           child: FutureBuilder<List<ParseObject>?>(
               future: asyncMemoizer.runOnce(() => QuizApiFetch.getAllquizes()),
               builder: (context, snapshot) {
-                return !snapshot.hasData
+                return !snapshot.hasData && snapshot.data != null
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
                     : ListView.builder(
-                        itemCount: snapshot.data!.length,
+                        itemCount:
+                            snapshot.data == null ? 0 : snapshot.data!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           String imageUrl = snapshot.data![index]['image'].url;
