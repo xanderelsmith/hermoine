@@ -74,7 +74,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              userDetails!.email,
+                              userDetails!.username,
                               style: AppTextStyle.mediumTitlename
                                   .copyWith(color: Colors.white),
                               textAlign: TextAlign.center,
