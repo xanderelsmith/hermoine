@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
-import 'package:hermione/src/core/widgets/widgets.dart';
 import 'package:hermione/src/features/auth/data/models/user.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/coursecategory.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/courseslist.dart';
@@ -9,6 +7,7 @@ import 'package:hermione/src/features/home/presentation/widgets/styledappbar.dar
 
 import '../../../assessment/presentation/pages/leaderboard/leaderboard.dart';
 import '../../../auth/presentation/pages/profile.dart';
+import '../../../auth/presentation/pages/profile_image.dart';
 import '../pages/homepage.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -23,59 +22,11 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
+          const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  height: 210,
-                  width: double.maxFinite,
-                  child: Center(
-                    child: ListView(
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Stack(
-                          children: [
-                            Column(
-                              children: [
-                                Center(
-                                  child: CustomImageView(
-                                    imagePath:
-                                        "assets/images/img_ellipse_4.png",
-                                    height: 105.adaptSize,
-                                    width: 105.adaptSize,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Positioned(
-                              top: 90,
-                              right: 0,
-                              left: 0,
-                              child: Center(
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  size: 32,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          currentUser.email!,
-                          textAlign: TextAlign.center,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+              ProfileImage(
+                isEditMode: false,
               ),
             ],
           ),

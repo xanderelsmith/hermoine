@@ -1,17 +1,90 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:hermione/src/features/auth/presentation/pages/profile_image.dart';
 
+import '../../../../core/theme/custom_text_style.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 
-class EditProfileScreen extends StatelessWidget {
-  EditProfileScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
 
+  void updateUserDocument(
+    String email,
+  ) async {
+    try {
+      await FirebaseFirestore.instance.collection("Users").doc(email).update({
+        'username': usernameController.text,
+        'birthday': birthdayController.text,
+        'gender': genderController.text,
+        'bio': bioController.text,
+        'name': nameController.text,
+      });
+
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Success'),
+          content: const Text('Your profile has been updated successfully.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error updating user document: $e');
+      }
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Error'),
+          content: Text('Failed to update profile: $e'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   TextEditingController usernameController = TextEditingController();
+
+  TextEditingController birthdayController = TextEditingController();
+
+  TextEditingController genderController = TextEditingController();
+
+  TextEditingController bioController = TextEditingController();
+
+  TextEditingController nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    birthdayController.dispose();
+    bioController.dispose();
+    nameController.dispose();
+    genderController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,82 +103,13 @@ class EditProfileScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          const ProfileImage(),
           Padding(
             padding: const EdgeInsets.all(25),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                height: 210,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.6),
-                      offset: const Offset(5, 5), // Right and bottom shadow
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                    const BoxShadow(
-                      color: Colors.black, // Left and top shadow (transparent)
-                      offset: Offset(-5, -5),
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: ListView(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Center(
-                                child: CustomImageView(
-                                  imagePath: "assets/images/img_ellipse_4.png",
-                                  height: 105.adaptSize,
-                                  width: 105.adaptSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Positioned(
-                            top: 90,
-                            right: 0,
-                            left: 0,
-                            child: Center(
-                              child: Icon(
-                                Icons.camera_alt,
-                                size: 32,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        currentUser.email!,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 410,
+                height: 310,
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -143,7 +147,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 5.v),
                             CustomTextFormField(
-                              controller: usernameController,
+                              controller: nameController,
                               textInputAction: TextInputAction.done,
                               textInputType: TextInputType.visiblePassword,
                               obscureText: false,
@@ -167,7 +171,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 5.v),
                             CustomTextFormField(
-                              controller: usernameController,
+                              controller: birthdayController,
                               textInputAction: TextInputAction.done,
                               textInputType: TextInputType.visiblePassword,
                               obscureText: false,
@@ -191,7 +195,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 5.v),
                             CustomTextFormField(
-                              controller: usernameController,
+                              controller: genderController,
                               textInputAction: TextInputAction.done,
                               textInputType: TextInputType.visiblePassword,
                               obscureText: false,
@@ -215,7 +219,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 5.v),
                             CustomTextFormField(
-                              controller: usernameController,
+                              controller: bioController,
                               textInputAction: TextInputAction.done,
                               textInputType: TextInputType.visiblePassword,
                               obscureText: false,
@@ -233,6 +237,16 @@ class EditProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          // Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomElevatedButton(
+                onPressed: () {
+                  updateUserDocument(currentUser.email!);
+                },
+                text: "Save",
+                buttonTextStyle: CustomTextStyles.titleMediumOnPrimary),
           )
         ],
       ),

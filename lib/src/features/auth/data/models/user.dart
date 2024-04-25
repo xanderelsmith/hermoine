@@ -9,6 +9,7 @@ class UserDetails {
   String? gender; // Optional last name
   String? age; // Optional last name
   String? bio; // Optional last name
+  String? xp; // Optional last name
   String? profileImageUrl; // Optional profile image URL
   bool? isTutor;
   UserDetails({
@@ -20,6 +21,7 @@ class UserDetails {
     this.isTutor,
     this.age,
     this.bio,
+    this.xp,
     this.profileImageUrl,
   });
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
@@ -32,6 +34,7 @@ class UserDetails {
         age: "no age",
         gender: "no gender",
         bio: "no bio",
+        xp: "0",
         profileImageUrl: " ",
       );
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
@@ -41,6 +44,7 @@ class UserDetails {
         id: userData['id'] ?? "",
         username: userData['username'] ?? "no name",
         email: userData['email'] ?? "no email",
+        xp: userData['xp'] ?? '0',
         name: userData['name'] ?? "no name",
         age: userData['age'] ?? "no age",
         gender: userData['gender'] ?? "no gender",
@@ -66,6 +70,7 @@ class UserDetails {
         name: json['name'] as String?,
         gender: json['gender'] as String?,
         age: json['age'] as String?,
+        xp: json['xp'] as String?,
         bio: json['gender'] as String?,
         profileImageUrl: json['profileImageUrl'] as String?,
       );
@@ -76,6 +81,7 @@ class UserDetails {
         'email': email,
         'name': name,
         'age': age,
+        'xp': xp,
         'gender': gender,
         'bio': bio,
         'profileImageUrl': profileImageUrl,
@@ -104,6 +110,7 @@ class UserDetails {
     String? gender,
     String? age,
     String? bio,
+    String? xp,
     String? profileImageUrl,
     bool? isTutor,
   }) {
@@ -114,6 +121,7 @@ class UserDetails {
       name: name ?? this.name,
       gender: gender ?? this.gender,
       age: age ?? this.age,
+      xp: xp ?? this.xp,
       bio: bio ?? this.bio,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       isTutor: isTutor ?? this.isTutor,
