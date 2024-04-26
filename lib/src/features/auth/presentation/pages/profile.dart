@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Get.to(() => EditProfileScreen());
+                          Get.to(() => const EditProfileScreen());
                         },
                         child: const ListTile(
                           leading: Icon(Icons.person, color: Color(0xFF065774)),
