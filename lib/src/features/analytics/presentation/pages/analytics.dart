@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:intl/intl.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -31,7 +32,7 @@ class _AnalyticsState extends State<Analytics> {
           date: date,
           score: e['score'],
           total: e['total'],
-          username: e['user'].toString());
+          username: e['username'].toString());
     }).toList();
 
     return Scaffold(
@@ -44,50 +45,20 @@ class _AnalyticsState extends State<Analytics> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(
-                  3,
-                  (index) => GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedIndex = index;
-                          });
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: selectedIndex == index
-                                  ? const Color(0xff065774)
-                                  : Colors.grey),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                timeline[index],
-                                style: AppTextStyle.mediumTitlename.copyWith(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )),
-            ),
-          ),
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Today\'s analytics',
+                  style: AppTextStyle.mediumTitlename
+                      .copyWith(decoration: TextDecoration.underline))),
           Expanded(
             flex: 2,
             child: SfCartesianChart(
               plotAreaBorderWidth: 0,
               title: ChartTitle(text: 'Score - Time'),
               primaryXAxis: NumericAxis(
-                  labelFormat: '{value}%',
                   edgeLabelPlacement: EdgeLabelPlacement.shift,
                   interval: 2,
                   maximum: 24,
+                  minimum: 0,
                   majorGridLines: const MajorGridLines(width: 0)),
               primaryYAxis: NumericAxis(
                   labelFormat: '{value}%',
@@ -99,6 +70,7 @@ class _AnalyticsState extends State<Analytics> {
               series: _getDefaultLineSeries(chartData),
               tooltipBehavior: TooltipBehavior(
                   enable: true,
+                  borderColor: Colors.amber,
                   color: Colors.grey,
                   builder: (data, dynamic point, dynamic series, int pointIndex,
                       int seriesIndex) {
@@ -108,17 +80,27 @@ class _AnalyticsState extends State<Analytics> {
                         width: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Colors.blueGrey,
+                          color: Colors.amber,
                         ),
                         child: Center(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(data2.username.toString()),
-                            Text(
-                              ('${data2.score}/${data2.total}'.toString()),
-                            )
-                          ],
+                            child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                data2.username.toString(),
+                                style: AppTextStyle.titlename
+                                    .copyWith(color: Colors.white),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                ('${data2.score}/${data2.total}'.toString()),
+                                style: const TextStyle(color: Colors.white),
+                              )
+                            ],
+                          ),
                         )));
                   }),
               onTooltipRender: (tooltipArgs) {
@@ -146,7 +128,9 @@ class _AnalyticsState extends State<Analytics> {
                               color: Colors.white,
                             ),
                           ),
-                          subtitle: Text(chartData[index].score.toString()),
+                          subtitle: Text(
+                              'Score: ${chartData[index].score.toString()}/${chartData[index].total.toString()}\t\t${DateFormat.Hm().format(chartData[index].date!)}'
+                                  .toString()),
                           title: Text(chartData[index].username),
                         ),
                       )),
@@ -167,11 +151,12 @@ List<LineSeries<QuizReportData, num>> _getDefaultLineSeries(chartData) {
         dataSource: chartData,
         pointColorMapper: (QuizReportData sales, _) => sales.color,
         dataLabelMapper: (datum, index) => 'hi',
-        xValueMapper: (QuizReportData sales, _) => sales.date!.hour,
+        xValueMapper: (QuizReportData sales, _) =>
+            convertDateTimeToDecimal(sales.date!),
         yValueMapper: (QuizReportData sales, _) =>
             (sales.score / sales.total) * 100,
-        name: 'Grade',
         markerSettings: const MarkerSettings(
+          color: Colors.amber,
           isVisible: true,
         )),
   ];
@@ -189,4 +174,11 @@ class QuizReportData {
   final Color color;
   final int total;
   final DateTime? date;
+}
+
+double convertDateTimeToDecimal(DateTime dateTime) {
+  final hours = dateTime.hour.toDouble();
+  final minutes = dateTime.minute / 60.0;
+
+  return hours + minutes;
 }

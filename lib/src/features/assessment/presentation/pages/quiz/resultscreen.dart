@@ -109,6 +109,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                               Navigator.pop(context);
                               Navigator.popUntil(
                                   context, (route) => route.isFirst);
+                              setState(() {});
                             });
                           } else {
                             Navigator.push(
