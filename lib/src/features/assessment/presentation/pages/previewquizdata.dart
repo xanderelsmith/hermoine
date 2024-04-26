@@ -98,7 +98,20 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                               radius: 15,
                               child: Text((index + 1).toString()),
                             ),
-                            Expanded(child: quizlist[index]),
+                            Expanded(
+                                child: Stack(
+                              children: [
+                                quizlist[index],
+                                const Align(
+                                  alignment: Alignment(-0.9, 0.97),
+                                  child: CircleAvatar(
+                                    radius: 15,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(Icons.edit),
+                                  ),
+                                ),
+                              ],
+                            )),
                           ],
                         )),
                   )).toList(),

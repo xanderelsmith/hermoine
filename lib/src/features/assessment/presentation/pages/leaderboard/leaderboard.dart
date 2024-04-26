@@ -40,6 +40,7 @@ class LeaderBoardScreen extends StatelessWidget {
             // physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
+                title: const Text('LeaderBoard'),
                 collapsedHeight: 100,
                 expandedHeight: 180,
                 flexibleSpace: FlexibleSpaceBar(
