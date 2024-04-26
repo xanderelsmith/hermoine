@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -73,12 +74,36 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
                             Text(
-                              userDetails!.email,
+                              userDetails!.username,
                               style: AppTextStyle.mediumTitlename
                                   .copyWith(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
+
+                            StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(currentUser.email)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const CircularProgressIndicator(); // Display loading indicator
+                                  }
+
+                                  UserDetails userDetails =
+                                      UserDetails.fromFirebaseData(
+                                          snapshot.data!.data()
+                                              as Map<String, dynamic>);
+
+                                  return Text(
+                                    userDetails.username ?? 'N/A',
+                                    style: AppTextStyle.mediumTitlename
+                                        .copyWith(color: Colors.white),
+                                  );
+                                }),
+
                             Icon(
                               Icons.notifications_none_outlined,
                               color: AppColor.white,

@@ -58,7 +58,9 @@ class QuizController extends StateNotifier<QuizState> {
               answer.toString().toLowerCase() ||
           (currentquestion as ShortAnswer)
               .otherCorrectAnswers!
-              .contains(answer)) {
+              .map((e) => e.toString().toLowerCase())
+              .toList()
+              .contains(answer.toString())) {
         successSound();
         state = state.copyWith(
             status: QuizStatus.correct,

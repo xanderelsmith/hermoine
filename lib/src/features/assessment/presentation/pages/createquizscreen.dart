@@ -53,50 +53,62 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
               style: AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
             ),
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: ((context) => const SizedBox(
-                        height: 100,
-                        child: AlertDialog(
-                          content: SizedBox(
-                            height: 250,
-                            child: RiveAnimation.asset(
-                              'assets/mascot/hermione.riv',
-                              animations: ['idle question'],
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          title: Text('Loading'),
-                        ),
-                      )));
-
-              final gemini = Gemini.instance;
-
-              if (quizDataSource == QuizDataSource.fromPdf) {
-                extractedText = pdfdata;
+              if (quiznameTextEditingController.text.isEmpty ||
+                  sampleDataTextEditingController.text.isEmpty) {
+                showDialog(
+                    context: context,
+                    builder: (context) => const AlertDialog(
+                          title: Text('Blank input'),
+                          content: Text('One of the input fields is Empty'),
+                        ));
               } else {
-                extractedText = sampleDataTextEditingController.text;
-              }
-              gemini
-                  .text(GeminiSparkConfig.prompt(
-                      message:
-                          extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
-                      difficulty: difficulty,
-                      questionNumber: questionNo))
-                  .then((value) {
-                log('result $value.output');
-                Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: ((context) => const SizedBox(
+                          height: 100,
+                          child: AlertDialog(
+                            content: SizedBox(
+                              height: 250,
+                              child: RiveAnimation.asset(
+                                'assets/mascot/hermione.riv',
+                                animations: ['idle question'],
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                            title: Text('Loading'),
+                          ),
+                        )));
 
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PreviewQuestionsPage(
-                              questionData: value!.output ?? '',
-                              title: quiznameTextEditingController.text,
-                            )));
-              }).onError((error, stackTrace) {
-                log(error.toString());
-              });
+                final gemini = Gemini.instance;
+
+                if (quizDataSource == QuizDataSource.fromPdf) {
+                  extractedText = pdfdata;
+                } else {
+                  extractedText = sampleDataTextEditingController.text;
+                }
+                gemini
+                    .text(GeminiSparkConfig.prompt(
+                        topic: quiznameTextEditingController.text,
+                        message: extractedText
+                            .replaceAll(RegExp(r'\s+'), ' ')
+                            .trim(),
+                        difficulty: difficulty,
+                        questionNumber: questionNo))
+                    .then((value) {
+                  log('result $value.output');
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PreviewQuestionsPage(
+                                questionData: value!.output ?? '',
+                                title: quiznameTextEditingController.text,
+                              )));
+                }).onError((error, stackTrace) {
+                  log(error.toString());
+                });
+              }
             },
           ),
         ),

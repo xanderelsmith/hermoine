@@ -31,10 +31,10 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
   final pageController = PageController(initialPage: 0);
   @override
-  @override
   Widget build(BuildContext context) {
     final quizlist = ref.watch(quizListProvider).getQuizes;
     final quizdatacontroller = ref.watch(quizcontrollerProvider);
+
     Size screensize = MediaQuery.of(context).size;
     List<Question> quizes = ref.watch(quizListProvider).getQuizes;
     log(quizes.length.toString());
@@ -42,8 +42,8 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
     return PopScope(
       canPop: true,
       onPopInvoked: (bool ispop) {
-        // ref.watch(quizcontrollerProvider.notifier).clearQuizState();
-        // pageController.dispose();
+        ref.watch(quizcontrollerProvider.notifier).clearQuizState();
+        pageController.dispose();
       },
       child: Scaffold(
           // bottomSheet: quizlist[0].runtimeType == MultiChoice

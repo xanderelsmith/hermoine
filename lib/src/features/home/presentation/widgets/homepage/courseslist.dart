@@ -14,11 +14,16 @@ import '../../../../assessment/data/sources/fetchcourses.dart';
 import '../../../../assessment/data/sources/fetchquizes.dart';
 import '../../../../assessment/domain/repositories/retievedquizdata.dart';
 
-class Courses extends StatelessWidget {
+class Courses extends StatefulWidget {
   const Courses({
     super.key,
   });
 
+  @override
+  State<Courses> createState() => _CoursesState();
+}
+
+class _CoursesState extends State<Courses> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -30,9 +35,10 @@ class Courses extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AllCoursesScreen()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AllCoursesScreen()))
+                      .then((value) => setState(() {}));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,12 +55,13 @@ class Courses extends StatelessWidget {
             child: FutureBuilder<List<ParseObject>?>(
                 future: QuizApiFetch.getAllquizes(),
                 builder: (context, snapshot) {
-                  return !snapshot.hasData
+                  return !snapshot.hasData && snapshot.data != null
                       ? const Center(
                           child: CircularProgressIndicator(),
                         )
                       : GridView.builder(
-                          itemCount: snapshot.data!.length,
+                          itemCount:
+                              snapshot.data == null ? 0 : snapshot.data!.length,
                           scrollDirection: Axis.horizontal,
                           gridDelegate:
                               const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -125,12 +132,12 @@ class QuizContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(parseObject['topic'], style: AppTextStyle.titlename),
-                  Text('${parseObject['duration']}secs'),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text('${parseObject['questions'].length} questions'),
                   Text(
                     coursename != null ? coursename['name'] : "...",
                   ),

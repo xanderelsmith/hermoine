@@ -28,10 +28,10 @@ class AuthPage extends ConsumerWidget {
         } else if (!snapshot.hasData || snapshot.data == null) {
           return const OnboardingOneScreen(); // Display a message when no user data is available.
         } else {
-          log(snapshot.hasData.toString());
+          log(snapshot.data.toString());
           UserDetails userDetails =
               UserDetails.fromFirebaseUser(snapshot.data!);
-          ;
+
           return HomePage(
             userDetails: userDetails,
           );
@@ -41,20 +41,25 @@ class AuthPage extends ConsumerWidget {
   }
 }
 
-Future<UserDetails?> fetchUserDetails(String? useremail) async {
-  if (useremail == null) return null;
-
+Future<UserDetails?> fetchUserDetails(String userEmail) async {
   try {
     final documentSnapshot = await FirebaseFirestore.instance
         .collection('Users')
-        .doc(useremail)
+        .doc(userEmail)
         .get();
 
     if (documentSnapshot.exists) {
       final userData = documentSnapshot.data();
-      return UserDetails.fromFirebaseData(userData!);
+      if (userData != null) {
+        log("User document exists");
+        return UserDetails.fromFirebaseData(userData);
+      } else {
+        // Handle the unexpected case where document exists but data is null
+        log("User document exists but data is null for $userEmail");
+        return null; // Or throw an exception if appropriate
+      }
     } else {
-      log("User document does not exist");
+      log("User document does not exist for $userEmail");
       return null;
     }
   } on FirebaseException catch (e) {
