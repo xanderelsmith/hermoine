@@ -24,12 +24,12 @@ class ShortAnswer extends Question {
   final String answer;
   const ShortAnswer({
     this.images,
-    Key? key,
+    super.key,
     this.indexS,
     required this.answer,
     this.otherCorrectAnswers,
     required this.questions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

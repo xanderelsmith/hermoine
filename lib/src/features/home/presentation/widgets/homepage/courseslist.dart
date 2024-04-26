@@ -132,12 +132,12 @@ class QuizContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(parseObject['topic'], style: AppTextStyle.titlename),
-                  Text('${parseObject['duration']}secs'),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text('${parseObject['questions'].length} questions'),
                   Text(
                     coursename != null ? coursename['name'] : "...",
                   ),

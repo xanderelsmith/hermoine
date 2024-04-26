@@ -74,6 +74,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
+                            Text(
+                              userDetails!.username,
+                              style: AppTextStyle.mediumTitlename
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+
                             StreamBuilder<DocumentSnapshot>(
                                 stream: FirebaseFirestore.instance
                                     .collection('Users')
@@ -95,6 +103,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         .copyWith(color: Colors.white),
                                   );
                                 }),
+
                             Icon(
                               Icons.notifications_none_outlined,
                               color: AppColor.white,
