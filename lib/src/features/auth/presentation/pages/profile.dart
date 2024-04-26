@@ -10,7 +10,7 @@ import 'package:hermione/src/features/auth/presentation/pages/signin_screen.dart
 import 'create_account_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -130,115 +130,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
             "Profile",
           )),
         ),
-        body: Column(
-          children: [
-            const ProfileImage(
-              isEditMode: false,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(25),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  height: 410,
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.6),
-                        offset: const Offset(5, 5), // Right and bottom shadow
-                        blurRadius: 6,
-                        spreadRadius: 4,
-                      ),
-                      const BoxShadow(
-                        color:
-                            Colors.black, // Left and top shadow (transparent)
-                        offset: Offset(-5, -5),
-                        blurRadius: 6,
-                        spreadRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: ListView(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => const EditProfileScreen());
-                        },
-                        child: const ListTile(
-                          leading: Icon(Icons.person, color: Color(0xFF065774)),
-                          title: Text('Edit  Profile'),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const ProfileImage(
+                isEditMode: false,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(25),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 410,
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.6),
+                          offset: const Offset(5, 5), // Right and bottom shadow
+                          blurRadius: 6,
+                          spreadRadius: 4,
+                        ),
+                        const BoxShadow(
+                          color:
+                              Colors.black, // Left and top shadow (transparent)
+                          offset: Offset(-5, -5),
+                          blurRadius: 6,
+                          spreadRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: ListView(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Get.to(() => const EditProfileScreen());
+                          },
+                          child: const ListTile(
+                            leading:
+                                Icon(Icons.person, color: Color(0xFF065774)),
+                            title: Text('Edit  Profile'),
+                            trailing: Icon(Icons.arrow_forward_ios),
+                          ),
+                        ),
+                        Container(
+                          height: 0.5,
+                          color: Colors.black,
+                          width: double.maxFinite,
+                        ),
+                        ListTile(
+                          leading:
+                              const Icon(Icons.lock, color: Color(0xFF065774)),
+                          title: InkWell(
+                              onTap: () {
+                                Get.to(() => ForgetPasswordScreen());
+                              },
+                              child: const Text('Change Password')),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                        Container(
+                          height: 0.3,
+                          color: Colors.black,
+                          width: double.maxFinite,
+                        ),
+                        const ListTile(
+                          leading: Icon(Icons.info, color: Color(0xFF065774)),
+                          title: Text('About App'),
                           trailing: Icon(Icons.arrow_forward_ios),
                         ),
-                      ),
-                      Container(
-                        height: 0.5,
-                        color: Colors.black,
-                        width: double.maxFinite,
-                      ),
-                      ListTile(
-                        leading:
-                            const Icon(Icons.lock, color: Color(0xFF065774)),
-                        title: InkWell(
-                            onTap: () {
-                              Get.to(() => ForgetPasswordScreen());
-                            },
-                            child: const Text('Change Password')),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                      ),
-                      Container(
-                        height: 0.3,
-                        color: Colors.black,
-                        width: double.maxFinite,
-                      ),
-                      const ListTile(
-                        leading: Icon(Icons.info, color: Color(0xFF065774)),
-                        title: Text('About App'),
-                        trailing: Icon(Icons.arrow_forward_ios),
-                      ),
-                      Container(
-                        height: 0.5,
-                        color: Colors.black,
-                        width: double.maxFinite,
-                      ),
-                      ListTile(
-                        leading:
-                            const Icon(Icons.delete, color: Color(0xFF065774)),
-                        title: InkWell(
-                            onTap: () {
-                              deleteUserAccount();
-                            },
-                            child: const Text('Delete Account')),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                      ),
-                      Container(
-                        height: 0.3,
-                        color: Colors.black,
-                        width: double.maxFinite,
-                      ),
-                      ListTile(
-                        leading:
-                            const Icon(Icons.logout, color: Color(0xFF065774)),
-                        title: InkWell(
-                          onTap: () {
-                            logout();
-                          },
-                          child: const Text('Log out'),
+                        Container(
+                          height: 0.5,
+                          color: Colors.black,
+                          width: double.maxFinite,
                         ),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                      ),
-                      Container(
-                        height: 0.5,
-                        color: Colors.black,
-                        width: double.maxFinite,
-                      ),
-                    ],
+                        ListTile(
+                          leading: const Icon(Icons.delete,
+                              color: Color(0xFF065774)),
+                          title: InkWell(
+                              onTap: () {
+                                deleteUserAccount();
+                              },
+                              child: const Text('Delete Account')),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                        Container(
+                          height: 0.3,
+                          color: Colors.black,
+                          width: double.maxFinite,
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.logout,
+                              color: Color(0xFF065774)),
+                          title: InkWell(
+                            onTap: () {
+                              logout();
+                            },
+                            child: const Text('Log out'),
+                          ),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                        Container(
+                          height: 0.5,
+                          color: Colors.black,
+                          width: double.maxFinite,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

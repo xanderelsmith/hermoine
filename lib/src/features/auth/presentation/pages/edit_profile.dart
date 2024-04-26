@@ -101,154 +101,157 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           "Edit Profile",
         )),
       ),
-      body: Column(
-        children: [
-          const ProfileImage(),
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 310,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.6),
-                      offset: const Offset(5, 5), // Right and bottom shadow
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                    const BoxShadow(
-                      color: Colors.black, // Left and top shadow (transparent)
-                      offset: Offset(-5, -5),
-                      blurRadius: 6,
-                      spreadRadius: 4,
-                    ),
-                  ],
-                ),
-                child: ListView(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                "Name",
-                                style: theme.textTheme.bodyMedium,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const ProfileImage(),
+            Padding(
+              padding: const EdgeInsets.all(25),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  height: 310,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.6),
+                        offset: const Offset(5, 5), // Right and bottom shadow
+                        blurRadius: 6,
+                        spreadRadius: 4,
+                      ),
+                      const BoxShadow(
+                        color:
+                            Colors.black, // Left and top shadow (transparent)
+                        offset: Offset(-5, -5),
+                        blurRadius: 6,
+                        spreadRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ListView(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "Name",
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5.v),
-                            CustomTextFormField(
-                              controller: nameController,
-                              textInputAction: TextInputAction.done,
-                              textInputType: TextInputType.visiblePassword,
-                              obscureText: false,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.h),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                "Birthday",
-                                style: theme.textTheme.bodyMedium,
+                              SizedBox(height: 5.v),
+                              CustomTextFormField(
+                                controller: nameController,
+                                textInputAction: TextInputAction.done,
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: false,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.h),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "Birthday",
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5.v),
-                            CustomTextFormField(
-                              controller: birthdayController,
-                              textInputAction: TextInputAction.done,
-                              textInputType: TextInputType.visiblePassword,
-                              obscureText: false,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.h),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                "Gender",
-                                style: theme.textTheme.bodyMedium,
+                              SizedBox(height: 5.v),
+                              CustomTextFormField(
+                                controller: birthdayController,
+                                textInputAction: TextInputAction.done,
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: false,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.h),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "Gender",
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5.v),
-                            CustomTextFormField(
-                              controller: genderController,
-                              textInputAction: TextInputAction.done,
-                              textInputType: TextInputType.visiblePassword,
-                              obscureText: false,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.h),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                "Bio",
-                                style: theme.textTheme.bodyMedium,
+                              SizedBox(height: 5.v),
+                              CustomTextFormField(
+                                controller: genderController,
+                                textInputAction: TextInputAction.done,
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: false,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.h),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  "Bio",
+                                  style: theme.textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5.v),
-                            CustomTextFormField(
-                              controller: bioController,
-                              textInputAction: TextInputAction.done,
-                              textInputType: TextInputType.visiblePassword,
-                              obscureText: false,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.h),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    )
-                  ],
+                              SizedBox(height: 5.v),
+                              CustomTextFormField(
+                                controller: bioController,
+                                textInputAction: TextInputAction.done,
+                                textInputType: TextInputType.visiblePassword,
+                                obscureText: false,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.h),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          // Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CustomElevatedButton(
-                onPressed: () {
-                  updateUserDocument(currentUser.email!);
-                },
-                text: "Save",
-                buttonTextStyle: CustomTextStyles.titleMediumOnPrimary),
-          )
-        ],
+            // Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomElevatedButton(
+                  onPressed: () {
+                    updateUserDocument(currentUser.email!);
+                  },
+                  text: "Save",
+                  buttonTextStyle: CustomTextStyles.titleMediumOnPrimary),
+            )
+          ],
+        ),
       ),
     ));
   }

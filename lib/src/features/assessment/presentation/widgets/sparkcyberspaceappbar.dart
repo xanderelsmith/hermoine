@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/constants.dart';
@@ -5,8 +6,8 @@ import 'package:hermione/src/features/assessment/presentation/widgets/minimallis
 
 class SparkCyberSpaceAppBar extends StatefulWidget
     implements PreferredSizeWidget {
-  const SparkCyberSpaceAppBar({super.key});
-
+  const SparkCyberSpaceAppBar({super.key, required this.usersList});
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> usersList;
   @override
   State<SparkCyberSpaceAppBar> createState() => _SparkCyberSpaceAppBarState();
   @override
@@ -50,8 +51,16 @@ class _SparkCyberSpaceAppBarState extends State<SparkCyberSpaceAppBar>
                                 ? 80
                                 : 50,
                       ),
-                      const Text('Sean'),
-                      const Text('1892 xp'),
+                      Text(index == 1
+                          ? widget.usersList[0]['username']
+                          : index == 0
+                              ? widget.usersList[1]['username']
+                              : widget.usersList[2]['username']),
+                      Text(index == 1
+                          ? widget.usersList[0]['xp']
+                          : index == 0
+                              ? widget.usersList[1]['xp']
+                              : widget.usersList[2]['xp']),
                     ],
                   )),
         ),
