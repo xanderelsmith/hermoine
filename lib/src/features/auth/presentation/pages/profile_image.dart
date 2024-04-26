@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -144,9 +146,11 @@ class _ProfileImageState extends State<ProfileImage> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return const CircularProgressIndicator(); // Display loading indicator
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // Display loading indicator
                     }
-
+                    log(snapshot.data!.data().toString());
                     UserDetails userDetails = UserDetails.fromFirebaseData(
                         snapshot.data!.data() as Map<String, dynamic>);
 

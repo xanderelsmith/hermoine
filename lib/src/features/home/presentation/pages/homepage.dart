@@ -40,8 +40,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     newUser = widget.userDetails;
     log('here');
-    var useremail = FirebaseAuth.instance.currentUser!.uid!;
-    log(useremail);
+    var useremail = FirebaseAuth.instance.currentUser!.email;
+    log(useremail!);
     fetchUserDetails(useremail).then((value) {
       ref.watch(userProvider.notifier).assignUserData(value!);
       log(value.name.toString());
