@@ -1,12 +1,19 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/constants.dart';
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
+import 'package:hermione/src/features/assessment/domain/repositories/retievedquizdata.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quizcreationscreen/multichoicequizcreatorscreen.dart';
+import 'package:hermione/src/features/assessment/presentation/pages/quizcreationscreen/short_answer_quiz_creator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../home/domain/repositories/currentuserrepository.dart';
+import '../../data/sources/enums/quiztype_enum.dart';
 import '../../domain/repositories/createdquizrepo.dart';
 
 // Assuming cleanjsonString function is defined elsewhere
@@ -102,12 +109,54 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                                 child: Stack(
                               children: [
                                 quizlist[index],
-                                const Align(
-                                  alignment: Alignment(-0.9, 0.97),
-                                  child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor: Colors.white,
-                                    child: Icon(Icons.edit),
+                                Align(
+                                  alignment: const Alignment(-0.9, 0.97),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (quizlist[index].quizType ==
+                                          QuizType.shortTextAnswer) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ShortTextAnswerQuizCreator(
+                                                      index: index,
+                                                      question: quizlist[index]
+                                                          as ShortAnswer,
+                                                    )));
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MultiChoiceCreator(
+                                                      index: index,
+                                                      question: quizlist[index]
+                                                          as MultiChoice,
+                                                    )));
+                                      }
+                                    },
+                                    child: const CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(Icons.edit),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: const Alignment(-0.67, 0.97),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      final questionListController = ref.watch(
+                                          createdQuizlistdataProvider.notifier);
+
+                                      questionListController.remove(index);
+                                    },
+                                    child: const CircleAvatar(
+                                      radius: 15,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(Icons.delete),
+                                    ),
                                   ),
                                 ),
                               ],

@@ -9,7 +9,7 @@ class UserDetails {
   String? gender; // Optional last name
   String? age; // Optional last name
   String? bio; // Optional last name
-  String? xp; // Optional last name
+  final String xp; // Optional last name
   String? profileImageUrl; // Optional profile image URL
   bool? isTutor;
   UserDetails({
@@ -21,7 +21,7 @@ class UserDetails {
     this.isTutor,
     this.age,
     this.bio,
-    this.xp,
+    required this.xp,
     this.profileImageUrl,
   });
   // Factory constructor for creating a User object from a Map (e.g., JSON data)
@@ -52,6 +52,7 @@ class UserDetails {
         profileImageUrl: userData['profileImageUrl'] ?? " ",
       );
   factory UserDetails.fromParseUSer(ParseUser userData) => UserDetails(
+        xp: userData['xp'],
         isTutor: userData['isTutor'] ?? true,
         id: userData.objectId ?? "",
         username: userData.username ?? "no name",
@@ -70,7 +71,7 @@ class UserDetails {
         name: json['name'] as String?,
         gender: json['gender'] as String?,
         age: json['age'] as String?,
-        xp: json['xp'] as String?,
+        xp: json['xp'] ?? '',
         bio: json['gender'] as String?,
         profileImageUrl: json['profileImageUrl'] as String?,
       );

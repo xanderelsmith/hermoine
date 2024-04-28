@@ -80,6 +80,13 @@ class CachedCreatedPresentQuizDataRepo extends StateNotifier<List<Question>> {
     state = [...detailsListValue];
   }
 
+  addQuiz(Question question, {required int index}) {
+    final newState = state
+      ..removeAt(index)
+      ..insert(index, question);
+    state = [...newState];
+  }
+
   void clear() {
     var newdata = state..clear();
     state = [...newdata];

@@ -33,8 +33,8 @@ class LeaderBoardScreen extends StatelessWidget {
             return const Text("No data");
           }
           final users = snapshot.data!.docs;
-          users
-              .sort((a, b) => int.parse(b['xp']).compareTo(int.parse(a['xp'])));
+          users.sort((a, b) => int.parse(b['xp'].isEmpty ? '0' : b['xp'])
+              .compareTo(int.parse(a['xp'].isEmpty ? '0' : a['xp'])));
 
           return CustomScrollView(
             // physics: const BouncingScrollPhysics(),
@@ -128,7 +128,9 @@ class OtherUserList extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            users[index]['xp'],
+                            users[index]['xp'].isEmpty
+                                ? '0'
+                                : users[index]['xp'],
                             style: AppTextStyle.mediumTitlename
                                 .copyWith(color: Colors.black),
                           ),

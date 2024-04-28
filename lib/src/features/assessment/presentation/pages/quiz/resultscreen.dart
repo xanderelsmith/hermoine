@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hermione/src/features/auth/presentation/pages/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -101,10 +102,23 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                                     child: CircularProgressIndicator()));
                             sendViewerDetails(
                                     user?.username, user?.email, score, total)
-                                .then((value) {
+                                .then((value) async {
                               ref
                                   .watch(quizcontrollerProvider.notifier)
                                   .clearQuizState();
+
+                              int s = user!.xp.isNotEmpty
+                                  ? int.tryParse(user.xp)! + 10
+                                  : 10;
+                              log(s.toString());
+                              await FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(user!.email)
+                                  .update({'xp': s.toString()})
+                                  .then((value) => null)
+                                  .onError((error, stackTrace) {
+                                    log(error.toString());
+                                  });
 
                               Navigator.pop(context);
                               Navigator.popUntil(
