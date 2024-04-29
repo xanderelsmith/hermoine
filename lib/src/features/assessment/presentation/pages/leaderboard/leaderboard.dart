@@ -29,9 +29,6 @@ class LeaderBoardScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          if (snapshot.hasData == null) {
-            return const Text("No data");
-          }
           final users = snapshot.data!.docs;
           users.sort((a, b) => int.parse(b['xp'].isEmpty ? '0' : b['xp'])
               .compareTo(int.parse(a['xp'].isEmpty ? '0' : a['xp'])));

@@ -63,7 +63,7 @@ class _QuizIntroScreenState extends ConsumerState<QuizIntroScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ElevatedButton(
             onPressed: () {
               Navigator.push(

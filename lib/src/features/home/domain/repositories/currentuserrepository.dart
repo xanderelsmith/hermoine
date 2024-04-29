@@ -7,6 +7,11 @@ class UserNotifier extends StateNotifier<UserDetails?> {
   assignUserData(UserDetails userdata) {
     state = userdata;
   }
+
+  copyWithXp(String xp) {
+    UserDetails userdata = state!;
+    state = userdata.copyWith(xp: xp);
+  }
 }
 
 final userProvider =

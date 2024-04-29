@@ -1,27 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hermione/src/features/auth/presentation/pages/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/reviewscreen.dart';
 import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:rive/rive.dart';
 
-import 'package:hermione/src/core/constants/constants.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
-import 'package:hermione/src/features/assessment/domain/entities/quizstate.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/customappbar.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/mainquizscreen.dart';
 
 import '../../../domain/repositories/retievedquizdata.dart';
-import '../../widgets/resultsubcomponent.dart';
 
 class QuizResultScreen extends ConsumerStatefulWidget {
   static String id = 'QuizResultScreen';
@@ -108,7 +101,8 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                                   .clearQuizState();
 
                               int s = user!.xp.isNotEmpty
-                                  ? int.tryParse(user.xp)! + 10
+                                  ? int.tryParse(user.xp)! +
+                                      (widget.scoreDecimal * 100).toInt()
                                   : 10;
                               log(s.toString());
                               await FirebaseFirestore.instance
@@ -118,12 +112,23 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                                   .then((value) => null)
                                   .onError((error, stackTrace) {
                                     log(error.toString());
+                                  })
+                                  .whenComplete(() {
+                                    ref
+                                        .watch(userProvider.notifier)
+                                        .copyWithXp(s.toString());
+                                    Navigator.pop(context);
+                                    Navigator.popUntil(
+                                        context, (route) => route.isFirst);
+                                    showDialog(
+                                        context: context,
+                                        builder: ((context) => AlertDialog(
+                                              content: Text(
+                                                  'You have been rewarded with ${widget.scoreDecimal * 100}xp.'),
+                                            )));
+                                    setState(() {});
                                   });
-
-                              Navigator.pop(context);
-                              Navigator.popUntil(
-                                  context, (route) => route.isFirst);
-                              setState(() {});
+                              return null;
                             });
                           } else {
                             Navigator.push(

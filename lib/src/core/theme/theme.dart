@@ -45,10 +45,7 @@ class ThemeHelper {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          visualDensity: const VisualDensity(
-            vertical: -4,
-            horizontal: -4,
-          ),
+          visualDensity: const VisualDensity(),
           padding: EdgeInsets.zero,
         ),
       ),
@@ -62,10 +59,7 @@ class ThemeHelper {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          visualDensity: const VisualDensity(
-            vertical: -4,
-            horizontal: -4,
-          ),
+          visualDensity: const VisualDensity(),
           padding: EdgeInsets.zero,
         ),
       ),

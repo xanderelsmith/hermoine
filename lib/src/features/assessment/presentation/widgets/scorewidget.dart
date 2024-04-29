@@ -40,17 +40,19 @@ class ScoreChart extends ConsumerWidget {
             child: CircleAvatar(
               backgroundColor: Colors.white,
               radius: 45,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Your Score'),
-                  Text(
-                    '${(score * 100).floor()}%',
-                    style: AppTextStyle.mediumTitlename
-                        .copyWith(color: const Color(0xff065774)),
-                  ),
-                ],
+              child: FittedBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Your Score'),
+                    Text(
+                      '${(score * 100).floor()}%',
+                      style: AppTextStyle.mediumTitlename
+                          .copyWith(color: const Color(0xff065774)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

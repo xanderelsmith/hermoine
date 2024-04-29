@@ -149,27 +149,34 @@ class _ProfileImageState extends State<ProfileImage> {
                       return const Center(
                           child:
                               CircularProgressIndicator()); // Display loading indicator
-                    }
-                    log(snapshot.data!.data().toString());
-                    UserDetails userDetails = UserDetails.fromFirebaseData(
-                        snapshot.data!.data() as Map<String, dynamic>);
+                    } else if (snapshot.data != null) {
+                      return const Center(child: Text('No data'));
+                    } else if (snapshot.data!.data() != null) {
+                      log(snapshot.data!.data().toString());
+                      UserDetails userDetails = UserDetails.fromFirebaseData(
+                          snapshot.data!.data() as Map<String, dynamic>);
 
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/diamond.svg',
-                          width: 24, // Adjust width as needed
-                          height: 24, // Adjust height as needed
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          userDetails.xp ?? '0',
-                          style: AppTextStyle.mediumTitlename
-                              .copyWith(color: Colors.black),
-                        ),
-                      ],
-                    );
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/diamond.svg',
+                            width: 24, // Adjust width as needed
+                            height: 24, // Adjust height as needed
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            userDetails.xp ?? '0',
+                            style: AppTextStyle.mediumTitlename
+                                .copyWith(color: Colors.black),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // Display loading indicator
+                    }
                   }),
             ],
           ),

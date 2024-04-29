@@ -119,6 +119,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   @override
+  void initState() {
+    FirebaseAuth.instance.authStateChanges();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
