@@ -20,16 +20,15 @@ import '../../../auth/presentation/widgets/styled_textfield.dart';
 import '../../data/sources/assessmentdatasources.dart';
 import '../../domain/repositories/createdquizrepo.dart';
 
-class CreateQuizScreen extends StatefulWidget {
-  const CreateQuizScreen({
-    super.key,
-  });
+class CreateQuizScreen extends ConsumerStatefulWidget {
+  const CreateQuizScreen({super.key});
 
   @override
-  State<CreateQuizScreen> createState() => _CreateQuizScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CreateQuizScreenState();
 }
 
-class _CreateQuizScreenState extends State<CreateQuizScreen> {
+class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
   TextEditingController quiznameTextEditingController = TextEditingController();
   TextEditingController sampleDataTextEditingController =
       TextEditingController();
@@ -97,12 +96,21 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                     .then((value) {
                   log('result $value.output');
                   Navigator.pop(context);
-
+                  try {
+                    final notifier =
+                        ref.read(createdQuizlistdataProvider.notifier);
+                    notifier.validateAiInputData(
+                        value!.output!.startsWith('```json')
+                            ? cleanjsonString(value!.output ?? '')
+                            : value!.output ?? '');
+                  } on Exception catch (e) {
+                    ref.watch(createdQuizlistdataProvider.notifier).clear();
+                    log(e.toString());
+                  }
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => PreviewQuestionsPage(
-                                questionData: value!.output ?? '',
                                 title: quiznameTextEditingController.text,
                               )));
                 }).onError((error, stackTrace) {

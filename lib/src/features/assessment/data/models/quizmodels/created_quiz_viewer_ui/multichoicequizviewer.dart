@@ -137,7 +137,9 @@ class MultiChoice extends Question {
       "question": question_,
       "correct_answer": answer,
       "incorrect_answers": incorrectanswers,
-      "images": images!.map((e) => ParseFile(File(e.path))).toList(),
+      "images": images == null
+          ? []
+          : images!.map((e) => ParseFile(File(e.path))).toList(),
     };
   }
 

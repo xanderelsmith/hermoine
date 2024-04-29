@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hermione/src/core/constants/colors.dart';
 import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/multichoicequizviewer.dart';
 import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/shortanswerquizviewer.dart';
-import 'package:hermione/src/features/assessment/domain/repositories/retievedquizdata.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quizcreationscreen/multichoicequizcreatorscreen.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quizcreationscreen/short_answer_quiz_creator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,10 +19,8 @@ class PreviewQuestionsPage extends ConsumerStatefulWidget {
   const PreviewQuestionsPage({
     required this.title,
     super.key,
-    required this.questionData,
   });
 
-  final String questionData;
   final String title;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -33,35 +28,6 @@ class PreviewQuestionsPage extends ConsumerStatefulWidget {
 }
 
 class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
-  String _cleanedQuestionData = '';
-
-  @override
-  void didUpdateWidget(covariant PreviewQuestionsPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    var quizlist = ref.watch(createdQuizlistdataProvider);
-    if (quizlist.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final notifier = ref.read(createdQuizlistdataProvider.notifier);
-        notifier.validateAiInputData(widget.questionData.startsWith('```json')
-            ? cleanjsonString(widget.questionData)
-            : widget.questionData);
-      });
-    } // Use a future or function outside widget lifecycle methods
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Use a future or function outside widget lifecycle methods
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final notifier = ref.read(createdQuizlistdataProvider.notifier);
-      notifier.validateAiInputData(widget.questionData.startsWith('```json')
-          ? cleanjsonString(widget.questionData)
-          : widget.questionData);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var quizlist = ref.watch(createdQuizlistdataProvider);
@@ -203,6 +169,7 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                                         await quizdata.save().then((value) {
                                           Navigator.popUntil(context,
                                               (route) => route.isFirst);
+                                          setState(() {});
                                         }).onError((error, stackTrace) {
                                           Navigator.pop(context);
                                         });
