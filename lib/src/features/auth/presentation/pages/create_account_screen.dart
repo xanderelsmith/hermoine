@@ -243,7 +243,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       SizedBox(height: 16.v),
-                                      CustomTextFormField(
+                                      CustomTextFormFieldToggle(
                                         validator: (value) {
                                           if (value == '') {
                                             return "Please enter password";
@@ -278,7 +278,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         style: theme.textTheme.bodyMedium,
                                       ),
                                       SizedBox(height: 16.v),
-                                      CustomTextFormField(
+                                      CustomTextFormFieldToggle(
                                         controller: confirmPasswordController,
                                         textInputAction: TextInputAction.done,
                                         validator: (value) {
@@ -302,7 +302,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                       )
                                     ],
                                   ),
-                                  SizedBox(height: 130.v),
+                                  SizedBox(height: 80.v),
                                   CustomElevatedButton(
                                     onPressed: signup,
                                     text: "Create account",

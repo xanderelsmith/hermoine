@@ -166,7 +166,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                       style: theme.textTheme.bodyMedium,
                                     ),
                                     SizedBox(height: 16.v),
-                                    CustomTextFormField(
+                                    CustomTextFormFieldToggle(
                                       controller: passwordController,
                                       textInputAction: TextInputAction.done,
                                       textInputType:

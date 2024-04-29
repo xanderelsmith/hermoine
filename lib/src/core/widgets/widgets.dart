@@ -1047,3 +1047,130 @@ class CustomTextFormField extends StatelessWidget {
             ),
       );
 }
+
+class CustomTextFormFieldToggle extends StatefulWidget {
+  const CustomTextFormFieldToggle({
+    super.key,
+    this.alignment,
+    this.width,
+    this.scrollPadding,
+    this.controller,
+    this.focusNode,
+    this.autofocus = true,
+    this.textStyle,
+    this.obscureText = false,
+    this.textInputAction = TextInputAction.next,
+    this.textInputType = TextInputType.text,
+    this.maxLines,
+    this.hintText,
+    this.hintStyle,
+    this.prefix,
+    this.prefixConstraints,
+    this.suffix,
+    this.suffixConstraints,
+    this.contentPadding,
+    this.borderDecoration,
+    this.fillColor,
+    this.filled = false,
+    this.validator,
+  });
+
+  final Alignment? alignment;
+  final double? width;
+  final TextEditingController? scrollPadding;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final bool? autofocus;
+  final TextStyle? textStyle;
+  final bool? obscureText;
+  final TextInputAction? textInputAction;
+  final TextInputType? textInputType;
+  final int? maxLines;
+  final String? hintText;
+  final TextStyle? hintStyle;
+  final Widget? prefix;
+  final BoxConstraints? prefixConstraints;
+  final Widget? suffix;
+  final BoxConstraints? suffixConstraints;
+  final EdgeInsets? contentPadding;
+  final InputBorder? borderDecoration;
+  final Color? fillColor;
+  final bool? filled;
+  final FormFieldValidator<String>? validator;
+
+  @override
+  _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormFieldToggle> {
+  bool _isObscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.alignment != null
+        ? Align(
+            alignment: widget.alignment ?? Alignment.center,
+            child: textFormFieldWidget(context))
+        : textFormFieldWidget(context);
+  }
+
+  Widget textFormFieldWidget(BuildContext context) => SizedBox(
+        width: widget.width ?? double.maxFinite,
+        child: TextFormField(
+          scrollPadding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          autofocus: widget.autofocus!,
+          style: CustomTextStyles.bodySmallPrimary,
+          obscureText: _isObscure,
+          textInputAction: widget.textInputAction,
+          keyboardType: widget.textInputType,
+          maxLines: widget.maxLines ?? 1,
+          decoration: decoration,
+          validator: widget.validator,
+        ),
+      );
+
+  InputDecoration get decoration => InputDecoration(
+        hintText: widget.hintText ?? "",
+        hintStyle: widget.hintStyle ?? TextStyle(),
+        prefixIcon: widget.prefix,
+        prefixIconConstraints: widget.prefixConstraints,
+        suffixIcon: widget.obscureText == true
+            ? IconButton(
+                icon: Icon(
+                  _isObscure ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isObscure = !_isObscure;
+                  });
+                },
+              )
+            : widget.suffix,
+        suffixIconConstraints: widget.suffixConstraints,
+        isDense: true,
+        contentPadding: widget.contentPadding,
+        fillColor: widget.fillColor,
+        filled: widget.filled,
+        border: widget.borderDecoration ??
+            UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+        enabledBorder: widget.borderDecoration ??
+            UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+        focusedBorder: widget.borderDecoration ??
+            UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+      );
+}
