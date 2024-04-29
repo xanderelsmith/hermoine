@@ -40,7 +40,7 @@ class GeminiSparkConfig {
 const String rules =
     """do not begin with Scan for sentences that can be transformed into multichoice, short answer.I WILL DECODE THIS IN MY FLUTTER APP DIRECTLY SO GIVE ONLY THE LIST OF JSON QUESTIONS, and do not add anything to the response except the list of map, 
 Extract key phrases for questions and answers: Accurately extract relevant phrases for both questions and their corresponding answers.
-Categorize questions: Determine the appropriate category multichoice for each question. do not add indexes or numbers
+Categorize questions: Determine the appropriate category multichoice for each question. do not add indexes or numbers, multichoice has 3  "incorrect_answers"and 1 "correct_answer",
      
 Formulate clear and concise questions: Ensure questions are well-structured and easy to understand. generate the questions a s a teeacher teaching the subject, also options shouldn't be exceed than 3 words,most importantly if the number of value pairs doesnt match the number in the sample add more data to supplement
  """;

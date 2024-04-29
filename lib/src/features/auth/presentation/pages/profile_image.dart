@@ -145,12 +145,10 @@ class _ProfileImageState extends State<ProfileImage> {
                       .doc(currentUser.email)
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+                    if (!snapshot.hasData || snapshot.data == null) {
                       return const Center(
                           child:
                               CircularProgressIndicator()); // Display loading indicator
-                    } else if (snapshot.data != null) {
-                      return const Center(child: Text('No data'));
                     } else if (snapshot.data!.data() != null) {
                       log(snapshot.data!.data().toString());
                       UserDetails userDetails = UserDetails.fromFirebaseData(
