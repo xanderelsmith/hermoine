@@ -53,7 +53,8 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
             ),
             onPressed: () {
               if (quiznameTextEditingController.text.isEmpty ||
-                  sampleDataTextEditingController.text.isEmpty) {
+                  sampleDataTextEditingController.text.isEmpty ||
+                  questionNo == 0) {
                 showDialog(
                     context: context,
                     builder: (context) => const AlertDialog(
@@ -85,42 +86,10 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
                 } else {
                   extractedText = sampleDataTextEditingController.text;
                 }
-                gemini
-                    .text(GeminiSparkConfig.prompt(
-                        topic: quiznameTextEditingController.text,
-                        message: extractedText
-                            .replaceAll(RegExp(r'\s+'), ' ')
-                            .trim(),
-                        difficulty: difficulty,
-                        questionNumber: questionNo))
-                    .then((value) {
-                  log('result $value.output');
-                  Navigator.pop(context);
-                  bool haseRROR = false;
-                  try {
-                    final notifier =
-                        ref.read(createdQuizlistdataProvider.notifier);
-                    notifier.validateAiInputData(
-                        value!.output!.startsWith('```json')
-                            ? cleanjsonString(value.output ?? '')
-                            : value.output ?? '');
-                  } on Exception catch (e) {
-                    haseRROR = true;
-                    ref.watch(createdQuizlistdataProvider.notifier).clear();
-                    log(e.toString());
-                    return;
-                  }
-                  if (haseRROR == false) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreviewQuestionsPage(
-                                  title: quiznameTextEditingController.text,
-                                )));
-                  }
-                }).onError((error, stackTrace) {
-                  log(error.toString());
-                });
+                bool haseRROR = false;
+                do {
+                  quizProcessGeneration(gemini, context, haseRROR);
+                } while (haseRROR);
               }
             },
           ),
@@ -266,5 +235,41 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
         ),
       ),
     );
+  }
+
+  void quizProcessGeneration(
+      Gemini gemini, BuildContext context, bool haseRROR) {
+    gemini
+        .text(GeminiSparkConfig.prompt(
+            topic: quiznameTextEditingController.text,
+            message: extractedText.replaceAll(RegExp(r'\s+'), ' ').trim(),
+            difficulty: difficulty,
+            questionNumber: questionNo))
+        .then((value) {
+      log('result $value.output');
+      Navigator.pop(context);
+
+      try {
+        final notifier = ref.read(createdQuizlistdataProvider.notifier);
+        notifier.validateAiInputData(value!.output!.startsWith('```json')
+            ? cleanjsonString(value.output ?? '')
+            : value.output ?? '');
+      } on Exception catch (e) {
+        haseRROR = true;
+        ref.watch(createdQuizlistdataProvider.notifier).clear();
+        log(e.toString());
+        return;
+      }
+      if (haseRROR == false) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PreviewQuestionsPage(
+                      title: quiznameTextEditingController.text,
+                    )));
+      } else {}
+    }).onError((error, stackTrace) {
+      log(error.toString());
+    });
   }
 }

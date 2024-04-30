@@ -124,7 +124,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
                                         context: context,
                                         builder: ((context) => AlertDialog(
                                               content: Text(
-                                                  'You have been rewarded with ${widget.scoreDecimal * 100}xp.'),
+                                                  'You have been rewarded with ${(widget.scoreDecimal * 100).toInt()}xp.'),
                                             )));
                                     setState(() {});
                                   });
