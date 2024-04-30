@@ -14,18 +14,17 @@ import '../../../../assessment/data/sources/fetchcourses.dart';
 import '../../../../assessment/data/sources/fetchquizes.dart';
 import '../../../../assessment/domain/repositories/retievedquizdata.dart';
 
-class Courses extends StatefulWidget {
-  const Courses({
-    super.key,
-  });
+class Courses extends ConsumerStatefulWidget {
+  const Courses({super.key});
 
   @override
-  State<Courses> createState() => _CoursesState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CoursesState();
 }
 
-class _CoursesState extends State<Courses> {
+class _CoursesState extends ConsumerState<Courses> {
   @override
   Widget build(BuildContext context) {
+    AsyncValue<List<ParseObject>?> quizesdata = ref.watch(quizesProvider);
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,30 +51,24 @@ class _CoursesState extends State<Courses> {
                 ),
               )),
           Expanded(
-            child: FutureBuilder<List<ParseObject>?>(
-                future: QuizApiFetch.getAllquizes(),
-                builder: (context, snapshot) {
-                  return !snapshot.hasData && snapshot.data != null
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : GridView.builder(
-                          itemCount:
-                              snapshot.data == null ? 0 : snapshot.data!.length,
-                          scrollDirection: Axis.horizontal,
-                          gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 20,
-                                  mainAxisExtent: 150,
-                                  maxCrossAxisExtent: 180),
-                          itemBuilder: (context, index) {
-                            var parseObject = snapshot.data![index];
-                            return QuizContainer(parseObject: parseObject);
-                          },
-                        );
+              child: quizesdata.when(
+            data: (data) => GridView.builder(
+                itemCount: data == null ? 0 : data!.length,
+                scrollDirection: Axis.horizontal,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 20,
+                    mainAxisExtent: 150,
+                    maxCrossAxisExtent: 180),
+                itemBuilder: (context, index) {
+                  var parseObject = data![index];
+                  return QuizContainer(parseObject: parseObject);
                 }),
-          ),
+            error: (error, stackTrace) => Text(error.toString()),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ))
         ],
       ),
     );
@@ -98,7 +91,7 @@ class QuizContainer extends ConsumerWidget {
         ref.watch(quizListProvider)
           ..inputData(parseObject)
           ..addQuizData(parseObject);
-        log('hi');
+        log('hi ');
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -154,3 +147,8 @@ class QuizContainer extends ConsumerWidget {
     );
   }
 }
+
+final quizesProvider =
+    FutureProvider.autoDispose<List<ParseObject>?>((ref) async {
+  return QuizApiFetch.getAllquizes();
+});

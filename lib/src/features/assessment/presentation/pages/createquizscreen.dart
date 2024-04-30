@@ -96,23 +96,28 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
                     .then((value) {
                   log('result $value.output');
                   Navigator.pop(context);
+                  bool haseRROR = false;
                   try {
                     final notifier =
                         ref.read(createdQuizlistdataProvider.notifier);
                     notifier.validateAiInputData(
                         value!.output!.startsWith('```json')
-                            ? cleanjsonString(value!.output ?? '')
-                            : value!.output ?? '');
+                            ? cleanjsonString(value.output ?? '')
+                            : value.output ?? '');
                   } on Exception catch (e) {
+                    haseRROR = true;
                     ref.watch(createdQuizlistdataProvider.notifier).clear();
                     log(e.toString());
+                    return;
                   }
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PreviewQuestionsPage(
-                                title: quiznameTextEditingController.text,
-                              )));
+                  if (haseRROR == false) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreviewQuestionsPage(
+                                  title: quiznameTextEditingController.text,
+                                )));
+                  }
                 }).onError((error, stackTrace) {
                   log(error.toString());
                 });

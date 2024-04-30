@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../home/domain/repositories/currentuserrepository.dart';
+import '../../../home/presentation/widgets/homepage/courseslist.dart';
 import '../../data/sources/enums/quiztype_enum.dart';
 import '../../domain/repositories/createdquizrepo.dart';
 
@@ -167,8 +168,10 @@ class _PreviewQuestionsPagerState extends ConsumerState<PreviewQuestionsPage> {
                                                   .map((e) => e.toJson())
                                                   .toList());
                                         await quizdata.save().then((value) {
+                                          ref.invalidate(quizesProvider);
                                           Navigator.popUntil(context,
                                               (route) => route.isFirst);
+
                                           setState(() {});
                                         }).onError((error, stackTrace) {
                                           Navigator.pop(context);
