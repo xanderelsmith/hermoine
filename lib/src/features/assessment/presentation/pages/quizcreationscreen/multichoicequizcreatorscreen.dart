@@ -64,6 +64,7 @@ class _MultiChoiceCreatorState extends ConsumerState<MultiChoiceCreator> {
                 ref.watch(createdQuizlistdataProvider2);
                 questionListWatcher.addQuiz(
                     MultiChoice(
+                        images: [],
                         answer: correctanswerController!.text.trim(),
                         incorrectanswers: [
                           incorrect1!.text,

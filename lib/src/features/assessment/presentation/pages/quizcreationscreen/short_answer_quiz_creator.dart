@@ -33,7 +33,7 @@ class _ShortTextAnswerQuizCreatorState
 
   Set<String> optionalCorrectAnswer = {};
   late ImagePicker imagePicker;
-  List<XFile> images = [];
+
   late TextEditingController tagTextController;
   TextEditingController? answerController;
   TextEditingController? questionController;
@@ -62,6 +62,7 @@ class _ShortTextAnswerQuizCreatorState
                 ref.watch(createdQuizlistdataProvider);
                 questionListWatcher.addQuiz(
                     ShortAnswer(
+                        images: [],
                         otherCorrectAnswers: optionalCorrectAnswer,
                         answer: answerController!.text.trim(),
                         questions: questionController!.text.trim()),

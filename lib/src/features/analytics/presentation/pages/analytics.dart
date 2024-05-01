@@ -70,7 +70,8 @@ class _AnalyticsState extends State<Analytics> {
               series: _getDefaultLineSeries(chartData),
               tooltipBehavior: TooltipBehavior(
                   enable: true,
-                  borderColor: Colors.amber,
+                  shadowColor: Colors.blue,
+                  borderColor: Colors.blue,
                   color: Colors.grey,
                   builder: (data, dynamic point, dynamic series, int pointIndex,
                       int seriesIndex) {
@@ -80,7 +81,7 @@ class _AnalyticsState extends State<Analytics> {
                         width: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Colors.amber,
+                          color: Colors.blue,
                         ),
                         child: Center(
                             child: Padding(
@@ -155,8 +156,9 @@ List<LineSeries<QuizReportData, num>> _getDefaultLineSeries(chartData) {
             convertDateTimeToDecimal(sales.date!),
         yValueMapper: (QuizReportData sales, _) =>
             (sales.score / sales.total) * 100,
-        markerSettings: const MarkerSettings(
-          color: Colors.amber,
+        markerSettings: MarkerSettings(
+          color: Colors.blue,
+          borderColor: Colors.blueAccent,
           isVisible: true,
         )),
   ];

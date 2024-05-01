@@ -165,15 +165,14 @@ class _SigninScreenState extends State<SigninScreen> {
                                       "Password",
                                       style: theme.textTheme.bodyMedium,
                                     ),
-                                    SizedBox(height: 16.v),
+                                    // SizedBox(height: 16.v),
                                     CustomTextFormFieldToggle(
+                                      contentPadding: EdgeInsets.all(0),
                                       controller: passwordController,
-                                      textInputAction: TextInputAction.done,
+                                      // textInputAction: TextInputAction.done,
                                       textInputType:
                                           TextInputType.visiblePassword,
                                       obscureText: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 4.h),
                                     )
                                   ],
                                 ),

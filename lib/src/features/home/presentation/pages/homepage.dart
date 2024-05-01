@@ -62,8 +62,13 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
         onPressed: () {},
-        child: Image.asset(_page.data),
+        shape: const CircleBorder(),
+        child: Image.asset(
+          _page.data,
+          color: AppColor.primaryColor,
+        ),
       ),
       floatingActionButtonLocation: centerDocked,
       drawer: CustomDrawer(

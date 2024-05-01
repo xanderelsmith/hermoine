@@ -30,7 +30,7 @@ class CustomTextStyles {
       );
   static get bodySmallPrimary => theme.textTheme.bodySmall!.copyWith(
         color: theme.colorScheme.primary,
-        fontSize: 12.fSize,
+        fontSize: 18.fSize,
       );
 // Label text style
   static get labelLargeOnPrimary => theme.textTheme.labelLarge!.copyWith(

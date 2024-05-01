@@ -1137,7 +1137,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormFieldToggle> {
         hintStyle: widget.hintStyle ?? TextStyle(),
         prefixIcon: widget.prefix,
         prefixIconConstraints: widget.prefixConstraints,
-        suffixIcon: widget.obscureText == true
+        suffix: widget.obscureText == true
             ? IconButton(
                 icon: Icon(
                   _isObscure ? Icons.visibility : Icons.visibility_off,

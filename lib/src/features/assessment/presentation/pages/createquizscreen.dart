@@ -52,8 +52,13 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
               style: AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
             ),
             onPressed: () {
+              if (quizDataSource == QuizDataSource.fromPdf) {
+                extractedText = pdfdata;
+              } else {
+                extractedText = sampleDataTextEditingController.text;
+              }
               if (quiznameTextEditingController.text.isEmpty ||
-                  sampleDataTextEditingController.text.isEmpty ||
+                  extractedText.isEmpty ||
                   questionNo == 0) {
                 showDialog(
                     context: context,
@@ -81,11 +86,6 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
 
                 final gemini = Gemini.instance;
 
-                if (quizDataSource == QuizDataSource.fromPdf) {
-                  extractedText = pdfdata;
-                } else {
-                  extractedText = sampleDataTextEditingController.text;
-                }
                 bool haseRROR = false;
                 do {
                   quizProcessGeneration(gemini, context, haseRROR);
@@ -182,9 +182,19 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
                                   return null;
                                 });
                               },
-                              child: const Icon(
-                                Icons.file_copy,
-                                size: 50,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    Icons.file_copy,
+                                    size: 50,
+                                  ),
+                                  Text(
+                                    'Click to add quiz',
+                                    style: AppTextStyle.mediumTitlename,
+                                  )
+                                ],
                               )),
                     )
                   : StyledTextField(

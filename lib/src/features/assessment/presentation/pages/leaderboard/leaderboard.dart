@@ -18,49 +18,54 @@ class LeaderBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("Users").snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            displayMessageToUser("something went wrong", context);
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final users = snapshot.data!.docs;
-          users.sort((a, b) => int.parse(b['xp'].isEmpty ? '0' : b['xp'])
-              .compareTo(int.parse(a['xp'].isEmpty ? '0' : a['xp'])));
+    return Scaffold(
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection("Users").snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (!snapshot.hasError) {
+              final users = snapshot.data!.docs;
+              users.sort((a, b) => int.parse(b['xp'].isEmpty ? '0' : b['xp'])
+                  .compareTo(int.parse(a['xp'].isEmpty ? '0' : a['xp'])));
 
-          return CustomScrollView(
-            // physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                title: const Text('LeaderBoard'),
-                collapsedHeight: 100,
-                expandedHeight: 180,
-                flexibleSpace: FlexibleSpaceBar(
-                    stretchModes: const <StretchMode>[
-                      StretchMode.blurBackground,
-                      StretchMode.zoomBackground,
-                      StretchMode.fadeTitle
-                    ],
-                    // centerTitle: false,
+              return CustomScrollView(
+                // physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    title: const Text('LeaderBoard'),
+                    collapsedHeight: 100,
+                    expandedHeight: 180,
+                    flexibleSpace: FlexibleSpaceBar(
+                        stretchModes: const <StretchMode>[
+                          StretchMode.blurBackground,
+                          StretchMode.zoomBackground,
+                          StretchMode.fadeTitle
+                        ],
+                        // centerTitle: false,
 
-                    background: SparkCyberSpaceAppBar(usersList: [
-                      users[0],
-                      users[1],
-                      users[2],
-                    ])),
-              ),
-              SliverList(
-                delegate:
-                    SliverChildListDelegate([OtherUserList(users: users)]),
-              )
-            ],
-          );
-        });
+                        background: SparkCyberSpaceAppBar(usersList: [
+                          users[0],
+                          users[1],
+                          users[2],
+                        ])),
+                  ),
+                  SliverList(
+                    delegate:
+                        SliverChildListDelegate([OtherUserList(users: users)]),
+                  )
+                ],
+              );
+            } else {
+              displayMessageToUser("something went wrong", context);
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
+    );
   }
 }
 

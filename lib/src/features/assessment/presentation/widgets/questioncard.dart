@@ -24,7 +24,6 @@ class QuestionCard extends ConsumerWidget {
   final Question question;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var hIntWidget = HIntWidget;
     return Container(
         height: screensize.width / 2,
         width: screensize.width,

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class PdfQuizScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<PdfQuizScreen> createState() => _PdfQuizScreenState();
 }
+
 class _PdfQuizScreenState extends ConsumerState<PdfQuizScreen> {
   final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
   PdfDocument? _pdfDocument;
@@ -76,7 +78,10 @@ class _PdfQuizScreenState extends ConsumerState<PdfQuizScreen> {
                             'You are only allowed to generate quizes based on 3 pages maximum. Page generation above that comes at a cost. Contact us for enquiries')));
               }
             },
-            child: const Text('Extract Pages')),
+            child: Text(
+              'Extract Pages',
+              style: AppTextStyle.mediumTitlename.copyWith(color: Colors.white),
+            )),
       ),
       bottomSheet: SizedBox(
         height: 70,

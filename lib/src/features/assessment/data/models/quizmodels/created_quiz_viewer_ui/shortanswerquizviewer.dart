@@ -90,11 +90,13 @@ class ShortAnswer extends Question {
       "question": question,
       'answeroption': otherCorrectAnswers!.toList(),
       "correct_answer": answer,
-      "images": images!
-          .map((e) => e is Map<String, String?>
-              ? ParseFile(File(e['url']!))
-              : ParseFile(File(e.path)))
-          .toList(),
+      "images": images == null
+          ? []
+          : images!
+              .map((e) => e is Map<String, String?>
+                  ? ParseFile(File(e['url']!))
+                  : ParseFile(File(e.path)))
+              .toList(),
     };
   }
 

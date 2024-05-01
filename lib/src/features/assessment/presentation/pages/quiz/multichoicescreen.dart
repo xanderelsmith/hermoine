@@ -322,7 +322,8 @@ class _SectionChatState extends ConsumerState<SectionChat> {
 
     return Card(
       elevation: 0,
-      color: content.role == 'Hermoine' ? Colors.grey : Colors.transparent,
+      color:
+          content.role == 'Hermoine' ? Colors.blueAccent : Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -342,16 +343,28 @@ class _SectionChatState extends ConsumerState<SectionChat> {
                         height: 45,
                       ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(content.role ?? 'role'),
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    content.role ?? 'role',
+                    style: AppTextStyle.mediumTitlename.copyWith(
+                      color: content.role == 'Hermoine'
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
                 ),
               ],
             ),
-            Markdown(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                data:
-                    content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                content.parts?.lastOrNull?.text ?? 'cannot generate data!',
+                style: AppTextStyle.titlename.copyWith(
+                  color:
+                      content.role == 'Hermoine' ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -412,30 +425,6 @@ class ChatInputBox extends StatelessWidget {
       ),
     );
   }
-}
-
-// This is a sample message class, modify it as needed
-class Message {
-  final String text;
-  final bool isCurrentUser;
-
-  Message(this.text, this.isCurrentUser);
-}
-
-Widget messageBubble(Message message) {
-  return Align(
-    alignment:
-        message.isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-    child: Container(
-      padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: message.isCurrentUser ? Colors.blue[100] : Colors.grey[200],
-      ),
-      child: Text(message.text),
-    ),
-  );
 }
 
 class AnswerCard extends StatelessWidget {
