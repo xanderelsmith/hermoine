@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 class GeminiSparkConfig {
-  static String apiKey = 'AIzaSyC-Bzvrs_tto8YJP8_QHCfrYzVvS53n6-4';
+  static String apiKey = '';
   static List<Map> quizSample = [
     {
       "category": "multichoice",
