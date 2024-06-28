@@ -1,12 +1,7 @@
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hermione/src/core/constants/size_utils.dart';
 import 'package:hermione/src/features/assessment/data/sources/fetchcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcourses.dart';
 import 'package:hermione/src/features/home/presentation/widgets/homepage/allcoursescategoriesListscreen.dart';
-import 'package:hermione/src/features/home/presentation/widgets/homepage/creatorassessmentslist.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -78,8 +73,10 @@ class HomePageCourseCategory extends StatelessWidget {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child:
-                                          Text(snapshot.data![index]['name']),
+                                      child: Text(
+                                        snapshot.data![index]['name'],
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     )
                                   ],
                                 ),

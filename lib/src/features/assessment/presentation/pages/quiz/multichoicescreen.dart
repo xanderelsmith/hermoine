@@ -183,7 +183,7 @@ class HIntWidget extends StatelessWidget {
                 color: Colors.white,
               ),
               Text(
-                'Hint',
+                'AI Hint',
                 style: AppTextStyle.titlename.copyWith(color: AppColor.white),
               ),
             ],
@@ -355,16 +355,11 @@ class _SectionChatState extends ConsumerState<SectionChat> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                content.parts?.lastOrNull?.text ?? 'cannot generate data!',
-                style: AppTextStyle.titlename.copyWith(
-                  color:
-                      content.role == 'Hermoine' ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
+            Markdown(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                data:
+                    content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
           ],
         ),
       ),
@@ -408,7 +403,7 @@ class ChatInputBox extends StatelessWidget {
             keyboardType: TextInputType.multiline,
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-              hintText: 'Message',
+              hintText: 'type (highlight) To get actual answer',
               border: InputBorder.none,
             ),
             onTapOutside: (event) =>

@@ -60,46 +60,49 @@ class _HomePageState extends ConsumerState<HomePage> {
   var centerDocked = FloatingActionButtonLocation.startDocked;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        onPressed: () {},
-        shape: const CircleBorder(),
-        child: Image.asset(
-          _page.data,
-          color: AppColor.primaryColor,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: () {},
+          shape: const CircleBorder(),
+          child: Image.asset(
+            _page.data,
+            color: AppColor.primaryColor,
+          ),
         ),
-      ),
-      floatingActionButtonLocation: centerDocked,
-      drawer: CustomDrawer(
-        currentUser: newUser!,
-      ),
-      bottomNavigationBar: Container(
-          height: 50,
-          color: AppColor.primaryColor,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                    BottomNavItem.values.length,
-                    (index) => InkWell(
-                        onTap: () {
-                          setState(() {
-                            _page = BottomNavItem.values[index];
-                            centerDocked = _page.floatingActionButtonLocation;
-                          });
-                        },
-                        child: BottomNavItem.values[index].data == _page.data
-                            ? const SizedBox()
-                            : Image.asset(
-                                BottomNavItem.values[index].data,
-                              ))),
+        floatingActionButtonLocation: centerDocked,
+        drawer: CustomDrawer(
+          currentUser: newUser!,
+        ),
+        bottomNavigationBar: Container(
+            height: 50,
+            color: AppColor.primaryColor,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                      BottomNavItem.values.length,
+                      (index) => InkWell(
+                          onTap: () {
+                            setState(() {
+                              _page = BottomNavItem.values[index];
+                              centerDocked = _page.floatingActionButtonLocation;
+                            });
+                          },
+                          child: BottomNavItem.values[index].data == _page.data
+                              ? const SizedBox()
+                              : Image.asset(
+                                  BottomNavItem.values[index].data,
+                                ))),
+                ),
               ),
-            ),
-          )),
-      body: HomePageBuilder(page: _page, userDetails: newUser!),
+            )),
+        body: HomePageBuilder(page: _page, userDetails: newUser!),
+      ),
     );
   }
 }

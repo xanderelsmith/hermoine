@@ -29,6 +29,7 @@ class QuizMainScreen extends ConsumerStatefulWidget {
 }
 
 class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
+  int pageindex = 0;
   final pageController = PageController(initialPage: 0);
   @override
   Widget build(BuildContext context) {
@@ -134,8 +135,7 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
           ),
           appBar: AppBar(
               title: LinearProgressIndicator(
-            value: quizdatacontroller.correct.length.toDouble() /
-                quizes.length.toDouble(),
+            value: (pageindex / quizes.length),
             backgroundColor: Colors.blue,
             minHeight: 20,
             color: const Color(0xff88FF59),
@@ -144,6 +144,11 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
           body: PageView.builder(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: quizes.length,
+              onPageChanged: (value) {
+                setState(() {
+                  pageindex = value;
+                });
+              },
               controller: pageController,
               itemBuilder: (context, index) {
                 return questionScreenBuilder(quizes, index, screensize);

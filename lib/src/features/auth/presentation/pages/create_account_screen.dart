@@ -165,182 +165,184 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         decoration: AppDecoration.fillPrimary.copyWith(
                           borderRadius: BorderRadiusStyle.customBorderTL15,
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 18.v),
-                            Padding(
-                              padding: EdgeInsets.only(left: 28.h),
-                              child: Text(
-                                "Create Account",
-                                style: theme.textTheme.titleLarge,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 18.v),
+                              Padding(
+                                padding: EdgeInsets.only(left: 28.h),
+                                child: Text(
+                                  "Create Account",
+                                  style: theme.textTheme.titleLarge,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 11.v),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 25.h,
-                                vertical: 33.v,
-                              ),
-                              decoration: AppDecoration.fillOnPrimary.copyWith(
-                                borderRadius:
-                                    BorderRadiusStyle.customBorderTL15,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Username",
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      SizedBox(height: 5.v),
-                                      CustomTextFormField(
-                                        controller: usernameController,
-                                        textInputAction: TextInputAction.done,
-                                        textInputType:
-                                            TextInputType.visiblePassword,
-                                        obscureText: false,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.h),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 17.v),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Email",
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      SizedBox(height: 16.v),
-                                      CustomTextFormField(
-                                        controller: emailController,
-                                        textInputAction: TextInputAction.done,
-                                        obscureText: false,
-                                        validator: (val) {
-                                          return RegExp(
-                                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                  .hasMatch(val!)
-                                              ? null
-                                              : "Enter a valid email address";
-                                        },
-                                        textInputType:
-                                            TextInputType.visiblePassword,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.h),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 17.v),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Password",
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      SizedBox(height: 16.v),
-                                      CustomTextFormFieldToggle(
-                                        validator: (value) {
-                                          if (value == '') {
-                                            return "Please enter password";
-                                          } else {
-                                            //call function to check password
-                                            bool result =
-                                                validatePassword(value!);
-                                            if (result) {
-                                              return null;
-                                            } else {
-                                              return 'Password must contain an uppercase character, a lowercase character, a number, a symbol and minimum of 8 characters';
-                                            }
-                                          }
-                                        },
-                                        controller: passwordController,
-                                        textInputAction: TextInputAction.done,
-                                        textInputType:
-                                            TextInputType.visiblePassword,
-                                        obscureText: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.h),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 17.v),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Confirm Password",
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      SizedBox(height: 16.v),
-                                      CustomTextFormFieldToggle(
-                                        controller: confirmPasswordController,
-                                        textInputAction: TextInputAction.done,
-                                        validator: (value) {
-                                          if (value == '') {
-                                            return "Please enter your password again";
-                                          } else {
-                                            if (passwordController.text ==
-                                                confirmPasswordController
-                                                    .text) {
-                                              return null;
-                                            } else {
-                                              return 'Password do not match';
-                                            }
-                                          }
-                                        },
-                                        textInputType:
-                                            TextInputType.visiblePassword,
-                                        obscureText: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.h),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 80.v),
-                                  CustomElevatedButton(
-                                    onPressed: signup,
-                                    text: "Create account",
-                                    buttonTextStyle:
-                                        CustomTextStyles.titleMediumOnPrimary,
-                                  ),
-                                  SizedBox(height: 32.v),
-                                  RichText(
-                                    text: TextSpan(
+                              SizedBox(height: 11.v),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 25.h,
+                                  vertical: 33.v,
+                                ),
+                                decoration:
+                                    AppDecoration.fillOnPrimary.copyWith(
+                                  borderRadius:
+                                      BorderRadiusStyle.customBorderTL15,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        TextSpan(
-                                          text: "Already have account?",
-                                          style: theme.textTheme.labelLarge,
+                                        Text(
+                                          "Username",
+                                          style: theme.textTheme.bodyMedium,
                                         ),
-                                        TextSpan(
-                                          text: " Sign in",
-                                          style: CustomTextStyles
-                                              .labelLargePrimary,
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () {
-                                              Get.to(
-                                                  const SigninScreen()); // Navigate to the sign-in screen
-                                            },
+                                        SizedBox(height: 5.v),
+                                        CustomTextFormField(
+                                          controller: usernameController,
+                                          textInputAction: TextInputAction.done,
+                                          textInputType:
+                                              TextInputType.visiblePassword,
+                                          obscureText: false,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.h),
                                         )
                                       ],
                                     ),
-                                    textAlign: TextAlign.left,
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                                    SizedBox(height: 17.v),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Email",
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
+                                        SizedBox(height: 16.v),
+                                        CustomTextFormField(
+                                          controller: emailController,
+                                          textInputAction: TextInputAction.done,
+                                          obscureText: false,
+                                          validator: (val) {
+                                            return RegExp(
+                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(val!)
+                                                ? null
+                                                : "Enter a valid email address";
+                                          },
+                                          textInputType:
+                                              TextInputType.visiblePassword,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.h),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 17.v),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Password",
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
+                                        SizedBox(height: 16.v),
+                                        CustomTextFormFieldToggle(
+                                          validator: (value) {
+                                            if (value == '') {
+                                              return "Please enter password";
+                                            } else {
+                                              //call function to check password
+                                              bool result =
+                                                  validatePassword(value!);
+                                              if (result) {
+                                                return null;
+                                              } else {
+                                                return 'Password must contain an uppercase character, a lowercase character, a number, a symbol and minimum of 8 characters';
+                                              }
+                                            }
+                                          },
+                                          controller: passwordController,
+                                          textInputAction: TextInputAction.done,
+                                          textInputType:
+                                              TextInputType.visiblePassword,
+                                          obscureText: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.h),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 17.v),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Confirm Password",
+                                          style: theme.textTheme.bodyMedium,
+                                        ),
+                                        SizedBox(height: 16.v),
+                                        CustomTextFormFieldToggle(
+                                          controller: confirmPasswordController,
+                                          textInputAction: TextInputAction.done,
+                                          validator: (value) {
+                                            if (value == '') {
+                                              return "Please enter your password again";
+                                            } else {
+                                              if (passwordController.text ==
+                                                  confirmPasswordController
+                                                      .text) {
+                                                return null;
+                                              } else {
+                                                return 'Password do not match';
+                                              }
+                                            }
+                                          },
+                                          textInputType:
+                                              TextInputType.visiblePassword,
+                                          obscureText: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.h),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 80.v),
+                                    CustomElevatedButton(
+                                      onPressed: signup,
+                                      text: "Create account",
+                                      buttonTextStyle:
+                                          CustomTextStyles.titleMediumOnPrimary,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Already have account?",
+                                            style: theme.textTheme.labelLarge,
+                                          ),
+                                          TextSpan(
+                                            text: " Sign in",
+                                            style: CustomTextStyles
+                                                .labelLargePrimary,
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                Get.to(
+                                                    const SigninScreen()); // Navigate to the sign-in screen
+                                              },
+                                          )
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ],

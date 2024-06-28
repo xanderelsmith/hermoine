@@ -34,8 +34,8 @@ class ReviewsScreen extends ConsumerWidget {
               color: incorrectQuizList.any((element) =>
                       element.correctanswer ==
                       quizquestionsList[index].correctanswer)
-                  ? Colors.indigo
-                  : null,
+                  ? Colors.red
+                  : Colors.greenAccent,
               child: Container(
                   margin: const EdgeInsets.all(15),
                   height: 100,
@@ -95,14 +95,8 @@ class ReviewsScreen extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               quizquestionsList[index].correctanswer,
-                              style: AppTextStyle.mediumTitlename.copyWith(
-                                  color: incorrectQuizList.any((element) =>
-                                          element.correctanswer ==
-                                          quizquestionsList[index]
-                                              .correctanswer)
-                                      ? Colors.greenAccent
-                                      : Colors.green,
-                                  fontWeight: FontWeight.bold),
+                              style: AppTextStyle.mediumTitlename
+                                  .copyWith(fontWeight: FontWeight.bold),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,

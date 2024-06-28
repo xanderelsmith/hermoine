@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hermione/src/core/constants/text_style.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/reviewscreen.dart';
 import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -65,14 +66,49 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
 
     int total = quizlist.length;
     return Scaffold(
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+            color: Color(0xff065774),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            )),
+        height: 110,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Share as',
+              style: AppTextStyle.mediumTitlename.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: shareoptionsList
+                  .map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: e.icon,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            )
+          ],
+        ),
+      ),
       appBar: CustomResultAppBar(
         quizState: quizstate,
         quizlength: total,
         score: animation!.value,
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: Center(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(
               3,
@@ -187,3 +223,21 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     log(quizViewersList.length.toString());
   }
 }
+
+class ShareOptions {
+  final Icon icon;
+  final String iconname;
+
+  const ShareOptions({required this.icon, required this.iconname});
+}
+
+const List<ShareOptions> shareoptionsList = [
+  ShareOptions(
+    icon: Icon(Icons.copy),
+    iconname: 'Copy',
+  ),
+  ShareOptions(
+    icon: Icon(Icons.share),
+    iconname: 'chat',
+  ),
+];

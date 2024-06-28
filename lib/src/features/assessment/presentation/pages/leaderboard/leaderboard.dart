@@ -46,11 +46,11 @@ class LeaderBoardScreen extends StatelessWidget {
                         ],
                         // centerTitle: false,
 
-                        background: SparkCyberSpaceAppBar(usersList: [
-                          users[0],
-                          users[1],
-                          users[2],
-                        ])),
+                        background: SparkCyberSpaceAppBar(
+                            usersList: List.generate(
+                          users.length > 3 ? 3 : users.length,
+                          (index) => users[index],
+                        ))),
                   ),
                   SliverList(
                     delegate:
