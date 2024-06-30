@@ -34,7 +34,7 @@ class ReviewsScreen extends ConsumerWidget {
               color: incorrectQuizList.any((element) =>
                       element.correctanswer ==
                       quizquestionsList[index].correctanswer)
-                  ? Colors.red
+                  ? Colors.blueAccent
                   : Colors.greenAccent,
               child: Container(
                   margin: const EdgeInsets.all(15),

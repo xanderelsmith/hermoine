@@ -1,12 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hermione/src/core/constants/size_utils.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:widgets_to_image/widgets_to_image.dart';
+import 'package:hermione/src/core/constants/constants.dart';
 import 'package:hermione/src/core/constants/text_style.dart';
+import 'package:hermione/src/features/assessment/data/models/quizmodels/created_quiz_viewer_ui/question_model.dart';
 import 'package:hermione/src/features/assessment/presentation/pages/quiz/reviewscreen.dart';
 import 'package:hermione/src/features/home/domain/repositories/currentuserrepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +24,9 @@ import '../../../domain/repositories/retievedquizdata.dart';
 class QuizResultScreen extends ConsumerStatefulWidget {
   static String id = 'QuizResultScreen';
   final double scoreDecimal;
+  final String name;
   const QuizResultScreen({
+    required this.name,
     required this.scoreDecimal,
     super.key,
   });
@@ -56,6 +62,8 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     super.didChangeDependencies();
   }
 
+  var widgetsToImageController = WidgetsToImageController();
+  Uint8List? bytes;
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
@@ -63,7 +71,8 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     log(ref.watch(userProvider)!.name.toString());
     final quizlist = ref.watch(quizListProvider).getQuizes;
     final quizstate = ref.watch(quizcontrollerProvider);
-
+    int percentage =
+        ((quizstate.correct.length / quizlist.length) * 100).floor();
     int total = quizlist.length;
     return Scaffold(
       bottomNavigationBar: Container(
@@ -75,6 +84,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
             )),
         height: 110,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,17 +96,94 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: shareoptionsList
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: e.icon,
-                      ),
+              children: List.generate(
+                shareoptionsList.length,
+                (index) => GestureDetector(
+                  onTap: () async {
+                    if (index == 0) {
+                      String link = '';
+                      Share.share(
+                          'HI,I got $percentage% on a quiz about ${widget.name} on Hermoine AI app, here\'s a link to view what its about $link',
+                          subject: 'Hermoine AI Alert');
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: WidgetsToImage(
+                                          controller: widgetsToImageController,
+                                          child: ImageCard(
+                                            question: quizlist.last,
+                                            widgetsToImageController:
+                                                widgetsToImageController,
+                                            percentage: percentage,
+                                            name: widget.name,
+                                          )),
+                                    ),
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            fixedSize: Size(
+                                                getScreenSize(context).width -
+                                                    100,
+                                                50)),
+                                        onPressed: () async {
+                                          final bytes =
+                                              await widgetsToImageController
+                                                  .capture();
+                                          setState(() {
+                                            this.bytes = bytes;
+                                          });
+
+                                          Share.shareXFiles([
+                                            XFile.fromData(
+                                              bytes!,
+                                              name: 'hermoineImage.png',
+                                              mimeType: 'image/png',
+                                            )
+                                          ],
+                                              text:
+                                                  'I got $percentage% on a quiz on Hermione AI, It was an awesome experience. Defeat the FOMO by Creating and sharing AI quizes today ');
+                                        },
+                                        child: Text(
+                                          'Share Image',
+                                          style: AppTextStyle.mediumTitlename
+                                              .copyWith(color: Colors.white),
+                                        )),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              fixedSize: Size(
+                                                  getScreenSize(context).width -
+                                                      100,
+                                                  50)),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Cancel',
+                                            style: AppTextStyle.mediumTitlename
+                                                .copyWith(color: Colors.white),
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              ));
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: shareoptionsList[index].icon,
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              ).toList(),
             )
           ],
         ),
@@ -221,6 +308,85 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen>
     quizObject!.set('viewers', quizViewersList);
     await quizObject!.update();
     log(quizViewersList.length.toString());
+  }
+}
+
+class ImageCard extends StatelessWidget {
+  final int percentage;
+
+  final String name;
+
+  const ImageCard({
+    super.key,
+    required this.question,
+    required this.widgetsToImageController,
+    required this.percentage,
+    required this.name,
+  });
+  final WidgetsToImageController widgetsToImageController;
+  final Question question;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: 600,
+        height: 300,
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Image.asset(
+                          'assets/mascot/mascot.png',
+                          width: 80,
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Quiz with Hermoine AI',
+                              textAlign: TextAlign.start,
+                              style: AppTextStyle.mediumTitlename.copyWith(
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            Text(question.question,
+                                style: AppTextStyle.largeTitlename),
+                            Text(question.correctanswer,
+                                style: AppTextStyle.largeTitlename.copyWith(
+                                    color:
+                                        const Color.fromARGB(255, 49, 175, 53),
+                                    fontWeight: FontWeight.bold))
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                    child: Center(
+                  child: Text(
+                    'HI,I got $percentage% on a quiz about $name on Hermoine AI app',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.largeTitlename.copyWith(
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                )),
+              ],
+            ),
+          ),
+        ));
   }
 }
 

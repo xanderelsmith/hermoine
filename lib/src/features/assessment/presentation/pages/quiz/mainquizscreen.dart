@@ -116,6 +116,7 @@ class _QuizMainScreenState extends ConsumerState<QuizMainScreen> {
                                         MaterialPageRoute(
                                             builder: ((context) =>
                                                 QuizResultScreen(
+                                                  name: widget.topic,
                                                   scoreDecimal: scoreDecimal,
                                                 )))).then((value) {
                                       ref

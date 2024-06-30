@@ -25,7 +25,12 @@ class AppTextStyle extends TextStyle {
   static TextStyle get largeTitlename => TextStyle(
         fontWeight: Font.sb,
         color: Colors.black,
-        fontSize: 30,
+        fontSize: 20,
+      );
+  static TextStyle get extralargeTitlename => TextStyle(
+        fontWeight: Font.sb,
+        color: Colors.black,
+        fontSize: 25,
       );
   static TextStyle get tinyTitlename => TextStyle(
         fontWeight: Font.l,

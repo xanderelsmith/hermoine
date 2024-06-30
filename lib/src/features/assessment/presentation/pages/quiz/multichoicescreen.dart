@@ -322,8 +322,9 @@ class _SectionChatState extends ConsumerState<SectionChat> {
 
     return Card(
       elevation: 0,
-      color:
-          content.role == 'Hermoine' ? Colors.blueAccent : Colors.transparent,
+      color: content.role == 'Hermoine'
+          ? Color.fromARGB(255, 21, 146, 160)
+          : Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -343,7 +344,7 @@ class _SectionChatState extends ConsumerState<SectionChat> {
                         height: 45,
                       ),
                 Padding(
-                  padding: EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     content.role ?? 'role',
                     style: AppTextStyle.mediumTitlename.copyWith(
@@ -357,6 +358,12 @@ class _SectionChatState extends ConsumerState<SectionChat> {
             ),
             Markdown(
                 shrinkWrap: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
                 physics: const NeverScrollableScrollPhysics(),
                 data:
                     content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
@@ -462,7 +469,7 @@ class AnswerCard extends StatelessWidget {
                     : isSelected
                         ? Colors.red
                         : Colors.white
-                : Colors.white,
+                : Colors.black,
             width: 4.0,
           ),
           borderRadius: BorderRadius.circular(20.0),
