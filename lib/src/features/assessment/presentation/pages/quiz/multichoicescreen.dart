@@ -359,8 +359,10 @@ class _SectionChatState extends ConsumerState<SectionChat> {
             Markdown(
                 shrinkWrap: true,
                 styleSheet: MarkdownStyleSheet(
-                  p: const TextStyle(
-                    color: Colors.white,
+                  p: TextStyle(
+                    color: content.role == 'Hermoine'
+                        ? Colors.white
+                        : Colors.black,
                     fontSize: 14,
                   ),
                 ),

@@ -96,10 +96,9 @@ class _CreateQuizScreenState extends ConsumerState<CreateQuizScreen> {
         ),
       ),
       appBar: AppBar(),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               StyledTextField(
